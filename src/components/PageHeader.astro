@@ -1,0 +1,15 @@
+---
+interface Props {
+	prompt: string;
+	title: string;
+	subtitle: string;
+}
+
+const { prompt, title, subtitle } = Astro.props;
+---
+
+<section class="px-section pt-20 pb-16 border-b border-edge">
+	<p class="font-mono text-[13px] fg-weak mb-5" aria-hidden="true">{prompt}</p>
+	<h1 class="font-mono text-[36px] font-bold fg-strong mb-4 leading-tight">{title}</h1>
+	<p class="text-[17px] fg leading-relaxed max-w-[60ch]">{subtitle}</p>
+</section>

@@ -1,0 +1,99 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '@/layouts/Layout.astro';
+import { SiteHeader, SiteFooter, PageHeader } from '@/components';
+import { about as pageMeta } from '@/config/pages';
+import { site } from '@/config';
+import { aboutMeta, bio, stats, aboutLinks } from '@/data/content';
+import { basics } from '@/data/cv';
+
+const allTestimonials = await getCollection('testimonials');
+const testimonials = allTestimonials.slice(0, 6);
+
+const aboutSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'ProfilePage',
+	name: `About ${site.author}`,
+	url: `${site.url}/about`,
+	mainEntity: {
+		'@type': 'Person',
+		name: basics.name,
+		url: site.url,
+		jobTitle: basics.label,
+		description: basics.summary,
+		image: basics.image,
+		sameAs: basics.profiles?.map(p => p.url) ?? [],
+	},
+};
+---
+
+<Layout {...pageMeta} jsonLd={aboutSchema}>
+	<main id="main-content" class="landing">
+		<div class="landing-container">
+			<SiteHeader />
+
+			<PageHeader
+				prompt={aboutMeta.prompt}
+				title={aboutMeta.title}
+				subtitle={aboutMeta.subtitle}
+			/>
+
+			<section aria-label="About Steve McDougall">
+				<div class="px-section py-12 max-w-[680px]">
+					{bio.map(paragraph => (
+						<p class="text-base leading-[1.8] fg mb-5 last:mb-0">{paragraph}</p>
+					))}
+
+					<div class="flex gap-8 flex-wrap my-8 py-6 border-t border-b border-edge" aria-label="Key statistics">
+						{stats.map(stat => (
+							<div class="flex flex-col gap-1">
+								<span class="font-mono text-2xl font-bold fg-accent leading-none">{stat.value}</span>
+								<span class="text-[13px] fg-weak max-w-[140px] leading-snug">{stat.label}</span>
+							</div>
+						))}
+					</div>
+
+					<h2 class="text-sm font-medium font-mono fg-weak uppercase tracking-[0.08em] mt-8 mb-4">What people say</h2>
+
+					{testimonials.map(t => (
+						<blockquote class="m-0 mb-4 pl-5 border-l-2 bg-surface-weak rounded-r py-4 pr-5" style="border-left-color: var(--color-accent);">
+							<p class="text-[15px] fg-strong leading-relaxed italic mb-2">"{t.data.quote}"</p>
+							<footer class="flex items-center gap-2 mt-3">
+								{t.data.author.avatar?.src && (
+									<img
+										src={t.data.author.avatar.src}
+										alt={t.data.author.name}
+										width="24"
+										height="24"
+										class="rounded-full w-6 h-6 object-cover"
+										loading="lazy"
+									/>
+								)}
+								<span class="text-[13px] font-mono fg-weak">
+									{t.data.author.name}
+									{t.data.author.role && `, ${t.data.author.role}`}
+									{t.data.author.company && ` @ ${t.data.author.company}`}
+								</span>
+							</footer>
+						</blockquote>
+					))}
+
+					<nav class="flex gap-6 flex-wrap mt-8" aria-label="External profiles">
+						{aboutLinks.map(link => (
+							<a
+								href={link.href}
+								class="font-mono text-sm fg-strong border-b border-edge pb-0.5 no-underline transition-colors hover:[border-color:var(--color-text-strong)]"
+								{...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+							>
+								{link.label}
+								{link.external && <span class="visually-hidden">(opens in new tab)</span>}
+							</a>
+						))}
+					</nav>
+				</div>
+			</section>
+
+			<SiteFooter />
+		</div>
+	</main>
+</Layout>

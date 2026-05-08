@@ -1,0 +1,81 @@
+{
+	"meta": {
+		"title": "Articles",
+		"prompt": "$ ls articles/",
+		"subtitle": "Writing on PHP, Laravel, APIs, and engineering leadership."
+	},
+	"posts": [
+		{
+			"title": "Introducing Signal: documentation that lives in your code",
+			"date": "2026-04-30",
+			"slug": "introducing-signal",
+			"tag": "php"
+		},
+		{
+			"title": "Building Modern Laravel APIs: Lead Scoring and Prioritisation",
+			"date": "2026-04-14",
+			"slug": "building-modern-laravel-apis-lead-scoring",
+			"tag": "laravel"
+		},
+		{
+			"title": "Building Modern Laravel APIs: The Action Pattern",
+			"date": "2026-04-14",
+			"slug": "building-modern-laravel-apis-action-pattern",
+			"tag": "laravel"
+		},
+		{
+			"title": "Building Modern Laravel APIs: Authentication with JWT",
+			"date": "2026-04-11",
+			"slug": "building-modern-laravel-apis-jwt",
+			"tag": "laravel"
+		},
+		{
+			"title": "Building Modern Laravel APIs: Foundations and Project Structure",
+			"date": "2026-04-10",
+			"slug": "building-modern-laravel-apis-foundations",
+			"tag": "laravel"
+		},
+		{
+			"title": "Building Modern Laravel APIs: Ingesting Leads",
+			"date": "2026-04-10",
+			"slug": "building-modern-laravel-apis-ingesting-leads",
+			"tag": "laravel"
+		},
+		{
+			"title": "Managing Expectations in the AI Era",
+			"date": "2026-04-10",
+			"slug": "managing-expectations-ai-era",
+			"tag": "project management"
+		},
+		{
+			"title": "Building Modern Laravel APIs: Routing, Versioning, and API Contracts",
+			"date": "2026-04-10",
+			"slug": "building-modern-laravel-apis-routing",
+			"tag": "laravel"
+		},
+		{
+			"title": "Redefining Engineering Roles in the AI Era",
+			"date": "2026-04-08",
+			"slug": "redefining-engineering-roles-ai-era",
+			"tag": "project management"
+		},
+		{
+			"title": "Reviewing AI Generated Work",
+			"date": "2026-04-07",
+			"slug": "reviewing-ai-generated-work",
+			"tag": "project management"
+		},
+		{
+			"title": "Spec Driven Development With LLMs",
+			"date": "2026-04-05",
+			"slug": "spec-driven-development-llms",
+			"tag": "project management"
+		},
+		{
+			"title": "Shape Up: A Practical Introduction",
+			"date": "2026-04-04",
+			"slug": "shape-up-practical-introduction",
+			"tag": "project management"
+		}
+	]
+}

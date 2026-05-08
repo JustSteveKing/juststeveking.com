@@ -1,0 +1,139 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { SiteHeader, SiteFooter, PageHeader } from '@/components';
+import { ResumeRole, ResumeSkillGroup, ResumeListItem } from '@/components/resume';
+import { work as pageMeta } from '@/config/pages';
+import { site } from '@/config';
+import {
+	basics,
+	workPageMeta,
+	currentRoles,
+	pastRoles,
+	skills,
+	publications,
+	awards,
+	certificates,
+	education,
+	formatDate,
+} from '@/data/cv';
+
+const workSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'ProfilePage',
+	name: `Work History — ${basics.name}`,
+	url: `${site.url}/work`,
+	description: pageMeta.description,
+	mainEntity: {
+		'@type': 'Person',
+		name: basics.name,
+		url: site.url,
+		jobTitle: basics.label,
+		description: basics.summary,
+		image: basics.image,
+		sameAs: basics.profiles?.map(p => p.url) ?? [],
+		worksFor: currentRoles().map(role => ({
+			'@type': 'Organization',
+			name: role.name,
+			url: role.url,
+		})),
+		hasCredential: [
+			...awards.map(a => ({
+				'@type': 'EducationalOccupationalCredential',
+				name: a.title,
+				recognizedBy: { '@type': 'Organization', name: a.awarder },
+			})),
+			...certificates.map(c => ({
+				'@type': 'EducationalOccupationalCredential',
+				name: c.name,
+				recognizedBy: { '@type': 'Organization', name: c.issuer },
+				url: c.url,
+			})),
+		],
+		knowsAbout: skills.flatMap(s => s.keywords ?? []),
+	},
+};
+---
+
+<Layout {...pageMeta} jsonLd={workSchema}>
+	<main id="main-content" class="landing">
+		<div class="landing-container">
+			<SiteHeader />
+
+			<PageHeader
+				prompt={workPageMeta.prompt}
+				title={workPageMeta.title}
+				subtitle={workPageMeta.subtitle}
+			/>
+
+			<section class="py-10 px-section border-b border-edge" aria-label="Professional summary">
+				<p class="text-[15px] leading-[1.75] fg max-w-[68ch]">{basics.summary}</p>
+			</section>
+
+			<section class="border-b border-edge" aria-label="Current roles">
+				<h2 class="px-section pt-6 font-mono text-[11px] font-semibold tracking-[0.1em] uppercase fg-accent">Current</h2>
+				{currentRoles().map(role => <ResumeRole role={role} current />)}
+			</section>
+
+			<section class="border-b border-edge" aria-label="Work history">
+				<h2 class="px-section pt-6 font-mono text-[11px] font-semibold tracking-[0.1em] uppercase fg-accent">Experience</h2>
+				{pastRoles().map(role => <ResumeRole role={role} />)}
+			</section>
+
+			<section class="border-b border-edge" aria-label="Skills">
+				<h2 class="px-section pt-6 font-mono text-[11px] font-semibold tracking-[0.1em] uppercase fg-accent">Skills</h2>
+				<div class="flex flex-col">
+					{skills.map(skill => <ResumeSkillGroup skill={skill} />)}
+				</div>
+			</section>
+
+			<section class="border-b border-edge" aria-label="Publications">
+				<h2 class="px-section pt-6 font-mono text-[11px] font-semibold tracking-[0.1em] uppercase fg-accent">Publications</h2>
+				<ul class="list-none p-0 m-0 flex flex-col" role="list">
+					{publications.map(pub => (
+						<ResumeListItem
+							title={pub.name}
+							meta={`${pub.publisher} · ${pub.releaseDate}`}
+							summary={pub.summary}
+							href={pub.url}
+						/>
+					))}
+				</ul>
+			</section>
+
+			<section class="border-b border-edge" aria-label="Awards and recognition">
+				<h2 class="px-section pt-6 font-mono text-[11px] font-semibold tracking-[0.1em] uppercase fg-accent">Recognition</h2>
+				<ul class="list-none p-0 m-0 flex flex-col" role="list">
+					{awards.map(award => (
+						<ResumeListItem
+							title={award.title}
+							meta={`${award.awarder} · ${formatDate(award.date)}`}
+							summary={award.summary}
+						/>
+					))}
+					{certificates.map(cert => (
+						<ResumeListItem
+							title={cert.name}
+							meta={`${cert.issuer} · ${formatDate(cert.date)}`}
+							href={cert.url}
+						/>
+					))}
+				</ul>
+			</section>
+
+			<section class="border-b border-edge last:border-b-0" aria-label="Education">
+				<h2 class="px-section pt-6 font-mono text-[11px] font-semibold tracking-[0.1em] uppercase fg-accent">Education</h2>
+				<ul class="list-none p-0 m-0 flex flex-col" role="list">
+					{education.map(edu => (
+						<ResumeListItem
+							title={edu.studyType}
+							meta={`${edu.institution} · ${formatDate(edu.startDate)}${edu.endDate ? ` – ${formatDate(edu.endDate)}` : ''}`}
+							summary={edu.description}
+						/>
+					))}
+				</ul>
+			</section>
+
+			<SiteFooter />
+		</div>
+	</main>
+</Layout>

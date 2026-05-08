@@ -1,0 +1,75 @@
+{
+	"meta": {
+		"title": "Packages",
+		"prompt": "$ gh repo list juststeveking",
+		"subtitle": "Open source PHP packages available on Packagist."
+	},
+	"packages": [
+		{
+			"name": "juststeveking/php-sdk",
+			"description": "A code-first approach to building SDKs in PHP with a focus on developer experience. Provides a clean, fluent interface for constructing API clients.",
+			"install": "composer require juststeveking/php-sdk",
+			"github": "https://github.com/JustSteveKing/php-sdk"
+		},
+		{
+			"name": "juststeveking/http-slim",
+			"description": "A slim PSR-compliant HTTP client to provide better interoperability across PHP projects and frameworks.",
+			"install": "composer require juststeveking/http-slim",
+			"github": "https://github.com/JustSteveKing/http-slim"
+		},
+		{
+			"name": "juststeveking/http-auth-strategies",
+			"description": "A simple PHP package for creating different HTTP authentication headers. Supports Bearer, Basic, Digest, and custom strategies.",
+			"install": "composer require juststeveking/http-auth-strategies",
+			"github": "https://github.com/JustSteveKing/http-auth-strategies"
+		},
+		{
+			"name": "juststeveking/http-helpers",
+			"description": "A collection of helpers to use when working with HTTP in PHP. Status codes, header builders, and response utilities.",
+			"install": "composer require juststeveking/http-helpers",
+			"github": "https://github.com/JustSteveKing/http-helpers"
+		},
+		{
+			"name": "juststeveking/cloudevents",
+			"description": "Cloud Events in PHP. A spec-compliant implementation of the CloudEvents standard for event-driven architectures.",
+			"install": "composer require juststeveking/cloudevents",
+			"github": "https://github.com/JustSteveKing/cloudevents"
+		},
+		{
+			"name": "juststeveking/fluent-validation",
+			"description": "A helper package that enables sensible defaults for Laravel validation rules with a fluent, readable interface.",
+			"install": "composer require juststeveking/fluent-validation",
+			"github": "https://github.com/JustSteveKing/fluent-validation"
+		},
+		{
+			"name": "juststeveking/feed-parser",
+			"description": "A simple feed parser for PHP with zero dependencies. Parses RSS and Atom feeds cleanly.",
+			"install": "composer require juststeveking/feed-parser",
+			"github": "https://github.com/JustSteveKing/feed-parser"
+		},
+		{
+			"name": "juststeveking/eloquent-log-driver",
+			"description": "A Laravel log driver for Eloquent. Persist application logs directly to your database using Laravel's logging pipeline.",
+			"install": "composer require juststeveking/eloquent-log-driver",
+			"github": "https://github.com/JustSteveKing/eloquent-log-driver"
+		},
+		{
+			"name": "juststeveking/companies-house-laravel",
+			"description": "A Laravel wrapper to query Companies House information and validate company numbers against the UK register.",
+			"install": "composer require juststeveking/companies-house-laravel",
+			"github": "https://github.com/JustSteveKing/companies-house-laravel"
+		},
+		{
+			"name": "juststeveking/config",
+			"description": "A simple dot notation configuration package for PHP. Access nested config values cleanly without array syntax.",
+			"install": "composer require juststeveking/config",
+			"github": "https://github.com/JustSteveKing/config"
+		},
+		{
+			"name": "juststeveking/gtin-php",
+			"description": "A PHP package for validating GTIN codes (Global Trade Item Numbers), including EAN-8, EAN-13, UPC-A, and GTIN-14.",
+			"install": "composer require juststeveking/gtin-php",
+			"github": "https://github.com/JustSteveKing/gtin-php"
+		}
+	]
+}

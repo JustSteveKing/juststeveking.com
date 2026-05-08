@@ -1,0 +1,49 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { SiteHeader, SiteFooter, PageHeader } from '@/components';
+import { uses as pageMeta } from '@/config/pages';
+import { site } from '@/config';
+import { uses, usesMeta } from '@/data/content';
+
+const usesSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebPage',
+	name: `Uses — ${site.author}`,
+	url: `${site.url}/uses`,
+	description: pageMeta.description,
+	author: { '@type': 'Person', name: site.author, url: site.url },
+	about: { '@type': 'Person', name: site.author },
+};
+---
+
+<Layout {...pageMeta} jsonLd={usesSchema}>
+	<main id="main-content" class="landing">
+		<div class="landing-container">
+			<SiteHeader />
+
+			<PageHeader
+				prompt={usesMeta.prompt}
+				title={usesMeta.title}
+				subtitle={usesMeta.subtitle}
+			/>
+
+			<section aria-label="Tools and setup">
+				{uses.map(cat => (
+					<div class="border-b border-edge">
+						<h2 class="px-section py-4 font-mono text-[12px] uppercase tracking-[0.08em] fg-weak bg-surface-weak border-b border-edge">{cat.title}</h2>
+						<ul class="list-none p-0 m-0" role="list" aria-label={`${cat.title} items`}>
+							{cat.items.map(item => (
+								<li class="flex items-baseline gap-6 px-section py-[14px] border-b border-edge-weak last:border-b-0">
+									<span class="text-sm font-medium fg-strong min-w-[180px] shrink-0">{item.name}</span>
+									<span class="text-sm fg leading-snug">{item.description}</span>
+								</li>
+							))}
+						</ul>
+					</div>
+				))}
+			</section>
+
+			<SiteFooter />
+		</div>
+	</main>
+</Layout>

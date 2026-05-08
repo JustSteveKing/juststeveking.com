@@ -1,0 +1,101 @@
+---
+import type { GetStaticPathsResult } from 'astro';
+import Layout from '@/layouts/Layout.astro';
+import { SiteHeader, SiteFooter, PageHeader, Breadcrumb } from '@/components';
+import { ArticleList, ArticlePagination } from '@/components/articles';
+import { site } from '@/config';
+import { getAllArticles, getAllCategories, slugify, PAGE_SIZE } from '@/utils/articles';
+
+export async function getStaticPaths(): Promise<GetStaticPathsResult> {
+	const categories = await getAllCategories();
+	const allArticles = await getAllArticles();
+	const paths = [];
+
+	for (const category of categories) {
+		const slug = slugify(category);
+		const articles = allArticles.filter(a => slugify(a.data.category) === slug);
+		const totalPages = Math.ceil(articles.length / PAGE_SIZE);
+
+		for (let pageNum = 2; pageNum <= totalPages; pageNum++) {
+			const start = (pageNum - 1) * PAGE_SIZE;
+			paths.push({
+				params: { category: slug, page: String(pageNum) },
+				props: {
+					categoryName: category,
+					articles: articles.slice(start, start + PAGE_SIZE),
+					currentPage: pageNum,
+					totalPages,
+					total: articles.length,
+				},
+			});
+		}
+	}
+
+	return paths;
+}
+
+interface Props {
+	categoryName: string;
+	articles: Awaited<ReturnType<typeof getAllArticles>>;
+	currentPage: number;
+	totalPages: number;
+	total: number;
+}
+
+const { categoryName, articles, currentPage, totalPages, total } = Astro.props;
+const { category } = Astro.params;
+
+const prevHref = currentPage === 2
+	? `/articles/category/${category}`
+	: `/articles/category/${category}/page/${currentPage - 1}`;
+const nextHref = currentPage < totalPages
+	? `/articles/category/${category}/page/${currentPage + 1}`
+	: null;
+
+const pageMeta = {
+	title: `${categoryName} — Articles — Page ${currentPage}`,
+	description: `Articles about ${categoryName} by ${site.author}.`,
+};
+
+const categorySchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Blog',
+	name: `${categoryName} articles by ${site.author} — Page ${currentPage}`,
+	url: `${site.url}/articles/category/${category}/page/${currentPage}`,
+	description: pageMeta.description,
+	author: { '@type': 'Person', name: site.author, url: site.url },
+};
+---
+
+<Layout {...pageMeta} jsonLd={categorySchema}>
+	<main id="main-content" class="landing">
+		<div class="landing-container">
+			<SiteHeader />
+
+			<PageHeader
+				prompt={`$ git log --grep='${categoryName}'`}
+				title={categoryName}
+				subtitle={`${total} article${total === 1 ? '' : 's'} in this category`}
+			/>
+
+			<Breadcrumb variant="filter" items={[
+				{ label: 'All articles', href: '/articles' },
+				{ label: categoryName, href: `/articles/category/${category}` },
+			]} />
+
+			<section aria-label={`Articles in ${categoryName}`}>
+				<ArticleList articles={articles} />
+			</section>
+
+			<ArticlePagination
+				currentPage={currentPage}
+				totalPages={totalPages}
+				total={total}
+				prevHref={prevHref}
+				nextHref={nextHref}
+			/>
+
+			<SiteFooter />
+		</div>
+	</main>
+</Layout>

@@ -1,0 +1,15 @@
+---
+interface Props {
+  class?: string;
+  interactive?: boolean;
+}
+
+const { class: className, interactive = false } = Astro.props;
+---
+
+<div class:list={[
+  className,
+  interactive && 'transition-transform duration-200 hover:-translate-y-0.5'
+]}>
+  <slot />
+</div>

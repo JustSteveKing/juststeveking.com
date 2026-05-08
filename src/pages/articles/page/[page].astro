@@ -1,0 +1,82 @@
+---
+import type { GetStaticPathsOptions } from 'astro';
+import Layout from '@/layouts/Layout.astro';
+import { SiteHeader, SiteFooter, PageHeader } from '@/components';
+import { ArticleList, ArticlePagination } from '@/components/articles';
+import { articles as pageMeta } from '@/config/pages';
+import { site } from '@/config';
+import { getAllArticles, PAGE_SIZE } from '@/utils/articles';
+
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+	const sorted = await getAllArticles();
+	const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
+
+	return Array.from({ length: totalPages - 1 }, (_, i) => {
+		const pageNum = i + 2;
+		const start = (pageNum - 1) * PAGE_SIZE;
+		return {
+			params: { page: String(pageNum) },
+			props: {
+				articles: sorted.slice(start, start + PAGE_SIZE),
+				currentPage: pageNum,
+				totalPages,
+				total: sorted.length,
+			},
+		};
+	});
+}
+
+interface Props {
+	articles: Awaited<ReturnType<typeof getAllArticles>>;
+	currentPage: number;
+	totalPages: number;
+	total: number;
+}
+
+const { articles, currentPage, totalPages, total } = Astro.props;
+
+const prevHref = currentPage === 2 ? '/articles' : `/articles/page/${currentPage - 1}`;
+const nextHref = currentPage < totalPages ? `/articles/page/${currentPage + 1}` : null;
+
+const articlesSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Blog',
+	name: `Articles by ${site.author} — Page ${currentPage}`,
+	url: `${site.url}/articles/page/${currentPage}`,
+	description: pageMeta.description,
+	author: { '@type': 'Person', name: site.author, url: site.url },
+};
+---
+
+<Layout
+	title={`${pageMeta.title} — Page ${currentPage}`}
+	description={pageMeta.description}
+	canonicalUrl={`${site.url}/articles/page/${currentPage}`}
+	jsonLd={articlesSchema}
+>
+	<main id="main-content" class="landing">
+		<div class="landing-container">
+			<SiteHeader />
+
+			<PageHeader
+				prompt="$ gh gist list"
+				title="Articles"
+				subtitle="Writing on PHP, Laravel, APIs, and engineering leadership."
+			/>
+
+			<section aria-label="Articles">
+				<ArticleList articles={articles} />
+			</section>
+
+			<ArticlePagination
+				currentPage={currentPage}
+				totalPages={totalPages}
+				total={total}
+				prevHref={prevHref}
+				nextHref={nextHref}
+			/>
+
+			<SiteFooter />
+		</div>
+	</main>
+</Layout>

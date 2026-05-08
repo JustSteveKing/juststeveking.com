@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:opentui.com)",
+      "Bash(bun run *)",
+      "Bash(gh api *)",
+      "Bash(bun dev *)",
+      "Bash(curl -s http://localhost:4321/)",
+      "Bash(kill %1)",
+      "WebFetch(domain:www.juststeveking.com)",
+      "Bash(npx astro *)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(p['slug'], '|', p.get\\('date',''\\)\\) for p in d['posts'][:5]]\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(p['name'], '|', p.get\\('install',''\\)\\) for p in d['packages'][:5]]\")",
+      "Bash(python3 *)",
+      "Bash(node -e \"const a=require\\('./package.json'\\); console.log\\(Object.keys\\({...a.dependencies,...a.devDependencies}\\).filter\\(k=>k.includes\\('astro'\\)||k.includes\\('mdx'\\)\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(bun add *)",
+      "Bash(node *)",
+      "Bash(mkdir -p /Users/steve/Developer/Websites/juststeveking-minimal/src/pages/articles/category/\\\\[category\\\\]/page)",
+      "Bash(mkdir -p /Users/steve/Developer/Websites/juststeveking-minimal/src/pages/articles/tag/\\\\[tag\\\\]/page)",
+      "Bash(grep -v \"^$\")",
+      "Bash(xargs cat)",
+      "Bash(wait)"
+    ]
+  }
+}

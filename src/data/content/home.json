@@ -1,0 +1,61 @@
+{
+	"hero": {
+		"heading": "I help SaaS teams fix slow, unreliable APIs without rewriting everything.",
+		"subheading": "Improve performance, reduce incidents, and ship faster — with a practical approach to API diagnosis, stabilisation, and technical decision-making.",
+		"cta": {
+			"label": "See the services",
+			"href": "/services"
+		}
+	},
+	"packages": [
+		{ "tab": "php-sdk", "cmd": "composer require", "pkg": "juststeveking/php-sdk" },
+		{ "tab": "http-slim", "cmd": "composer require", "pkg": "juststeveking/http-slim" },
+		{ "tab": "github", "cmd": "gh follow", "pkg": "JustSteveKing" }
+	],
+	"what": {
+		"heading": "Your API is probably slowing the team down in more ways than one.",
+		"body": "Latency spikes, brittle integrations, inconsistent behaviour across environments — these problems compound. The team stops trusting the system. Debugging slows. Confidence in releases erodes. I work with SaaS teams to diagnose the actual failure points, fix the riskiest ones first, and leave behind standards the team can own permanently."
+	},
+	"features": [
+		{
+			"type": "diagnose",
+			"title": "Diagnose",
+			"description": "Map the hotspots, instrumentation gaps, and reliability failures that are actually costing you time."
+		},
+		{
+			"type": "stabilise",
+			"title": "Stabilise",
+			"description": "Fix the riskiest endpoints, contracts, and operational bottlenecks first so the team can breathe again."
+		},
+		{
+			"type": "scale",
+			"title": "Scale",
+			"description": "Leave behind patterns, guardrails, and decision-making habits the team can keep using without me in the room."
+		},
+		{
+			"type": "audit",
+			"title": "API Audit",
+			"description": "A focused investigation into performance, reliability, and design issues slowing your team down."
+		},
+		{
+			"type": "advisory",
+			"title": "Ongoing Advisory",
+			"description": "Strategic technical support for leaders and senior engineers making difficult API and architecture decisions."
+		},
+		{
+			"type": "oss",
+			"title": "Open Source",
+			"description": "PHP packages for SDK building, HTTP clients, authentication strategies, and API tooling."
+		}
+	],
+	"tuiVisual": {
+		"command": "php artisan api:diagnose",
+		"scanning": "Scanning API surface...",
+		"results": [
+			{ "method": "GET", "path": "/api/v1/leads", "detail": "842ms avg", "status": "slow" },
+			{ "method": "POST", "path": "/api/v1/webhooks", "detail": "12% errors", "status": "flaky" },
+			{ "method": "GET", "path": "/api/v1/reports", "detail": "94 queries", "status": "N+1" }
+		],
+		"summary": "3 endpoints need attention"
+	}
+}

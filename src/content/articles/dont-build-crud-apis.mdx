@@ -1,0 +1,376 @@
+---
+title: "When CRUD Isn't Enough: How Real APIs Outgrow Their Design"
+description: "Most Laravel APIs start as clean CRUD systems. This article walks through why that breaks down, and how an action-based design fixes the mess."
+category: Laravel
+pubDate: 2026-05-06
+tags: ["laravel", "api-design", "rest-api", "backend-development", "architecture"]
+---
+
+Most Laravel APIs start the same way. You have a resource. You need to create, read, update, and delete it. You reach for a resource controller, wire up the routes, and you have something working in under an hour. It feels clean. It feels right.
+
+And for a while, it is.
+
+The problem is that CRUD maps to your database, not to your business. And as soon as real-world behaviour creeps in — and it always does — the cracks start to show. This article walks through exactly how that happens, using a food ordering API as the example, and what you can do about it when it does.
+
+---
+
+## The Comfortable Start
+
+Let us build something simple. A restaurant orders API. Customers place orders, a kitchen prepares them, and staff mark them complete. That is three or four resources, a handful of routes, and a straightforward Laravel setup.
+
+Here is how most developers start:
+
+```php
+Route::apiResource('orders', OrderController::class);
+```
+
+Which gives you:
+
+```
+GET    /orders
+POST   /orders
+GET    /orders/{order}
+PATCH  /orders/{order}
+DELETE /orders/{order}
+```
+
+The controller is just as familiar:
+
+```php
+final class OrderController extends Controller
+{
+    public function store(StoreOrderRequest $request): JsonResponse
+    {
+        $order = Order::create($request->payload()->toArray());
+
+        return response()->json(['data' => $order], 201);
+    }
+
+    public function update(UpdateOrderRequest $request, Order $order): JsonResponse
+    {
+        $order->update($request->validated());
+
+        return response()->json(['data' => $order]);
+    }
+}
+```
+
+This looks fine. And it usually is, at first. The model has a status field, the request validates the incoming data, and everything works exactly the way the framework expects it to.
+
+The order starts as `pending`. That is our baseline.
+
+---
+
+## The First Crack
+
+A few days later, the team adds a requirement: when the kitchen picks up an order, they need to mark it as started. Simple enough, right?
+
+The CRUD instinct kicks in immediately:
+
+```
+PATCH /orders/1
+{ "status": "cooking" }
+```
+
+You add `cooking` to the validation rules, and you ship it. It works. But start asking questions and things get uncomfortable fast.
+
+Who started it? The request does not carry that information. Your `updated_at` timestamp changes, but you have no record of which staff member initiated cooking. Was it the right person? You do not know.
+
+Can it happen twice? Right now, nothing stops a second `PATCH` from setting the status back to `cooking` even if the order is already halfway done. The endpoint accepts any valid status, anytime.
+
+What else should happen when cooking starts? Maybe you need to notify the front of house. Maybe the order timer starts. Maybe inventory gets reserved. Where does that logic live? Buried in the controller? In an observer that nobody remembers exists?
+
+The endpoint does not care. It just sets a field. The intent — "a kitchen worker started cooking this order" — is completely invisible to the system.
+
+---
+
+## The Slow Collapse
+
+Here is where it gets relatable. You ship the cooking status. A week later, new requirements come in.
+
+The kitchen needs to mark an order as ready for collection. A staff member needs to mark it as completed when the customer picks it up. And orders can now be cancelled, with a reason, and only before they are cooked.
+
+Every single one of these gets funnelled into the same endpoint:
+
+```
+PATCH /orders/1
+{ "status": "ready" }
+
+PATCH /orders/1
+{ "status": "completed" }
+
+PATCH /orders/1
+{ "status": "cancelled", "reason": "Customer left" }
+```
+
+Your validation rules are growing:
+
+```php
+public function rules(): array
+{
+    return [
+        'status' => ['required', 'in:pending,cooking,ready,completed,cancelled'],
+        'reason' => ['nullable', 'string', 'required_if:status,cancelled'],
+    ];
+}
+```
+
+And your controller update method now looks like this:
+
+```php
+public function update(UpdateOrderRequest $request, Order $order): JsonResponse
+{
+    if ($request->input('status') === 'cancelled') {
+        // Can we even cancel at this point?
+        // Where does that check live?
+        // What about the reason?
+    }
+
+    if ($request->input('status') === 'completed') {
+        // Should we notify someone?
+        // Is the order actually ready?
+    }
+
+    $order->update($request->validated());
+
+    return response()->json(['data' => $order]);
+}
+```
+
+You are writing a state machine inside an update method. The logic for each transition is tangled together, sharing a single method with no clear ownership. Side effects are scattered. The validation rules know nothing about whether the transition is even valid given the current state.
+
+And debugging? When a bug gets reported about an order being cancelled at the wrong time, you are hunting through a generic update endpoint, trying to figure out which codepath ran.
+
+---
+
+## The Breaking Point
+
+At some point, you have to say it clearly: **"update" is not describing what is happening anymore.**
+
+The word "update" implies: I am changing some data. But what is actually happening is far more specific. A kitchen worker is starting to prepare a meal. A cashier is completing a transaction. A customer is cancelling their own order before it is too late.
+
+These are not data changes. They are business events. They have actors, preconditions, consequences, and meaning. The word "update" erases all of that.
+
+This is the pivot moment. The CRUD model has stopped describing your system and started obscuring it.
+
+---
+
+## The Refactor: Think in Actions, Not State
+
+The shift you need to make is conceptual before it is technical. Stop asking "what field changed?" and start asking "what happened?"
+
+When something happens in a business, it has a name. A kitchen worker does not "update the status field to cooking". They start cooking the order. A cashier does not "update the status field to completed". They complete the order.
+
+Your API should say the same thing.
+
+Here is the new route structure:
+
+```php
+// Create an order
+Route::post('/orders', CreateOrderController::class);
+
+// Actions on an existing order
+Route::post('/orders/{order}/start-cooking', StartCookingController::class);
+Route::post('/orders/{order}/mark-ready', MarkReadyController::class);
+Route::post('/orders/{order}/complete', CompleteOrderController::class);
+Route::post('/orders/{order}/cancel', CancelOrderController::class);
+```
+
+Each route has a single, clear purpose. The URL itself tells you what the system does. No ambiguity, no interpretation required.
+
+---
+
+## The Code Structure
+
+Let us walk through one of these concretely. The `start-cooking` action.
+
+First, a Form Request scoped entirely to this one transition:
+
+```php
+final class StartCookingRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return $this->order->status === OrderStatus::Pending;
+    }
+
+    public function rules(): array
+    {
+        return [];
+    }
+}
+```
+
+Notice that the authorization check lives here, not in the controller, and not in a shared policy that has to account for every possible status transition. This request knows exactly what it is for. If the order is not pending, the action is not allowed, and that fact is declared right here.
+
+Next, an Action class that handles the business logic:
+
+```php
+final readonly class StartCooking
+{
+    public function execute(Order $order): Order
+    {
+        $order->update([
+            'status' => OrderStatus::Cooking,
+            'cooking_started_at' => now(),
+            'cooking_started_by' => auth()->id(),
+        ]);
+
+        OrderStartedCooking::dispatch($order);
+
+        return $order->fresh();
+    }
+}
+```
+
+Everything that needs to happen when cooking starts is in one place. The timestamp is recorded. The staff member is tracked. The event fires. There is no conditional logic, no checking what status we are transitioning from, no guessing about side effects.
+
+And the controller is almost trivially simple:
+
+```php
+final readonly class StartCookingController
+{
+    public function __construct(
+        private StartCooking $startCooking,
+    ) {}
+
+    public function __invoke(StartCookingRequest $request, Order $order): JsonResponse
+    {
+        $order = $this->startCooking->execute($order);
+
+        return response()->json(['data' => $order]);
+    }
+}
+```
+
+One request. One action. One response. The controller has no branching logic because it does not need any. This endpoint does exactly one thing.
+
+Now do the same for cancellation:
+
+```php
+final class CancelOrderRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        $cancelableStatuses = [OrderStatus::Pending, OrderStatus::Cooking];
+
+        return in_array($this->order->status, $cancelableStatuses);
+    }
+
+    public function rules(): array
+    {
+        return [
+            'reason' => ['required', 'string', 'max:500'],
+        ];
+    }
+
+    public function payload(): CancelOrderPayload
+    {
+        return new CancelOrderPayload(
+            reason: $this->input('reason'),
+        );
+    }
+}
+```
+
+The cancellation request knows its own preconditions. It validates only what cancellation needs. It builds its own payload. Compare this to the CRUD version where `reason` was a nullable field buried in a general update request with a `required_if` rule that had to be mentally parsed every time someone read the code.
+
+---
+
+## Why This Is Easier to Reason About
+
+The CRUD version has one endpoint that handles every state transition. That means when something goes wrong, you have to:
+
+1. Find the update endpoint
+2. Figure out which branch of logic ran
+3. Check what state the model was in at the time
+4. Trace through any observers or event listeners that might have fired
+5. Work out what the original request payload contained
+
+The action-based version has a separate endpoint for each transition. When something goes wrong with a cancellation, you go to `CancelOrderController`. You read `CancelOrderRequest`. You look at `CancelOrder`. The scope is small, the logic is isolated, and the full picture is visible without mental gymnastics.
+
+This compounds over time. As your system grows, the action-based approach gives you a growing list of precisely named, independently testable units. The CRUD approach gives you an increasingly large update method holding together a fragile collection of conditions.
+
+---
+
+## A Direct Comparison
+
+Before the refactor, your update tests look like this:
+
+```php
+it('cancels an order', function () {
+    $order = Order::factory()->create(['status' => 'pending']);
+
+    patchJson("/orders/{$order->id}", [
+        'status' => 'cancelled',
+        'reason' => 'Customer request',
+    ])->assertOk();
+
+    expect($order->fresh()->status)->toBe('cancelled');
+});
+
+it('does not cancel a completed order', function () {
+    $order = Order::factory()->create(['status' => 'completed']);
+
+    patchJson("/orders/{$order->id}", [
+        'status' => 'cancelled',
+        'reason' => 'Customer request',
+    ])->assertForbidden();
+});
+```
+
+These tests work, but they are testing a general endpoint and poking at specific cases through request data. Every test for every transition goes through the same route.
+
+After the refactor:
+
+```php
+it('cancels a pending order', function () {
+    $order = Order::factory()->pending()->create();
+
+    postJson("/orders/{$order->id}/cancel", [
+        'reason' => 'Customer request',
+    ])->assertOk();
+
+    expect($order->fresh()->status)->toBe(OrderStatus::Cancelled);
+});
+
+it('cannot cancel a completed order', function () {
+    $order = Order::factory()->completed()->create();
+
+    postJson("/orders/{$order->id}/cancel", [
+        'reason' => 'Customer request',
+    ])->assertForbidden();
+});
+```
+
+The tests read like plain English descriptions of business rules. You can hand this file to a product manager and they can verify the behaviour without understanding PHP.
+
+---
+
+## You Do Not Need to Abandon CRUD
+
+This is worth saying clearly, especially if you are earlier in your career: CRUD is not wrong. It is just incomplete for systems with real behaviour.
+
+If you are building a settings panel where users update their name and email address, a CRUD endpoint is exactly the right tool. If you are managing a lookup table of product categories, standard resource routes are fine. When behaviour is minimal and state changes have no consequences, CRUD is clean and appropriate.
+
+The signal to watch for is when your update endpoint starts accumulating conditional logic. When validation rules start using `required_if` to account for different types of updates. When you find yourself writing comments like "only admins can set this field" inside a generic update method. When side effects start hiding inside observers because the controller has become too tangled to extend.
+
+That is the moment to reach for something more expressive.
+
+---
+
+## The Mindset Shift
+
+The deeper change here is not about route naming conventions. It is about how you think about your API's job.
+
+CRUD-thinking asks: what data needs to change?
+
+Action-thinking asks: what happened, and what are the consequences?
+
+The second framing maps directly to how your business actually works. Kitchen workers start cooking. Orders get completed. Customers cancel. These events have names, actors, preconditions, and consequences. Your API should speak in those terms.
+
+When you model your API around events and actions rather than raw state transitions, you get something that is easier to test, easier to debug, easier to extend, and far more honest about what the system actually does.
+
+CRUD is not wrong. It is just the beginning.
+
+The moment your API starts modelling real behaviour, you need something more expressive.

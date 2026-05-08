@@ -1,0 +1,87 @@
+---
+import type { GetStaticPathsResult } from 'astro';
+import Layout from '@/layouts/Layout.astro';
+import { SiteHeader, SiteFooter, PageHeader, Breadcrumb } from '@/components';
+import { ArticleList, ArticlePagination } from '@/components/articles';
+import { site } from '@/config';
+import { getAllArticles, getAllCategories, slugify, PAGE_SIZE } from '@/utils/articles';
+
+export async function getStaticPaths(): Promise<GetStaticPathsResult> {
+	const categories = await getAllCategories();
+	const allArticles = await getAllArticles();
+
+	return categories.map(category => {
+		const slug = slugify(category);
+		const articles = allArticles.filter(a => slugify(a.data.category) === slug);
+		const totalPages = Math.ceil(articles.length / PAGE_SIZE);
+		return {
+			params: { category: slug },
+			props: {
+				categoryName: category,
+				articles: articles.slice(0, PAGE_SIZE),
+				totalPages,
+				total: articles.length,
+			},
+		};
+	});
+}
+
+interface Props {
+	categoryName: string;
+	articles: Awaited<ReturnType<typeof getAllArticles>>;
+	totalPages: number;
+	total: number;
+}
+
+const { categoryName, articles, totalPages, total } = Astro.props;
+const { category } = Astro.params;
+
+const nextHref = totalPages > 1 ? `/articles/category/${category}/page/2` : null;
+
+const pageMeta = {
+	title: `${categoryName} — Articles`,
+	description: `Articles about ${categoryName} by ${site.author}.`,
+};
+
+const categorySchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Blog',
+	name: `${categoryName} articles by ${site.author}`,
+	url: `${site.url}/articles/category/${category}`,
+	description: pageMeta.description,
+	author: { '@type': 'Person', name: site.author, url: site.url },
+};
+---
+
+<Layout {...pageMeta} jsonLd={categorySchema}>
+	<main id="main-content" class="landing">
+		<div class="landing-container">
+			<SiteHeader />
+
+			<PageHeader
+				prompt={`$ git log --grep='${categoryName}'`}
+				title={categoryName}
+				subtitle={`${total} article${total === 1 ? '' : 's'} in this category`}
+			/>
+
+			<Breadcrumb variant="filter" items={[
+				{ label: 'All articles', href: '/articles' },
+				{ label: categoryName },
+			]} />
+
+			<section aria-label={`Articles in ${categoryName}`}>
+				<ArticleList articles={articles} />
+			</section>
+
+			<ArticlePagination
+				currentPage={1}
+				totalPages={totalPages}
+				total={total}
+				prevHref={null}
+				nextHref={nextHref}
+			/>
+
+			<SiteFooter />
+		</div>
+	</main>
+</Layout>

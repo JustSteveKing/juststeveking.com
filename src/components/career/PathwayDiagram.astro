@@ -1,0 +1,88 @@
+<div class="relative overflow-hidden rounded-2xl border border-edge bg-surface p-6">
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div class="absolute w-64 h-64 rounded-full blur-[48px] -top-24 -left-24" style="background: color-mix(in oklab, var(--color-track-ic) 10%, transparent);"></div>
+    <div class="absolute w-64 h-64 rounded-full blur-[48px] -bottom-24 -right-24" style="background: color-mix(in oklab, var(--color-track-mgr) 10%, transparent);"></div>
+  </div>
+
+  <p class="relative font-mono text-[0.6rem] uppercase tracking-[0.12em] fg-weak m-0 mb-6" aria-hidden="true">Progression map</p>
+
+  <div class="relative grid gap-6 md:grid-cols-2">
+    <div
+      class="pathway-track--ic relative flex flex-col rounded-xl p-5 transition-colors"
+      style="border: 1px solid color-mix(in oklab, var(--color-track-ic) 20%, transparent); background: color-mix(in oklab, var(--color-track-ic) 5%, transparent);"
+    >
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full shrink-0" style="background-color: var(--color-track-ic);"></span>
+        <p class="font-mono text-[0.7rem] font-bold uppercase tracking-[0.08em] m-0" style="color: var(--color-track-ic);">Individual Contributor</p>
+      </div>
+
+      <div class="mt-4 flex flex-wrap items-center gap-2">
+        {['SE1', 'SE2', 'SE3', 'SE4', 'SE5', 'SE6'].map((step, i) => (
+          <>
+            <div
+              class="rounded-md px-2 py-1 font-mono text-xs font-semibold bg-surface"
+              style="border: 1px solid color-mix(in oklab, var(--color-track-ic) 20%, transparent); color: var(--color-track-ic);"
+            >{step}</div>
+            {i < 5 && (
+              <span class="text-sm" style="color: color-mix(in oklab, var(--color-track-ic) 40%, transparent);" aria-hidden="true">→</span>
+            )}
+          </>
+        ))}
+      </div>
+
+      <p class="mt-4 text-sm leading-relaxed fg-weak">
+        Impact grows through <strong class="font-semibold fg">technical depth</strong>, execution quality, and broader architectural influence.
+      </p>
+    </div>
+
+    <div
+      class="pathway-track--mgr relative flex flex-col rounded-xl p-5 transition-colors"
+      style="border: 1px solid color-mix(in oklab, var(--color-track-mgr) 20%, transparent); background: color-mix(in oklab, var(--color-track-mgr) 5%, transparent);"
+    >
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full shrink-0" style="background-color: var(--color-track-mgr);"></span>
+        <p class="font-mono text-[0.7rem] font-bold uppercase tracking-[0.08em] m-0" style="color: var(--color-track-mgr);">People Manager</p>
+      </div>
+
+      <div class="mt-4 flex flex-wrap items-center gap-2">
+        <div
+          class="rounded-md px-2 py-1 font-mono text-xs font-semibold bg-surface"
+          style="border: 1px solid color-mix(in oklab, var(--color-track-mgr) 20%, transparent); color: var(--color-track-mgr);"
+        >EM</div>
+        <span class="text-sm" style="color: color-mix(in oklab, var(--color-track-mgr) 40%, transparent);" aria-hidden="true">→</span>
+        <div
+          class="rounded-md px-2 py-1 font-mono text-xs font-semibold bg-surface"
+          style="border: 1px solid color-mix(in oklab, var(--color-track-mgr) 20%, transparent); color: var(--color-track-mgr);"
+        >Sr EM</div>
+      </div>
+
+      <p class="mt-4 text-sm leading-relaxed fg-weak">
+        Impact grows through <strong class="font-semibold fg">multiplying effectiveness</strong>, developing leaders, and organizational health.
+      </p>
+    </div>
+  </div>
+
+  <div class="relative mt-6 flex items-start gap-3 rounded-xl border border-edge bg-surface-weak p-4">
+    <div
+      class="mt-0.5 flex items-center justify-center w-5 h-5 rounded-full shrink-0"
+      style="background: color-mix(in oklab, var(--color-track-ic) 10%, transparent); color: var(--color-track-ic);"
+      aria-hidden="true"
+    >
+      <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+      </svg>
+    </div>
+    <p class="text-[0.8rem] leading-relaxed fg-weak m-0">
+      <strong class="font-semibold fg">Tech Lead On-ramp:</strong> After SE4, engineers can trial the manager track with a TL role before making a full commitment. It's a two-way door.
+    </p>
+  </div>
+</div>
+
+<style>
+  .pathway-track--ic:hover {
+    border-color: color-mix(in oklab, var(--color-track-ic) 40%, transparent);
+  }
+  .pathway-track--mgr:hover {
+    border-color: color-mix(in oklab, var(--color-track-mgr) 40%, transparent);
+  }
+</style>

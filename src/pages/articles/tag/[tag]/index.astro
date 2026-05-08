@@ -1,0 +1,87 @@
+---
+import type { GetStaticPathsResult } from 'astro';
+import Layout from '@/layouts/Layout.astro';
+import { SiteHeader, SiteFooter, PageHeader, Breadcrumb } from '@/components';
+import { ArticleList, ArticlePagination } from '@/components/articles';
+import { site } from '@/config';
+import { getAllArticles, getAllTags, slugify, PAGE_SIZE } from '@/utils/articles';
+
+export async function getStaticPaths(): Promise<GetStaticPathsResult> {
+	const tags = await getAllTags();
+	const allArticles = await getAllArticles();
+
+	return tags.map(tag => {
+		const slug = slugify(tag);
+		const articles = allArticles.filter(a => a.data.tags.some(t => slugify(t) === slug));
+		const totalPages = Math.ceil(articles.length / PAGE_SIZE);
+		return {
+			params: { tag: slug },
+			props: {
+				tagName: tag,
+				articles: articles.slice(0, PAGE_SIZE),
+				totalPages,
+				total: articles.length,
+			},
+		};
+	});
+}
+
+interface Props {
+	tagName: string;
+	articles: Awaited<ReturnType<typeof getAllArticles>>;
+	totalPages: number;
+	total: number;
+}
+
+const { tagName, articles, totalPages, total } = Astro.props;
+const { tag } = Astro.params;
+
+const nextHref = totalPages > 1 ? `/articles/tag/${tag}/page/2` : null;
+
+const pageMeta = {
+	title: `#${tagName} — Articles`,
+	description: `Articles tagged "${tagName}" by ${site.author}.`,
+};
+
+const tagSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Blog',
+	name: `#${tagName} articles by ${site.author}`,
+	url: `${site.url}/articles/tag/${tag}`,
+	description: pageMeta.description,
+	author: { '@type': 'Person', name: site.author, url: site.url },
+};
+---
+
+<Layout {...pageMeta} jsonLd={tagSchema}>
+	<main id="main-content" class="landing">
+		<div class="landing-container">
+			<SiteHeader />
+
+			<PageHeader
+				prompt={`$ git tag -l '${tagName}'`}
+				title={`#${tagName}`}
+				subtitle={`${total} article${total === 1 ? '' : 's'} with this tag`}
+			/>
+
+			<Breadcrumb variant="filter" items={[
+				{ label: 'All articles', href: '/articles' },
+				{ label: `#${tagName}` },
+			]} />
+
+			<section aria-label={`Articles tagged ${tagName}`}>
+				<ArticleList articles={articles} />
+			</section>
+
+			<ArticlePagination
+				currentPage={1}
+				totalPages={totalPages}
+				total={total}
+				prevHref={null}
+				nextHref={nextHref}
+			/>
+
+			<SiteFooter />
+		</div>
+	</main>
+</Layout>
