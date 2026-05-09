@@ -36,6 +36,7 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "gray-matter": "^4.0.3"
+    "gray-matter": "^4.0.3",
+    "wrangler": "^4.90.0"
   }
 }
