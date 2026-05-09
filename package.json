@@ -21,6 +21,7 @@
     "@crustjs/core": "^0.0.16",
     "@crustjs/plugins": "^0.0.22",
     "@crustjs/prompts": "^0.0.13",
+    "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.2.4",
     "@xt0rted/expressive-code-file-icons": "^1.0.0",
     "ajv": "^8.20.0",
