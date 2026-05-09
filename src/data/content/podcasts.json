@@ -1,0 +1,7 @@
+{
+	"meta": {
+		"title": "Podcasts",
+		"prompt": "$ podcast --guest juststeveking",
+		"subtitle": "podcast appearances on API design, Laravel, engineering leadership, and developer relations."
+	}
+}

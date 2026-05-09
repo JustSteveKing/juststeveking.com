@@ -1,6 +1,7 @@
 ---
 import { navLinks } from "@/config";
 import Search from './Search.svelte';
+import Logo from "./Logo.astro";
 
 const pathname = Astro.url.pathname;
 
@@ -13,13 +14,7 @@ function isCurrent(href: string): boolean {
 
 <header class="landing-header" role="banner">
 	<a href="/" class="landing-logo" aria-label="juststeveking — home">
-		<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-			<rect x="2" y="3" width="20" height="18" fill="currentColor"></rect>
-			<rect x="5" y="7" width="2" height="10" fill="hsl(0, 20%, 99%)"></rect>
-			<rect x="9" y="7" width="8" height="2" fill="hsl(0, 20%, 99%)"></rect>
-			<rect x="9" y="11" width="6" height="2" fill="hsl(0, 20%, 99%)"></rect>
-		</svg>
-		<span>juststeveking</span>
+		<Logo class="size-8 text-text-strong" />
 	</a>
 
 	<button

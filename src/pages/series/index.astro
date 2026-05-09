@@ -1,0 +1,100 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '@/layouts/Layout.astro';
+import { SiteHeader, SiteFooter, PageHeader } from '@/components';
+import { site } from '@/config';
+import { series as pageMeta } from '@/config/pages';
+import { PAGE_SIZE } from '@/utils/articles';
+
+const allSeries = await getCollection('series');
+const allArticles = await getCollection('articles');
+const allVideos = await getCollection('videos');
+
+// Enrich series with item counts
+const enrichedSeries = allSeries.map(s => {
+	const articleCount = allArticles.filter(a => a.data.series?.id === s.id).length;
+	const videoCount = allVideos.filter(v => v.data.series?.id === s.id).length;
+	return {
+		...s,
+		count: articleCount + videoCount,
+	};
+}).sort((a, b) => b.count - a.count);
+
+const totalPages = Math.ceil(enrichedSeries.length / PAGE_SIZE);
+const items = enrichedSeries.slice(0, PAGE_SIZE);
+
+const seriesSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'ItemList',
+	name: `Content Series by ${site.author}`,
+	url: `${site.url}/series`,
+	description: pageMeta.description,
+	numberOfItems: enrichedSeries.length,
+};
+---
+
+<Layout {...pageMeta} jsonLd={seriesSchema}>
+	<main id="main-content" class="landing">
+		<div class="landing-container">
+			<SiteHeader />
+
+			<PageHeader
+				prompt="$ ls series/"
+				title="Series"
+				subtitle={`Deep dives into PHP, Laravel, and API design. ${enrichedSeries.length} content series available.`}
+			/>
+
+			<section aria-label="Series" class="px-section py-10 border-b border-edge">
+				<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+					{items.map(series => (
+						<article class="flex flex-col rounded-2xl border border-edge bg-surface overflow-hidden group">
+							<div class="flex flex-col flex-1 p-6 gap-3">
+								<div class="flex items-center justify-between gap-2">
+									<span class="font-mono text-[10px] uppercase tracking-[0.08em] fg-accent font-semibold">
+										Series
+									</span>
+									<span class="font-mono text-[11px] fg-weak">
+										{series.count} items
+									</span>
+								</div>
+								<h2 class="text-[18px] font-bold fg-strong leading-tight group-hover:fg-accent transition-colors">
+									<a href={`/series/${series.id}`} class="no-underline">
+										{series.data.title}
+									</a>
+								</h2>
+								{series.data.description && (
+									<p class="text-[14px] fg leading-relaxed line-clamp-3">
+										{series.data.description}
+									</p>
+								)}
+								<div class="mt-auto pt-4 border-t border-edge-weak">
+									<a 
+										href={`/series/${series.id}`} 
+										class="inline-flex items-center gap-1.5 font-mono text-[12px] font-semibold fg-accent no-underline hover:underline"
+									>
+										Explore series 
+										<span aria-hidden="true">→</span>
+									</a>
+								</div>
+							</div>
+						</article>
+					))}
+				</div>
+			</section>
+
+			{totalPages > 1 && (
+				<nav aria-label="Series pagination" class="flex items-center justify-between gap-4 px-section py-5 border-b border-edge flex-wrap">
+					<span class="font-mono text-[12px] fg-weak">Page 1 of {totalPages}</span>
+					<a
+						href="/series/page/2"
+						class="font-mono text-[12px] fg-accent no-underline hover:underline"
+					>
+						Next page →
+					</a>
+				</nav>
+			)}
+
+			<SiteFooter />
+		</div>
+	</main>
+</Layout>

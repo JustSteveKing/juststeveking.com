@@ -7,10 +7,10 @@ link: "https://github.com/JustSteveKing/scenario"
 tech: ["PHP"]
 featured: false
 downloads: 2
-monthlyDownloads: 1
+monthlyDownloads: 0
 stars: 4
 version: "dev-main"
-updatedAt: "2026-05-04"
+updatedAt: "2026-05-09"
 ---
 
 # Scenario: Type-Safe Business Orchestration

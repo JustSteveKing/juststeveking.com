@@ -3,6 +3,7 @@ import type { FooterGroup, NavLink } from '@/types';
 export const navLinks: NavLink[] = [
 	{ label: 'GitHub', href: 'https://github.com/JustSteveKing', external: true },
 	{ label: 'Articles', href: '/articles' },
+	{ label: 'Series', href: '/series' },
 	{ label: 'Packages', href: '/projects' },
 	{ label: 'Services', href: '/services' },
 	{ label: 'About', href: '/about' },
@@ -13,6 +14,7 @@ export const footerGroups: FooterGroup[] = [
 		label: 'Writing',
 		links: [
 			{ label: 'Articles', href: '/articles' },
+			{ label: 'Series', href: '/series' },
 			{ label: 'Reviews', href: '/reviews' },
 			{ label: 'API Guides', href: '/api-guides' },
 			{ label: 'Podcasts', href: '/podcasts' },

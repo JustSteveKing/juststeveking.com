@@ -57,5 +57,45 @@
 			{ "method": "GET", "path": "/api/v1/reports", "detail": "94 queries", "status": "N+1" }
 		],
 		"summary": "3 endpoints need attention"
+	},
+	"stats": {
+		"tagline": "Why teams trust me",
+		"items": [
+			{ "value": "15+", "label": "years solving messy software problems", "detail": "From frontline systems thinking to leading engineering teams under real delivery pressure." },
+			{ "value": "50K+", "label": "developers reached through articles and education", "detail": "Authority built on practical writing, talks, and hands-on delivery work." },
+			{ "value": "30+", "label": "talks and workshops delivered internationally", "detail": "Helping teams make better API, architecture, and enablement decisions." }
+		]
+	},
+	"problems": {
+		"title": "Your API is probably slowing the team down in more ways than one.",
+		"description": "When the platform is unreliable, the damage is not just technical. Engineers lose confidence, product work slows down, and delivery becomes dominated by caution and context switching.",
+		"items": [
+			{ "prompt": "$ tail -f /var/log/incidents", "title": "You're firefighting instead of building", "desc": "Latency spikes, brittle integrations, and unclear ownership keep dragging engineers back into incident mode." },
+			{ "prompt": "$ git log --grep=\"hotfix\"", "title": "Your team doesn't trust the system", "desc": "Every release feels risky because API behaviour is inconsistent, debugging is slow, and the root causes stay murky." },
+			{ "prompt": "$ estimate --scope=rewrite", "title": "The rewrite feels bigger than the fix", "desc": "You know the platform needs attention, but replacing everything would slow delivery even more." }
+		]
+	},
+	"framework": {
+		"tagline": "How I work",
+		"title": "An API Stability Framework built around diagnose, stabilise, and scale.",
+		"description": "The goal is not consulting theatre. Get clear on what is actually broken, fix the highest-leverage issues first, and leave the team with better habits than it had before.",
+		"items": [
+			{ "step": "01", "title": "Diagnose", "desc": "Map the hotspots, instrumentation gaps, and reliability failures that are actually costing you time." },
+			{ "step": "02", "title": "Stabilise", "desc": "Fix the riskiest endpoints, contracts, and operational bottlenecks first so the team can breathe again." },
+			{ "step": "03", "title": "Scale", "desc": "Leave behind patterns, guardrails, and decision-making habits the team can keep using without me in the room." }
+		]
+	},
+	"servicesPreview": {
+		"tagline": "Three ways to work together",
+		"title": "Without bloated consulting packages.",
+		"items": [
+			{ "prompt": "$ analyze --scope=full", "title": "API Audit", "desc": "A focused investigation into the performance, reliability, and design issues slowing your team down.", "benefit": "Clear action plan, prioritised fixes, faster route to stability." },
+			{ "prompt": "$ fix --priority=high", "title": "Performance & Reliability Fixes", "desc": "Hands-on work to remove bottlenecks, reduce avoidable incidents, and make delivery feel calmer.", "benefit": "Meaningful improvements without a costly full rewrite." },
+			{ "prompt": "$ gh team --advise", "title": "Ongoing Advisory", "desc": "Strategic technical support for leaders and senior engineers making difficult API and architecture decisions.", "benefit": "Sharper technical calls, stronger standards, trusted perspective." }
+		]
+	},
+	"finalCta": {
+		"title": "Ready to stop losing time to API instability?",
+		"description": "Send a little context on the team, the symptoms, and what good looks like. I'll tell you whether an audit, a fix sprint, or ongoing advisory is the right next step."
 	}
 }

@@ -1,0 +1,7 @@
+{
+	"meta": {
+		"title": "Talks",
+		"prompt": "$ gh talk list --speaker juststeveking",
+		"subtitle": "Conference talks, workshops, and meetup sessions on PHP, Laravel, API design, and engineering leadership."
+	}
+}

@@ -1,8 +1,8 @@
 {
 	"meta": {
 		"title": "Packages",
-		"prompt": "$ gh repo list juststeveking",
-		"subtitle": "Open source PHP packages available on Packagist."
+		"prompt": "$ composer search juststeveking",
+		"subtitle": "open source PHP packages on Packagist. SDK builders, HTTP clients, authentication strategies, and API tooling."
 	},
 	"packages": [
 		{

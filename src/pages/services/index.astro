@@ -3,6 +3,7 @@ import Layout from '@/layouts/Layout.astro';
 import { SiteHeader, SiteFooter, PageHeader } from '@/components';
 import { services as pageMeta } from '@/config/pages';
 import { site } from '@/config';
+import { servicesOfferings as offerings, servicesProcess as process } from '@/data/content';
 
 const servicesSchema = {
 	'@context': 'https://schema.org',
@@ -12,77 +13,6 @@ const servicesSchema = {
 	description: pageMeta.description,
 	provider: { '@type': 'Person', name: site.author, url: site.url },
 };
-
-const offerings = [
-	{
-		id: 'api-audit',
-		prompt: '$ analyze --scope=full',
-		title: 'API Audit',
-		badge: 'Most requested',
-		tagline: 'Find and fix what\'s slowing down your API.',
-		description: 'A structured diagnostic covering design consistency, performance bottlenecks, error handling, auth patterns, and documentation gaps. You get a prioritised report with clear, actionable recommendations — not a list of opinions.',
-		deliverables: [
-			'Written report with severity tiers',
-			'Prioritised fix list with effort estimates',
-			'Architecture recommendations for failure points',
-			'Recorded debrief walkthrough',
-		],
-		goodFor: 'Teams with a production API that has reliability or performance problems.',
-		duration: '1–2 weeks',
-	},
-	{
-		id: 'api-design',
-		prompt: '$ design --from-scratch',
-		title: 'API Architecture',
-		tagline: 'Get the design right before it\'s expensive to change.',
-		description: 'Collaborative API design from resource modelling and versioning strategy through to auth patterns and error contracts. Delivered as a spec your team can build from with confidence.',
-		deliverables: [
-			'OpenAPI specification',
-			'Design rationale and decision log',
-			'Versioning and deprecation strategy',
-			'Team review sessions',
-		],
-		goodFor: 'Teams starting a new API or refactoring before a major release.',
-		duration: '2–4 weeks',
-	},
-	{
-		id: 'leadership',
-		prompt: '$ gh team --advise',
-		title: 'Engineering Leadership',
-		tagline: 'Practical support for managers and technical leads.',
-		description: 'Ongoing advisory support covering career frameworks, 1:1 structures, performance calibration, hiring, and team health. Regular sessions, async access, and practical tooling including the engineering career framework.',
-		deliverables: [
-			'Bi-weekly advisory sessions',
-			'Career framework setup and calibration',
-			'Hiring process review',
-			'Async support between sessions',
-		],
-		goodFor: 'Engineering managers, tech leads stepping up, or founders building their first eng team.',
-		duration: 'Monthly retainer',
-	},
-	{
-		id: 'discovery',
-		prompt: '$ assess --scope=targeted',
-		title: 'Technical Discovery',
-		tagline: 'Expert input on a specific decision or risk, fast.',
-		description: 'A focused short-term engagement for a specific technical challenge — architecture decision, stack choice, scaling concern, or incident post-mortem. Outside perspective, quickly, without a long commitment.',
-		deliverables: [
-			'Options assessment with trade-offs',
-			'Recommended path with written rationale',
-			'2 × working sessions',
-			'Summary document',
-		],
-		goodFor: 'Teams at a technical crossroads who need a senior perspective quickly.',
-		duration: '3–5 days',
-	},
-];
-
-const process = [
-	{ step: '01', title: 'Discovery call', desc: '30 minutes, no charge. We figure out whether there\'s a fit and what the right engagement looks like.' },
-	{ step: '02', title: 'Scoped proposal', desc: 'A clear written proposal: scope, deliverables, timeline, and cost. No surprises.' },
-	{ step: '03', title: 'Engagement', desc: 'Focused work with regular check-ins. You have direct access throughout — no account managers in the way.' },
-	{ step: '04', title: 'Delivery + debrief', desc: 'Written deliverables and a recorded walkthrough so your whole team can reference the outcome.' },
-];
 ---
 
 <Layout {...pageMeta} jsonLd={servicesSchema}>
@@ -115,7 +45,7 @@ const process = [
 								<p class="text-sm fg leading-relaxed">{service.description}</p>
 
 								<div>
-									<p class="font-mono text-[10px] uppercase tracking-[0.1em] fg-accent font-semibold mb-2">Deliverables</p>
+									<p class="font-mono text-[10px] uppercase tracking-widest fg-accent font-semibold mb-2">Deliverables</p>
 									<ul class="list-none p-0 m-0 flex flex-col gap-1.5">
 										{service.deliverables.map(d => (
 											<li class="flex items-start gap-2 text-[13px] fg">
@@ -137,7 +67,7 @@ const process = [
 			</section>
 
 			<section class="px-section py-12 border-b border-edge" aria-label="How it works">
-				<p class="font-mono text-[11px] uppercase tracking-[0.1em] fg-weak mb-6">How it works</p>
+				<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-6">How it works</p>
 				<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 					{process.map(step => (
 						<div class="flex flex-col gap-2">

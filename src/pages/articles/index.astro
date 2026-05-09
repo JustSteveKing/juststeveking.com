@@ -4,6 +4,7 @@ import { SiteHeader, SiteFooter, PageHeader } from '@/components';
 import { ArticleList, ArticlePagination } from '@/components/articles';
 import { articles as pageMeta } from '@/config/pages';
 import { site } from '@/config';
+import { blogMeta } from '@/data/content';
 import { getAllArticles, PAGE_SIZE } from '@/utils/articles';
 
 const sorted = await getAllArticles();
@@ -36,9 +37,9 @@ const articlesSchema = {
 			<SiteHeader />
 
 			<PageHeader
-				prompt="$ gh gist list"
-				title="Articles"
-				subtitle="Writing on PHP, Laravel, APIs, and engineering leadership."
+				prompt={blogMeta.prompt}
+				title={blogMeta.title}
+				subtitle={blogMeta.subtitle}
 			/>
 
 			<section aria-label="Articles">

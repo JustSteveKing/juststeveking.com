@@ -61,7 +61,7 @@ const articleSchema = {
 					<h1 class="text-[28px] sm:text-[28px] font-bold fg-strong leading-tight mb-4 max-w-[60ch]">{title}</h1>
 					<p class="text-base leading-[1.65] fg max-w-[60ch] mb-5">{description}</p>
 
-					<div class="flex items-center gap-[14px] flex-wrap mb-4">
+					<div class="flex items-center gap-3.5 flex-wrap mb-4">
 						<time class="font-mono text-[13px] fg-weak" datetime={pubDate.toISOString()}>
 							{formatDate(pubDate)}
 						</time>
@@ -80,14 +80,14 @@ const articleSchema = {
 					)}
 				</header>
 
-				<div class="px-section py-12 pb-16 prose">
+				<div class="px-section py-12 pb-16 prose prose-xl">
 					<Content />
 				</div>
 			</article>
 
 			<!-- Post-article CTA -->
 			<section class="px-section py-12 border-t border-edge" aria-label="Work with me">
-				<p class="font-mono text-[11px] uppercase tracking-[0.1em] fg-weak mb-4">Work with me</p>
+				<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-4">Work with me</p>
 				<p class="text-[16px] fg leading-relaxed max-w-[52ch] mb-6">
 					If your team is dealing with slow or unreliable APIs, I offer focused audits, hands-on fixes, and ongoing advisory. Start with a free discovery call.
 				</p>

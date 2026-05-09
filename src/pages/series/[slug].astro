@@ -1,0 +1,115 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Layout from '@/layouts/Layout.astro';
+import { SiteHeader, SiteFooter, PageHeader } from '@/components';
+import { ArticleList } from '@/components/articles';
+import { site } from '@/config';
+import { formatDate } from '@/utils/format';
+
+export async function getStaticPaths() {
+	const allSeries = await getCollection('series');
+	return allSeries.map(s => ({
+		params: { slug: s.id },
+	}));
+}
+
+const { slug } = Astro.params;
+const series = await getEntry('series', slug!);
+
+if (!series) {
+	return Astro.redirect('/404');
+}
+
+const allArticles = await getCollection('articles', ({ data }) => data.series?.id === slug);
+const allVideos = await getCollection('videos', ({ data }) => data.series?.id === slug);
+
+// Combine and sort by date
+const items = [
+	...allArticles.map(a => ({
+		type: 'article' as const,
+		date: a.data.pubDate,
+		title: a.data.title,
+		description: a.data.description,
+		url: `/articles/${a.id}`,
+		data: a,
+	})),
+	...allVideos.map(v => ({
+		type: 'video' as const,
+		date: v.data.publishedDate,
+		title: v.data.title,
+		description: v.data.description,
+		url: `/videos/${v.id}`,
+		data: v,
+	})),
+].sort((a, b) => b.date.getTime() - a.date.getTime());
+
+const seriesSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Series',
+	name: series.data.title,
+	description: series.data.description,
+	url: `${site.url}/series/${slug}`,
+	author: { '@type': 'Person', name: site.author },
+};
+---
+
+<Layout 
+	title={`${series.data.title} — Series`}
+	description={series.data.description}
+	jsonLd={seriesSchema}
+>
+	<main id="main-content" class="landing">
+		<div class="landing-container">
+			<SiteHeader />
+
+			<PageHeader
+				prompt={`$ series view --id ${slug}`}
+				title={series.data.title}
+				subtitle={series.data.description ?? 'A content series by Steve McDougall.'}
+			/>
+
+			<section aria-label="Series content" class="px-section py-10 border-b border-edge">
+				<div class="flex flex-col gap-8 max-w-[800px]">
+					{items.map(item => (
+						<article class="flex flex-col gap-2 group">
+							<div class="flex items-center gap-3">
+								<span class="font-mono text-[10px] uppercase tracking-[0.08em] fg-accent font-semibold px-2 py-0.5 border border-accent rounded">
+									{item.type}
+								</span>
+								<time class="font-mono text-[12px] fg-weak" datetime={item.date.toISOString()}>
+									{formatDate(item.date)}
+								</time>
+							</div>
+							<h2 class="text-[20px] font-bold fg-strong leading-snug group-hover:fg-accent transition-colors">
+								<a href={item.url} class="no-underline">
+									{item.title}
+								</a>
+							</h2>
+							<p class="text-[15px] fg leading-relaxed">
+								{item.description}
+							</p>
+							<div class="pt-2">
+								<a href={item.url} class="inline-flex items-center gap-1.5 font-mono text-[12px] font-semibold fg-strong no-underline hover:fg-accent">
+									Read {item.type} 
+									<span aria-hidden="true">→</span>
+								</a>
+							</div>
+						</article>
+					))}
+					
+					{items.length === 0 && (
+						<p class="text-[15px] fg-weak italic">No items found in this series yet.</p>
+					)}
+				</div>
+			</section>
+
+			<section class="px-section py-12" aria-label="Back to series">
+				<a href="/series" class="font-mono text-[14px] fg-accent no-underline hover:underline">
+					← Back to all series
+				</a>
+			</section>
+
+			<SiteFooter />
+		</div>
+	</main>
+</Layout>

@@ -70,6 +70,11 @@ export const podcasts: Metadata = {
 	description: 'Podcast appearances by Steve McDougall on API design, Laravel, engineering leadership, and developer relations.',
 };
 
+export const series: Metadata = {
+	title: 'Series',
+	description: 'Curated content series on deep technical topics — API design, Laravel architecture, and developer education.',
+};
+
 export const careerFramework: Metadata = {
 	title: 'Career Framework',
 	description: 'A practical engineering career framework with clear levels, expectations, and growth signals for both individual contributors and people managers.',
@@ -84,5 +89,6 @@ export const pages: Record<string, Metadata> = {
 	uses,
 	work,
 	reviews,
+	series,
 	careerFramework,
 };

@@ -10,6 +10,11 @@ import {
 	whatContent,
 	features,
 	tuiVisual,
+	homeStats as stats,
+	homeProblems as problems,
+	homeFramework as framework,
+	homeServicesPreview as servicesPreview,
+	homeFinalCta as finalCta,
 } from '@/data/content';
 
 const allTestimonials = await getCollection('testimonials');
@@ -114,14 +119,10 @@ const tuiLines = [
 			</section>
 
 			<!-- Stats -->
-			<section class="px-section py-16 border-b border-edge" aria-label="Why teams trust me">
-				<p class="font-mono text-[11px] uppercase tracking-[0.1em] fg-weak mb-10">Why teams trust me</p>
+			<section class="px-section py-16 border-b border-edge" aria-label={stats.tagline}>
+				<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-10">{stats.tagline}</p>
 				<div class="grid gap-8 sm:grid-cols-3">
-					{[
-						{ value: '15+', label: 'years solving messy software problems', detail: 'From frontline systems thinking to leading engineering teams under real delivery pressure.' },
-						{ value: '50K+', label: 'developers reached through articles and education', detail: 'Authority built on practical writing, talks, and hands-on delivery work.' },
-						{ value: '30+', label: 'talks and workshops delivered internationally', detail: 'Helping teams make better API, architecture, and enablement decisions.' },
-					].map(stat => (
+					{stats.items.map(stat => (
 						<div class="flex flex-col gap-3 p-8 rounded-2xl border border-edge bg-surface">
 							<span class="font-mono text-[48px] font-bold fg-accent leading-none">{stat.value}</span>
 							<p class="text-[15px] font-semibold fg-strong leading-snug">{stat.label}</p>
@@ -134,15 +135,11 @@ const tuiLines = [
 			<!-- Problems -->
 			<section class="px-section py-16 border-b border-edge" aria-label="Common API problems">
 				<div class="max-w-[56ch] mb-12">
-					<h2 class="font-mono text-[24px] font-bold fg-strong leading-snug mb-4">Your API is probably slowing the team down in more ways than one.</h2>
-					<p class="text-[16px] fg leading-relaxed">When the platform is unreliable, the damage is not just technical. Engineers lose confidence, product work slows down, and delivery becomes dominated by caution and context switching.</p>
+					<h2 class="font-mono text-[24px] font-bold fg-strong leading-snug mb-4">{problems.title}</h2>
+					<p class="text-[16px] fg leading-relaxed">{problems.description}</p>
 				</div>
 				<div class="grid gap-6 sm:grid-cols-3">
-					{[
-						{ prompt: '$ tail -f /var/log/incidents', title: 'You\'re firefighting instead of building', desc: 'Latency spikes, brittle integrations, and unclear ownership keep dragging engineers back into incident mode.' },
-						{ prompt: '$ git log --grep="hotfix"', title: 'Your team doesn\'t trust the system', desc: 'Every release feels risky because API behaviour is inconsistent, debugging is slow, and the root causes stay murky.' },
-						{ prompt: '$ estimate --scope=rewrite', title: 'The rewrite feels bigger than the fix', desc: 'You know the platform needs attention, but replacing everything would slow delivery even more.' },
-					].map(problem => (
+					{problems.items.map(problem => (
 						<div class="flex flex-col gap-4 p-8 rounded-2xl border border-edge bg-surface">
 							<p class="font-mono text-[11px] fg-weak" aria-hidden="true">{problem.prompt}</p>
 							<h3 class="text-[16px] font-semibold fg-strong leading-snug">{problem.title}</h3>
@@ -155,16 +152,12 @@ const tuiLines = [
 			<!-- Framework -->
 			<section class="px-section py-16 border-b border-edge" aria-label="API Stability Framework">
 				<div class="max-w-[56ch] mb-12">
-					<p class="font-mono text-[11px] uppercase tracking-[0.1em] fg-weak mb-4">How I work</p>
-					<h2 class="font-mono text-[24px] font-bold fg-strong leading-snug mb-4">An API Stability Framework built around diagnose, stabilise, and scale.</h2>
-					<p class="text-[16px] fg leading-relaxed">The goal is not consulting theatre. Get clear on what is actually broken, fix the highest-leverage issues first, and leave the team with better habits than it had before.</p>
+					<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-4">{framework.tagline}</p>
+					<h2 class="font-mono text-[24px] font-bold fg-strong leading-snug mb-4">{framework.title}</h2>
+					<p class="text-[16px] fg leading-relaxed">{framework.description}</p>
 				</div>
 				<div class="grid gap-8 sm:grid-cols-3">
-					{[
-						{ step: '01', title: 'Diagnose', desc: 'Map the hotspots, instrumentation gaps, and reliability failures that are actually costing you time.' },
-						{ step: '02', title: 'Stabilise', desc: 'Fix the riskiest endpoints, contracts, and operational bottlenecks first so the team can breathe again.' },
-						{ step: '03', title: 'Scale', desc: 'Leave behind patterns, guardrails, and decision-making habits the team can keep using without me in the room.' },
-					].map(item => (
+					{framework.items.map(item => (
 						<div class="flex flex-col gap-4">
 							<span class="font-mono text-[32px] font-bold fg-accent leading-none">{item.step}</span>
 							<h3 class="text-[17px] font-semibold fg-strong">{item.title}</h3>
@@ -179,7 +172,7 @@ const tuiLines = [
 
 			<!-- Testimonials -->
 			<section class="px-section py-16 border-b border-edge" aria-label="Testimonials">
-				<p class="font-mono text-[11px] uppercase tracking-[0.1em] fg-weak mb-10">Trusted by teams</p>
+				<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-10">Trusted by teams</p>
 				<div class="grid gap-6 sm:grid-cols-2">
 					{testimonials.map(t => (
 						<figure class="flex flex-col gap-5 p-8 rounded-2xl border border-edge bg-surface">
@@ -211,17 +204,13 @@ const tuiLines = [
 			<section class="px-section py-16 border-b border-edge" aria-label="Services">
 				<div class="flex items-end justify-between gap-4 flex-wrap mb-12">
 					<div class="max-w-[44ch]">
-						<p class="font-mono text-[11px] uppercase tracking-[0.1em] fg-weak mb-4">Three ways to work together</p>
-						<h2 class="font-mono text-[24px] font-bold fg-strong leading-snug">Without bloated consulting packages.</h2>
+						<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-4">{servicesPreview.tagline}</p>
+						<h2 class="font-mono text-[24px] font-bold fg-strong leading-snug">{servicesPreview.title}</h2>
 					</div>
 					<a href="/services" class="font-mono text-[14px] fg-accent no-underline hover:underline shrink-0">View all services →</a>
 				</div>
 				<div class="grid gap-6 sm:grid-cols-3">
-					{[
-						{ prompt: '$ analyze --scope=full', title: 'API Audit', desc: 'A focused investigation into the performance, reliability, and design issues slowing your team down.', benefit: 'Clear action plan, prioritised fixes, faster route to stability.' },
-						{ prompt: '$ fix --priority=high', title: 'Performance & Reliability Fixes', desc: 'Hands-on work to remove bottlenecks, reduce avoidable incidents, and make delivery feel calmer.', benefit: 'Meaningful improvements without a costly full rewrite.' },
-						{ prompt: '$ gh team --advise', title: 'Ongoing Advisory', desc: 'Strategic technical support for leaders and senior engineers making difficult API and architecture decisions.', benefit: 'Sharper technical calls, stronger standards, trusted perspective.' },
-					].map(service => (
+					{servicesPreview.items.map(service => (
 						<div class="flex flex-col gap-4 p-8 rounded-2xl border border-edge bg-surface">
 							<p class="font-mono text-[11px] fg-weak" aria-hidden="true">{service.prompt}</p>
 							<h3 class="text-[16px] font-semibold fg-strong">{service.title}</h3>
@@ -235,16 +224,16 @@ const tuiLines = [
 			<!-- Final CTA -->
 			<section class="px-section py-20" aria-label="Get started">
 				<div class="max-w-[52ch]">
-					<h2 class="font-mono text-[28px] font-bold fg-strong leading-snug mb-5">Ready to stop losing time to API instability?</h2>
+					<h2 class="font-mono text-[28px] font-bold fg-strong leading-snug mb-5">{finalCta.title}</h2>
 					<p class="text-[16px] fg leading-relaxed mb-10">
-						Send a little context on the team, the symptoms, and what good looks like. I'll tell you whether an audit, a fix sprint, or ongoing advisory is the right next step.
+						{finalCta.description}
 					</p>
 					<div class="flex flex-wrap items-center gap-4">
 						<a
 							href="https://juststeveking.link"
 							target="_blank"
 							rel="noopener noreferrer"
-							class="inline-flex items-center gap-2 px-6 py-3 font-mono font-semibold text-sm rounded-lg bg-surface-weak fg-inverted no-underline transition-colors hover:opacity-90"
+							class="btn-dark"
 						>
 							Book a call
 							<span aria-hidden="true">→</span>

@@ -4,6 +4,7 @@ import Layout from '@/layouts/Layout.astro';
 import { SiteHeader, SiteFooter, PageHeader } from '@/components';
 import { site } from '@/config';
 import { talks as pageMeta } from '@/config/pages';
+import { talksMeta } from '@/data/content';
 import { formatDate } from '@/utils/format';
 
 const all = await getCollection('talks');
@@ -34,15 +35,15 @@ const talksSchema = {
 			<SiteHeader />
 
 			<PageHeader
-				prompt="$ gh talk list --speaker juststeveking"
-				title="Talks"
-				subtitle={`Conference talks, workshops, and meetup sessions on PHP, Laravel, API design, and engineering leadership. ${all.length} talks across ${upcoming.length > 0 ? `${upcoming.length} upcoming and ` : ''}${past.length} past events.`}
+				prompt={talksMeta.prompt}
+				title={talksMeta.title}
+				subtitle={`${talksMeta.subtitle} ${all.length} talks across ${upcoming.length > 0 ? `${upcoming.length} upcoming and ` : ''}${past.length} past events.`}
 			/>
 
 			{upcoming.length > 0 && (
 				<section aria-label="Upcoming talks" class="border-b border-edge">
 					<div class="px-section py-4 border-b border-edge-weak">
-						<p class="font-mono text-[11px] uppercase tracking-[0.1em] fg-accent font-semibold">Upcoming</p>
+						<p class="font-mono text-[11px] uppercase tracking-widest fg-accent font-semibold">Upcoming</p>
 					</div>
 					<ul class="list-none p-0 m-0" role="list">
 						{upcoming.map(talk => (
@@ -100,7 +101,7 @@ const talksSchema = {
 			<section aria-label="Past talks">
 				{upcoming.length > 0 && (
 					<div class="px-section py-4 border-b border-edge-weak">
-						<p class="font-mono text-[11px] uppercase tracking-[0.1em] fg-weak font-semibold">Past</p>
+						<p class="font-mono text-[11px] uppercase tracking-widest fg-weak font-semibold">Past</p>
 					</div>
 				)}
 				<ul class="list-none p-0 m-0" role="list">

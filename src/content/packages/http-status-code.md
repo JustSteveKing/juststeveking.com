@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/http-status-code"
 link: "https://github.com/JustSteveKing/http-status-code"
 tech: ["PHP"]
 featured: false
-downloads: 306983
-monthlyDownloads: 7926
+downloads: 308843
+monthlyDownloads: 8428
 stars: 49
 version: "v1.0"
-updatedAt: "2026-05-04"
+updatedAt: "2026-05-09"
 ---
 
 # Http Status Codes

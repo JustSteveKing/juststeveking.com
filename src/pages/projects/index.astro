@@ -4,6 +4,7 @@ import Layout from '@/layouts/Layout.astro';
 import { SiteHeader, SiteFooter, PageHeader } from '@/components';
 import { projects as pageMeta } from '@/config/pages';
 import { site } from '@/config';
+import { projectsMeta } from '@/data/content';
 
 const all = await getCollection('packages');
 const sorted = all.sort((a, b) => {
@@ -27,9 +28,9 @@ const projectsSchema = {
 			<SiteHeader />
 
 			<PageHeader
-				prompt="$ composer search juststeveking"
-				title="Packages"
-				subtitle={`${sorted.length} open source PHP packages on Packagist. SDK builders, HTTP clients, authentication strategies, and API tooling.`}
+				prompt={projectsMeta.prompt}
+				title={projectsMeta.title}
+				subtitle={`${sorted.length} ${projectsMeta.subtitle}`}
 			/>
 
 			<section aria-label="Open source packages">
@@ -39,7 +40,9 @@ const projectsSchema = {
 							<div class="flex flex-col gap-3 px-section py-7 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
 								<div class="flex flex-col gap-2 min-w-0">
 									<div class="flex items-center gap-2 flex-wrap">
-										<span class="font-mono text-[14px] font-semibold fg-strong">{pkg.data.name}</span>
+										<a href={`/projects/${pkg.id}`} class="font-mono text-[14px] font-semibold fg-strong no-underline hover:fg-accent transition-colors">
+											{pkg.data.name}
+										</a>
 										{pkg.data.featured && (
 											<span class="font-mono text-[10px] font-bold fg-accent border border-accent rounded-[3px] px-1.5 py-0.5 uppercase tracking-[0.08em]">Featured</span>
 										)}
@@ -48,9 +51,9 @@ const projectsSchema = {
 										)}
 									</div>
 									<p class="text-[14px] fg leading-relaxed">{pkg.data.description}</p>
-									<code class="inline-flex self-start items-center font-mono text-[12px] fg-weak bg-surface-weak border border-edge rounded-[4px] px-3 py-1.5">
-										composer require {pkg.data.name}
-									</code>
+									<a href={`/projects/${pkg.id}`} class="inline-flex self-start items-center font-mono text-[12px] fg-weak bg-surface-weak border border-edge rounded-sm px-3 py-1.5 no-underline hover:bg-surface-weak-hover transition-colors">
+										View details <span aria-hidden="true" class="ml-1.5">→</span>
+									</a>
 								</div>
 								<div class="flex items-center gap-3 sm:flex-col sm:items-end sm:gap-2 shrink-0">
 									{(pkg.data.stars !== undefined || pkg.data.downloads !== undefined) && (

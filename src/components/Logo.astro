@@ -1,0 +1,16 @@
+---
+import clsx from "clsx";
+
+interface Props {
+    class?: string;
+}
+
+const {
+    class: classString = ""
+} = Astro.props as Props;
+---
+
+<svg class={clsx("current-color", classString)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 360 308">
+    <path fill="currentColor" stroke="#000" stroke-linecap="round" stroke-linejoin="round" d="M184.672 99.163V25.031H28.278v81.452l136.584 85.854.604.174v71.386H46.57v-68.64H28.278v87.859h156.394V182.445L46.743 95.813l-.173-.311V44.25h118.896v54.912z"/>
+    <path fill="currentColor" stroke="#000" stroke-linecap="round" stroke-linejoin="round" d="M165.466 114.721h19.206v27.456l85.614-116.962 59.805-.183-92.017 127.944 89.09 129.564-63.838.577-69.325-99.189 11.35-15.943 66.023 95.336h20.121l-75.362-109.43L296.983 44.8l-18.109-.55-89.803 121.401-23.605-15.238z" />
+</svg>

@@ -16,6 +16,9 @@ import aboutRaw from './about.json';
 import blogRaw from './blog.json';
 import projectsRaw from './projects.json';
 import usesRaw from './uses.json';
+import servicesRaw from './services.json';
+import talksRaw from './talks.json';
+import podcastsRaw from './podcasts.json';
 
 // ======= Blog =======
 
@@ -40,6 +43,14 @@ export const stats: Stat[] = aboutRaw.stats;
 export const testimonials: Testimonial[] = aboutRaw.testimonials;
 export const aboutLinks: NavLink[] = aboutRaw.links;
 
+// ======= Talks =======
+
+export const talksMeta: PageMeta = talksRaw.meta;
+
+// ======= Podcasts =======
+
+export const podcastsMeta: PageMeta = podcastsRaw.meta;
+
 // ======= Home =======
 
 export const heroContent = homeRaw.hero;
@@ -52,6 +63,17 @@ export const tuiVisual: {
 	results: TuiResult[];
 	summary: string;
 } = homeRaw.tuiVisual;
+
+export const homeStats = homeRaw.stats;
+export const homeProblems = homeRaw.problems;
+export const homeFramework = homeRaw.framework;
+export const homeServicesPreview = homeRaw.servicesPreview;
+export const homeFinalCta = homeRaw.finalCta;
+
+// ======= Services =======
+
+export const servicesOfferings = servicesRaw.offerings;
+export const servicesProcess = servicesRaw.process;
 
 // Re-export type so callers can import it from here if convenient
 export type { PageMeta };

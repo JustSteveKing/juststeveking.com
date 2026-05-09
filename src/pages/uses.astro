@@ -33,8 +33,8 @@ const usesSchema = {
 						<h2 class="px-section py-4 font-mono text-[12px] uppercase tracking-[0.08em] fg-weak bg-surface-weak border-b border-edge">{cat.title}</h2>
 						<ul class="list-none p-0 m-0" role="list" aria-label={`${cat.title} items`}>
 							{cat.items.map(item => (
-								<li class="flex items-baseline gap-6 px-section py-[14px] border-b border-edge-weak last:border-b-0">
-									<span class="text-sm font-medium fg-strong min-w-[180px] shrink-0">{item.name}</span>
+								<li class="flex items-baseline gap-6 px-section py-3.5 border-b border-edge-weak last:border-b-0">
+									<span class="text-sm font-medium fg-strong min-w-45 shrink-0">{item.name}</span>
 									<span class="text-sm fg leading-snug">{item.description}</span>
 								</li>
 							))}

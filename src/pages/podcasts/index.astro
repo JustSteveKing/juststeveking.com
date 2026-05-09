@@ -4,6 +4,7 @@ import Layout from '@/layouts/Layout.astro';
 import { SiteHeader, SiteFooter, PageHeader } from '@/components';
 import { site } from '@/config';
 import { podcasts as pageMeta } from '@/config/pages';
+import { podcastsMeta } from '@/data/content';
 import { formatDate } from '@/utils/format';
 
 const all = await getCollection('podcasts');
@@ -25,9 +26,9 @@ const podcastsSchema = {
 			<SiteHeader />
 
 			<PageHeader
-				prompt="$ podcast --guest juststeveking"
-				title="Podcasts"
-				subtitle={`${episodes.length} podcast appearances on API design, Laravel, engineering leadership, and developer relations.`}
+				prompt={podcastsMeta.prompt}
+				title={podcastsMeta.title}
+				subtitle={`${episodes.length} ${podcastsMeta.subtitle}`}
 			/>
 
 			<section aria-label="Podcast episodes">
