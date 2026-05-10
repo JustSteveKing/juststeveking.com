@@ -1,74 +1,74 @@
 {
-	"meta": {
-		"title": "Uses",
-		"prompt": "$ cat .tool-versions",
-		"subtitle": "Hardware, software, and services I use daily."
-	},
-	"categories": [
-		{
-			"title": "Hardware",
-			"items": [
-				{
-					"name": "Framework Desktop",
-					"description": "Ryzen AI Max+ 395, 64GB RAM, Noctua fan, 2×1TB NVMe, running Fedora 44."
-				},
-				{
-					"name": "MacBook Air",
-					"description": "M3 Chip, and 24GB RAM. Perfect laptop for on-the-go work and meetings."
-				},
-				{ "name": "Samsung 32\" 4K", "description": "Primary external monitor." },
-				{ "name": "ZSA Moonlander", "description": "Split ergonomic mechanical keyboard." },
-				{ "name": "Logitech Lift", "description": "Vertical ergonomic mouse." },
-				{ "name": "Bose QC", "description": "Headphones for deep work." },
-				{ "name": "Google Pixel 10 Pro XL", "description": "Daily phone." }
-			]
-		},
-		{
-			"title": "Editor & Terminal",
-			"items": [
-				{ "name": "PHPStorm", "description": "Primary IDE for PHP and Laravel." },
-				{ "name": "Catppuccin Mocha", "description": "Color theme across editor and terminal." },
-				{ "name": "JetBrains Mono", "description": "Editor font, with ligatures enabled." },
-				{ "name": "Ghostty", "description": "Terminal emulator." },
-				{ "name": "Zsh + Oh My Zsh", "description": "Shell with plugins and custom prompt." }
-			]
-		},
-		{
-			"title": "Development Tools",
-			"items": [
-				{ "name": "Git & GitHub", "description": "Version control and open source hosting." },
-				{ "name": "Yaak", "description": "API testing client." },
-				{ "name": "TablePlus", "description": "Database GUI. MySQL, Postgres, Redis." },
-				{ "name": "OrbStack", "description": "Containers and Linux VMs on macOS." }
-			]
-		},
-		{
-			"title": "Hosting & Services",
-			"items": [
-				{ "name": "Sevalla", "description": "Primary application hosting." },
-				{ "name": "Cloudflare", "description": "DNS and edge caching." }
-			]
-		},
-		{
-			"title": "Languages & Frameworks",
-			"items": [
-				{ "name": "PHP", "description": "Primary language." },
-				{ "name": "TypeScript", "description": "For front-end and tooling work." },
-				{ "name": "Go", "description": "For CLI tools and performance-critical services." },
-				{ "name": "Astro", "description": "Static sites and this site." },
-				{ "name": "Tailwind CSS", "description": "Styling." },
-				{ "name": "PostgreSQL", "description": "Local and Production Database." }
-			]
-		},
-		{
-			"title": "Productivity",
-			"items": [
-				{ "name": "Obsidian", "description": "Notes and knowledge base." },
-				{ "name": "Dia", "description": "Primary browser." },
-				{ "name": "Proton Mail", "description": "Email." },
-				{ "name": "Cal.com", "description": "Scheduling and booking." },
-				{ "name": "Raycast", "description": "Launcher and productivity hub." }
-			]
-		}
-	]
+  "meta": {
+    "title": "Uses",
+    "prompt": "$ cat .tool-versions",
+    "subtitle": "Hardware, software, and services I actually use every day."
+  },
+  "categories": [
+    {
+      "title": "Hardware",
+      "items": [
+        {
+          "name": "Framework Desktop",
+          "description": "Ryzen AI Max+ 395, 64GB RAM, Noctua cooling, 2x1TB NVMe. My primary workstation, running Fedora 44."
+        },
+        {
+          "name": "MacBook Air",
+          "description": "M3, 24GB RAM. Travels everywhere. Handles meetings, writing, and light dev work without complaint."
+        },
+        { "name": "Samsung 32\" 4K", "description": "Primary external monitor." },
+        { "name": "ZSA Moonlander", "description": "Split ergonomic mechanical keyboard." },
+        { "name": "Logitech Lift", "description": "Vertical ergonomic mouse." },
+        { "name": "Bose QC", "description": "Noise cancelling headphones for deep work." },
+        { "name": "Google Pixel 10 Pro XL", "description": "Daily driver." }
+      ]
+    },
+    {
+      "title": "Editor and Terminal",
+      "items": [
+        { "name": "PHPStorm", "description": "Primary IDE for PHP and Laravel work." },
+        { "name": "Catppuccin Mocha", "description": "My colour theme across editor and terminal." },
+        { "name": "JetBrains Mono", "description": "Editor font with ligatures enabled." },
+        { "name": "Ghostty", "description": "Fast, minimal terminal emulator." },
+        { "name": "Zsh + Oh My Zsh", "description": "Shell with plugins and a custom prompt." }
+      ]
+    },
+    {
+      "title": "Development Tools",
+      "items": [
+        { "name": "Git and GitHub", "description": "Version control and open source hosting." },
+        { "name": "Yaak", "description": "API testing client." },
+        { "name": "TablePlus", "description": "Database GUI for MySQL, Postgres, and Redis." },
+        { "name": "OrbStack", "description": "Containers and Linux VMs on macOS." }
+      ]
+    },
+    {
+      "title": "Hosting and Services",
+      "items": [
+        { "name": "Sevalla", "description": "Primary application hosting." },
+        { "name": "Cloudflare", "description": "DNS and edge caching." }
+      ]
+    },
+    {
+      "title": "Languages and Frameworks",
+      "items": [
+        { "name": "PHP", "description": "Primary language." },
+        { "name": "TypeScript", "description": "Front-end work and tooling." },
+        { "name": "Go", "description": "CLI tools and performance-critical services." },
+        { "name": "Astro", "description": "Static sites, including this one." },
+        { "name": "Tailwind CSS", "description": "Styling." },
+        { "name": "PostgreSQL", "description": "Database of choice, locally and in production." }
+      ]
+    },
+    {
+      "title": "Productivity",
+      "items": [
+        { "name": "Obsidian", "description": "Notes and personal knowledge base." },
+        { "name": "Dia", "description": "Primary browser." },
+        { "name": "Proton Mail", "description": "Email." },
+        { "name": "Cal.com", "description": "Scheduling and booking." },
+        { "name": "Raycast", "description": "App launcher and productivity hub." }
+      ]
+    }
+  ]
 }

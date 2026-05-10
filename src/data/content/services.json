@@ -1,71 +1,71 @@
 {
-	"offerings": [
-		{
-			"id": "api-audit",
-			"prompt": "$ analyze --scope=full",
-			"title": "API Audit",
-			"badge": "Most requested",
-			"tagline": "Find and fix what's slowing down your API.",
-			"description": "A structured diagnostic covering design consistency, performance bottlenecks, error handling, auth patterns, and documentation gaps. You get a prioritised report with clear, actionable recommendations — not a list of opinions.",
-			"deliverables": [
-				"Written report with severity tiers",
-				"Prioritised fix list with effort estimates",
-				"Architecture recommendations for failure points",
-				"Recorded debrief walkthrough"
-			],
-			"goodFor": "Teams with a production API that has reliability or performance problems.",
-			"duration": "1–2 weeks"
-		},
-		{
-			"id": "api-design",
-			"prompt": "$ design --from-scratch",
-			"title": "API Architecture",
-			"tagline": "Get the design right before it's expensive to change.",
-			"description": "Collaborative API design from resource modelling and versioning strategy through to auth patterns and error contracts. Delivered as a spec your team can build from with confidence.",
-			"deliverables": [
-				"OpenAPI specification",
-				"Design rationale and decision log",
-				"Versioning and deprecation strategy",
-				"Team review sessions"
-			],
-			"goodFor": "Teams starting a new API or refactoring before a major release.",
-			"duration": "2–4 weeks"
-		},
-		{
-			"id": "leadership",
-			"prompt": "$ gh team --advise",
-			"title": "Engineering Leadership",
-			"tagline": "Practical support for managers and technical leads.",
-			"description": "Ongoing advisory support covering career frameworks, 1:1 structures, performance calibration, hiring, and team health. Regular sessions, async access, and practical tooling including the engineering career framework.",
-			"deliverables": [
-				"Bi-weekly advisory sessions",
-				"Career framework setup and calibration",
-				"Hiring process review",
-				"Async support between sessions"
-			],
-			"goodFor": "Engineering managers, tech leads stepping up, or founders building their first eng team.",
-			"duration": "Monthly retainer"
-		},
-		{
-			"id": "discovery",
-			"prompt": "$ assess --scope=targeted",
-			"title": "Technical Discovery",
-			"tagline": "Expert input on a specific decision or risk, fast.",
-			"description": "A focused short-term engagement for a specific technical challenge — architecture decision, stack choice, scaling concern, or incident post-mortem. Outside perspective, quickly, without a long commitment.",
-			"deliverables": [
-				"Options assessment with trade-offs",
-				"Recommended path with written rationale",
-				"2 × working sessions",
-				"Summary document"
-			],
-			"goodFor": "Teams at a technical crossroads who need a senior perspective quickly.",
-			"duration": "3–5 days"
-		}
-	],
-	"process": [
-		{ "step": "01", "title": "Discovery call", "desc": "30 minutes, no charge. We figure out whether there's a fit and what the right engagement looks like." },
-		{ "step": "02", "title": "Scoped proposal", "desc": "A clear written proposal: scope, deliverables, timeline, and cost. No surprises." },
-		{ "step": "03", "title": "Engagement", "desc": "Focused work with regular check-ins. You have direct access throughout — no account managers in the way." },
-		{ "step": "04", "title": "Delivery + debrief", "desc": "Written deliverables and a recorded walkthrough so your whole team can reference the outcome." }
-	]
+  "offerings": [
+    {
+      "id": "api-audit",
+      "prompt": "$ analyze --scope=full",
+      "title": "API Audit",
+      "badge": "Most requested",
+      "tagline": "Find what is slowing your API down and fix it.",
+      "description": "A structured diagnostic covering design consistency, performance bottlenecks, error handling, auth patterns, and documentation gaps. You get a prioritised report with clear, actionable recommendations — not a list of opinions.",
+      "deliverables": [
+        "Written report with severity tiers",
+        "Prioritised fix list with effort estimates",
+        "Architecture recommendations for failure points",
+        "Recorded debrief walkthrough"
+      ],
+      "goodFor": "Teams with a production API that has reliability or performance problems they cannot get on top of.",
+      "duration": "1 to 2 weeks"
+    },
+    {
+      "id": "api-design",
+      "prompt": "$ design --from-scratch",
+      "title": "API Architecture",
+      "tagline": "Get the design right before it costs you to change it.",
+      "description": "Collaborative API design from resource modelling and versioning strategy through to auth patterns and error contracts. Delivered as a spec your team can build from with confidence.",
+      "deliverables": [
+        "OpenAPI specification",
+        "Design rationale and decision log",
+        "Versioning and deprecation strategy",
+        "Team review sessions"
+      ],
+      "goodFor": "Teams starting a new API or refactoring ahead of a major release.",
+      "duration": "2 to 4 weeks"
+    },
+    {
+      "id": "leadership",
+      "prompt": "$ gh team --advise",
+      "title": "Engineering Leadership",
+      "tagline": "Practical support for managers and technical leads.",
+      "description": "Ongoing advisory covering career frameworks, 1:1 structures, performance calibration, hiring, and team health. Regular sessions, async access, and practical tooling including a ready-to-use engineering career framework.",
+      "deliverables": [
+        "Bi-weekly advisory sessions",
+        "Career framework setup and calibration",
+        "Hiring process review",
+        "Async support between sessions"
+      ],
+      "goodFor": "Engineering managers, tech leads stepping up, or founders building their first engineering team.",
+      "duration": "Monthly retainer"
+    },
+    {
+      "id": "discovery",
+      "prompt": "$ assess --scope=targeted",
+      "title": "Technical Discovery",
+      "tagline": "A senior perspective on a specific problem, quickly.",
+      "description": "A focused short-term engagement for a specific technical challenge. Architecture decision, stack choice, scaling concern, or incident post-mortem. Outside perspective without a long commitment.",
+      "deliverables": [
+        "Options assessment with trade-offs",
+        "Recommended path with written rationale",
+        "2 working sessions",
+        "Summary document"
+      ],
+      "goodFor": "Teams at a technical crossroads who need a senior perspective fast.",
+      "duration": "3 to 5 days"
+    }
+  ],
+  "process": [
+    { "step": "01", "title": "Discovery call", "desc": "30 minutes, no charge. We work out whether there is a fit and what the right engagement looks like." },
+    { "step": "02", "title": "Scoped proposal", "desc": "A clear written proposal covering scope, deliverables, timeline, and cost. No surprises." },
+    { "step": "03", "title": "Engagement", "desc": "Focused work with regular check-ins. Direct access throughout, no account managers in the way." },
+    { "step": "04", "title": "Delivery and debrief", "desc": "Written deliverables and a recorded walkthrough so the whole team can reference the outcome." }
+  ]
 }
