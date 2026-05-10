@@ -6,15 +6,15 @@ github: "https://github.com/JustSteveKing/laravel-bastion"
 link: "https://github.com/JustSteveKing/laravel-bastion"
 tech: ["PHP"]
 featured: false
-downloads: 56
+downloads: 58
 monthlyDownloads: 7
 stars: 108
 version: "dev-main"
-updatedAt: "2026-05-09"
+updatedAt: "2026-05-10"
 ---
 
 <p align="center">
-  <img src="art/laravel-bastion-logo.png" alt="Laravel Bastion Logo" width="200">
+  
 </p>
 
 # Laravel Bastion
@@ -22,9 +22,9 @@ updatedAt: "2026-05-09"
 <!-- BADGES_START -->
 [![PHP Version][badge-php]][php]
 [![Latest Version][badge-release]][packagist]
-[![Tests](https://github.com/JustSteveKing/laravel-bastion/actions/workflows/tests.yml/badge.svg)](https://github.com/JustSteveKing/laravel-bastion/actions/workflows/tests.yml)
-[![Formats](https://github.com/JustSteveKing/laravel-bastion/actions/workflows/formats.yml/badge.svg)](https://github.com/JustSteveKing/laravel-bastion/actions/workflows/formats.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[](https://github.com/JustSteveKing/laravel-bastion/actions/workflows/tests.yml)
+[](https://github.com/JustSteveKing/laravel-bastion/actions/workflows/formats.yml)
+[](LICENSE)
 [![Total Downloads][badge-downloads]][downloads]
 
 [php]: https://php.net

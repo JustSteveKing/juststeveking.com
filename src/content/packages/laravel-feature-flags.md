@@ -6,20 +6,26 @@ github: "https://github.com/JustSteveKing/laravel-feature-flags"
 link: "https://github.com/JustSteveKing/laravel-feature-flags"
 tech: ["PHP", "Laravel"]
 featured: false
-downloads: 51517
-monthlyDownloads: 650
+downloads: 51525
+monthlyDownloads: 624
 stars: 177
 version: "dev-main"
-updatedAt: "2026-05-09"
+updatedAt: "2026-05-10"
 ---
 
 # Laravel Feature Flags
 
 [![Software License][ico-license]](LICENSE.md)
-[![PHP Version](https://img.shields.io/packagist/php-v/juststeveking/laravel-feature-flags.svg?style=flat-square)](https://php.net)
-[![Run Tests](https://github.com/JustSteveKing/laravel-feature-flags/actions/workflows/tests.yml/badge.svg)](https://github.com/JustSteveKing/laravel-feature-flags/actions/workflows/tests.yml)
+[](https://php.net)
+[](https://github.com/JustSteveKing/laravel-feature-flags/actions/workflows/tests.yml)
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
+
+<p align="center">
+
+
+
+</p>
 
 **I recommend using laravel/pennant for any future Feature Flag needs. This package will be frozen as is with no updates planned.**
 

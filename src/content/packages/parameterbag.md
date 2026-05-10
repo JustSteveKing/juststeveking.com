@@ -6,17 +6,17 @@ github: "https://github.com/JustSteveKing/ParameterBag"
 link: "https://github.com/JustSteveKing/ParameterBag"
 tech: ["PHP"]
 featured: false
-downloads: 301254
-monthlyDownloads: 3891
+downloads: 301266
+monthlyDownloads: 3609
 stars: 4
 version: "v1.2.0"
-updatedAt: "2026-05-09"
+updatedAt: "2026-05-10"
 ---
 
 # Parameter Bag
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
-![run-tests](https://github.com/JustSteveKing/ParameterBag/workflows/run-tests/badge.svg)
+
 [![Total Downloads][ico-downloads]][link-downloads]
 
 A flexible parameter bag in place of standard arrays on PHP classes

@@ -6,21 +6,21 @@ github: "https://github.com/JustSteveKing/gtin-php"
 link: "https://github.com/JustSteveKing/gtin-php"
 tech: ["PHP"]
 featured: false
-downloads: 132425
-monthlyDownloads: 701
+downloads: 132431
+monthlyDownloads: 605
 stars: 5
 version: "v1.0.1"
-updatedAt: "2026-05-09"
+updatedAt: "2026-05-10"
 ---
 
 # A PHP Validator for the GTIN standard
 
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![PHP Version](https://img.shields.io/packagist/php-v/juststeveking/php-sdk.svg?style=flat-square)](https://php.net)
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/juststeveking/gtin-php.svg?style=flat-square)](https://packagist.org/packages/juststeveking/gtin-php)
-![Tests](https://github.com/JustSteveKing/gtin-php/workflows/Tests/badge.svg)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/JustSteveKing/gtin-php/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/JustSteveKing/gtin-php/?branch=main)
-[![Total Downloads](https://img.shields.io/packagist/dt/juststeveking/gtin-php.svg?style=flat-square)](https://packagist.org/packages/juststeveking/gtin-php)
+[](LICENSE.md)
+[](https://php.net)
+[](https://packagist.org/packages/juststeveking/gtin-php)
+
+[](https://scrutinizer-ci.com/g/JustSteveKing/gtin-php/?branch=main)
+[](https://packagist.org/packages/juststeveking/gtin-php)
 
 A PHP package for validating GTIN codes for use in plain PHP and in Laravel.
 

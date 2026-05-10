@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/http-slim"
 link: "https://github.com/JustSteveKing/http-slim"
 tech: ["PHP"]
 featured: false
-downloads: 71674
-monthlyDownloads: 642
+downloads: 71680
+monthlyDownloads: 624
 stars: 7
 version: "v2.1.0"
-updatedAt: "2026-05-09"
+updatedAt: "2026-05-10"
 ---
 
 # Http Slim
@@ -19,7 +19,7 @@ updatedAt: "2026-05-09"
 [![Latest Version][badge-release]][packagist]
 [![Software License][badge-license]][license]
 [![PHP Version][badge-php]][php]
-![run-tests](https://github.com/JustSteveKing/http-slim/workflows/run-tests/badge.svg)
+
 [![Total Downloads][badge-downloads]][downloads]
 
 [badge-release]: https://img.shields.io/packagist/v/juststeveking/http-slim.svg?style=flat-square&label=release

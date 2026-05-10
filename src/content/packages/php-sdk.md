@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/php-sdk"
 link: "https://github.com/JustSteveKing/php-sdk"
 tech: ["PHP"]
 featured: false
-downloads: 73051
-monthlyDownloads: 752
+downloads: 73057
+monthlyDownloads: 733
 stars: 217
 version: "v2.2.0"
-updatedAt: "2026-05-09"
+updatedAt: "2026-05-10"
 ---
 
 # PHP SDK
@@ -18,7 +18,7 @@ updatedAt: "2026-05-09"
 <!-- BADGES_START -->
 [![Latest Version][badge-release]][packagist]
 [![PHP Version][badge-php]][php]
-![tests](https://github.com/JustSteveKing/php-sdk/workflows/tests/badge.svg)
+
 [![Total Downloads][badge-downloads]][downloads]
 
 [badge-release]: https://img.shields.io/packagist/v/juststeveking/php-sdk.svg?style=flat-square&label=release

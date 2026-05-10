@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/sdk-tools"
 link: "https://github.com/JustSteveKing/sdk-tools"
 tech: ["PHP"]
 featured: false
-downloads: 8033
-monthlyDownloads: 487
+downloads: 8041
+monthlyDownloads: 486
 stars: 20
 version: "dev-main"
-updatedAt: "2026-05-09"
+updatedAt: "2026-05-10"
 ---
 
 # JustSteveKing SDK Tools
@@ -18,7 +18,7 @@ updatedAt: "2026-05-09"
 <!-- BADGES_START -->
 [![Latest Version][badge-release]][packagist]
 [![Software License][badge-license]][license]
-[![Run Tests](https://github.com/JustSteveKing/sdk-tools/actions/workflows/tests.yml/badge.svg)](https://github.com/JustSteveKing/sdk-tools/actions/workflows/tests.yml)
+[](https://github.com/JustSteveKing/sdk-tools/actions/workflows/tests.yml)
 [![PHP Version][badge-php]][php]
 [![Total Downloads][badge-downloads]][downloads]
 

@@ -6,16 +6,16 @@ github: "https://github.com/JustSteveKing/http-status-code"
 link: "https://github.com/JustSteveKing/http-status-code"
 tech: ["PHP"]
 featured: false
-downloads: 308843
-monthlyDownloads: 8428
+downloads: 308996
+monthlyDownloads: 8229
 stars: 49
 version: "v1.0"
-updatedAt: "2026-05-09"
+updatedAt: "2026-05-10"
 ---
 
 # Http Status Codes
 
-![run-tests](https://github.com/JustSteveKing/http-status-code/workflows/run-tests/badge.svg)
+
 
 A simple Enum to return correct status codes for http responses.
 

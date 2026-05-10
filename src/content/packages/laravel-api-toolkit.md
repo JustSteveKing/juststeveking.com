@@ -7,20 +7,20 @@ link: "https://github.com/JustSteveKing/laravel-api-toolkit"
 tech: ["PHP", "Laravel"]
 featured: false
 downloads: 476
-monthlyDownloads: 5
+monthlyDownloads: 0
 stars: 25
 version: "v1.0.0"
-updatedAt: "2026-05-09"
+updatedAt: "2026-05-10"
 ---
 
 # A toolkit for creating APIs in Laravel
 
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![PHP Version](https://img.shields.io/packagist/php-v/juststeveking/php-sdk.svg?style=flat-square)](https://php.net)
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/juststeveking/laravel-api-toolkit.svg?style=flat-square)](https://packagist.org/packages/juststeveking/laravel-api-toolkit)
-![Tests](https://github.com/JustSteveKing/laravel-api-toolkit/workflows/Tests/badge.svg)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/JustSteveKing/laravel-api-toolkit/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/JustSteveKing/laravel-api-toolkit/?branch=main)
-[![Total Downloads](https://img.shields.io/packagist/dt/juststeveking/laravel-api-toolkit.svg?style=flat-square)](https://packagist.org/packages/juststeveking/laravel-api-toolkit)
+[](LICENSE.md)
+[](https://php.net)
+[](https://packagist.org/packages/juststeveking/laravel-api-toolkit)
+
+[](https://scrutinizer-ci.com/g/JustSteveKing/laravel-api-toolkit/?branch=main)
+[](https://packagist.org/packages/juststeveking/laravel-api-toolkit)
 
 A toolkit for creating APIs in Laravel.
 

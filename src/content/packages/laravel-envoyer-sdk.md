@@ -6,20 +6,26 @@ github: "https://github.com/JustSteveKing/laravel-envoyer-sdk"
 link: "https://github.com/JustSteveKing/laravel-envoyer-sdk"
 tech: ["PHP"]
 featured: false
-downloads: 59640
-monthlyDownloads: 637
+downloads: 59646
+monthlyDownloads: 619
 stars: 39
 version: "v2.0.0"
-updatedAt: "2026-05-09"
+updatedAt: "2026-05-10"
 ---
 
 # Laravel Envoyer SDK
 
+<p align="center">
+
+
+
+</p>
+
 <!-- BADGES_START -->
 [![Latest Version][badge-release]][packagist]
 [![PHP Version][badge-php]][php]
-![tests](https://github.com/JustSteveKing/laravel-envoyer-sdk/workflows/tests/badge.svg)
-![Check & fix styling](https://github.com/JustSteveKing/laravel-envoyer-sdk/workflows/Code%20style/badge.svg)
+
+
 [![Total Downloads][badge-downloads]][downloads]
 
 [badge-release]: https://img.shields.io/packagist/v/juststeveking/laravel-envoyer-sdk.svg?style=flat-square&label=release

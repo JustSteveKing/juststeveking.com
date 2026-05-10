@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/http-auth-strategies"
 link: "https://github.com/JustSteveKing/http-auth-strategies"
 tech: ["PHP"]
 featured: false
-downloads: 71600
-monthlyDownloads: 639
+downloads: 71609
+monthlyDownloads: 624
 stars: 8
 version: "v1.2.0"
-updatedAt: "2026-05-09"
+updatedAt: "2026-05-10"
 ---
 
 # Http Auth Strategies
@@ -18,8 +18,8 @@ updatedAt: "2026-05-09"
 <!-- BADGES_START -->
 [![Latest Version][badge-release]][packagist]
 [![PHP Version][badge-php]][php]
-![tests](https://github.com/JustSteveKing/http-auth-strategies/workflows/tests/badge.svg)
-![Check & fix styling](https://github.com/JustSteveKing/http-auth-strategies/workflows/Code%20style/badge.svg)
+
+
 [![Total Downloads][badge-downloads]][downloads]
 
 [badge-release]: https://img.shields.io/packagist/v/juststeveking/http-auth-strategies.svg?style=flat-square&label=release

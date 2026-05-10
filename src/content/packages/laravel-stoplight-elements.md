@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/laravel-stoplight-elements"
 link: "https://github.com/JustSteveKing/laravel-stoplight-elements"
 tech: ["PHP", "Laravel"]
 featured: false
-downloads: 76495
-monthlyDownloads: 2588
+downloads: 76497
+monthlyDownloads: 2517
 stars: 44
 version: "dev-main"
-updatedAt: "2026-05-09"
+updatedAt: "2026-05-10"
 ---
 
 # Laravel Stoplight Elements

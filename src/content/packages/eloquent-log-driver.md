@@ -7,10 +7,10 @@ link: "https://github.com/JustSteveKing/eloquent-log-driver"
 tech: ["PHP", "Laravel"]
 featured: false
 downloads: 3239
-monthlyDownloads: 1
+monthlyDownloads: 0
 stars: 7
 version: "1.2.0"
-updatedAt: "2026-04-30"
+updatedAt: "2026-05-10"
 ---
 
 # Eloquent Log Driver
@@ -42,7 +42,7 @@ $ php artisan migrate
 
 In your `.env` file add the following:
 
-```dotenv
+```env
 LOG_CHANNEL=eloquent
 ```
 
