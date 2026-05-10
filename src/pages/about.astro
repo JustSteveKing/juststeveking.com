@@ -48,7 +48,7 @@ const aboutSchema = {
 
 						{basics.image && (
 							<aside class="lg:sticky lg:top-24">
-								<div class="grayscale hover:grayscale-0 transition-all duration-1000 rounded-3xl overflow-hidden border border-edge shadow-2xl rotate-2 hover:rotate-0 bg-surface max-w-[280px] lg:max-w-none">
+								<div class="grayscale hover:grayscale-0 transition-all duration-1000 rounded-3xl overflow-hidden border border-edge shadow-2xl rotate-2 hover:rotate-0 bg-surface max-w-70 lg:max-w-none">
 									<img 
 										src={basics.image} 
 										alt={basics.name} 
@@ -99,7 +99,7 @@ const aboutSchema = {
 						{aboutLinks.map(link => (
 							<a
 								href={link.href}
-								class="font-mono text-sm fg-strong border-b border-edge pb-1 no-underline transition-colors hover:[border-color:var(--color-text-strong)]"
+								class="font-mono text-sm fg-strong border-b border-edge pb-1 no-underline transition-colors hover:border-text-strong"
 								{...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
 							>
 								{link.label}
