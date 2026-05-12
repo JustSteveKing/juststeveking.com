@@ -1,7 +1,7 @@
 ---
 import type { GetStaticPathsOptions } from 'astro';
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, PageHeader } from '@/components';
+import { PageHeader } from '@/components';
 import { ArticleList, ArticlePagination } from '@/components/articles';
 import { articles as pageMeta } from '@/config/pages';
 import { site } from '@/config';
@@ -54,29 +54,21 @@ const articlesSchema = {
 	canonicalUrl={`${site.url}/articles/page/${currentPage}`}
 	jsonLd={articlesSchema}
 >
-	<main id="main-content" class="landing">
-		<div class="landing-container">
-			<SiteHeader />
+	<PageHeader
+		prompt="$ gh gist list"
+		title="Articles"
+		subtitle="Writing on PHP, Laravel, APIs, and engineering leadership."
+	/>
 
-			<PageHeader
-				prompt="$ gh gist list"
-				title="Articles"
-				subtitle="Writing on PHP, Laravel, APIs, and engineering leadership."
-			/>
+	<section aria-label="Articles">
+		<ArticleList articles={articles} />
+	</section>
 
-			<section aria-label="Articles">
-				<ArticleList articles={articles} />
-			</section>
-
-			<ArticlePagination
-				currentPage={currentPage}
-				totalPages={totalPages}
-				total={total}
-				prevHref={prevHref}
-				nextHref={nextHref}
-			/>
-
-			<SiteFooter />
-		</div>
-	</main>
+	<ArticlePagination
+		currentPage={currentPage}
+		totalPages={totalPages}
+		total={total}
+		prevHref={prevHref}
+		nextHref={nextHref}
+	/>
 </Layout>

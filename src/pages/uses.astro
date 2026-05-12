@@ -1,6 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, PageHeader } from '@/components';
+import { PageHeader } from '@/components';
 import { uses as pageMeta } from '@/config/pages';
 import { site } from '@/config';
 import { uses, usesMeta } from '@/data/content';
@@ -17,10 +17,6 @@ const usesSchema = {
 ---
 
 <Layout {...pageMeta} jsonLd={usesSchema}>
-	<main id="main-content" class="landing">
-		<div class="landing-container">
-			<SiteHeader />
-
 			<PageHeader
 				prompt={usesMeta.prompt}
 				title={usesMeta.title}
@@ -42,8 +38,4 @@ const usesSchema = {
 					</div>
 				))}
 			</section>
-
-			<SiteFooter />
-		</div>
-	</main>
 </Layout>

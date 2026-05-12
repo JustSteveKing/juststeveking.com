@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, Breadcrumb, Tag } from '@/components';
+import { Breadcrumb, Tag } from '@/components';
 import { site } from '@/config';
 import { formatDate } from '@/utils/format';
 
@@ -42,89 +42,81 @@ const packageSchema = {
 ---
 
 <Layout {...pageMeta} jsonLd={packageSchema}>
-	<main id="main-content" class="landing">
-		<div class="landing-container">
-			<SiteHeader />
+	<article>
+		<header class="px-section py-section border-b border-edge">
+			<Breadcrumb items={[
+				{ label: 'Packages', href: '/projects' },
+				{ label: name.split('/')[1] || name },
+			]} />
 
-			<article>
-				<header class="px-section pt-12 pb-10 border-b border-edge">
-					<Breadcrumb items={[
-						{ label: 'Packages', href: '/projects' },
-						{ label: name.split('/')[1] || name },
-					]} />
+			<h1 class="text-[28px] font-bold fg-strong leading-tight mb-4 max-w-[60ch]">{name}</h1>
+			<p class="text-base leading-[1.65] fg max-w-[60ch] mb-5">{description}</p>
 
-					<h1 class="text-[28px] font-bold fg-strong leading-tight mb-4 max-w-[60ch]">{name}</h1>
-					<p class="text-base leading-[1.65] fg max-w-[60ch] mb-5">{description}</p>
+			<div class="flex items-center gap-3.5 flex-wrap mb-6">
+				{version && (
+					<span class="font-mono text-[11px] fg-weak border border-edge rounded-[3px] px-1.5 py-px">{version}</span>
+				)}
+				{stars !== undefined && (
+					<span class="font-mono text-[11px] fg-weak">★ {stars.toLocaleString()} stars</span>
+				)}
+				{downloads !== undefined && (
+					<span class="font-mono text-[11px] fg-weak">↓ {downloads.toLocaleString()} downloads</span>
+				)}
+				{updatedAt && (
+					<time class="font-mono text-[11px] fg-weak" datetime={updatedAt instanceof Date ? updatedAt.toISOString() : updatedAt}>
+						Updated {formatDate(updatedAt)}
+					</time>
+				)}
+			</div>
 
-					<div class="flex items-center gap-3.5 flex-wrap mb-6">
-						{version && (
-							<span class="font-mono text-[11px] fg-weak border border-edge rounded-[3px] px-1.5 py-px">{version}</span>
-						)}
-						{stars !== undefined && (
-							<span class="font-mono text-[11px] fg-weak">★ {stars.toLocaleString()} stars</span>
-						)}
-						{downloads !== undefined && (
-							<span class="font-mono text-[11px] fg-weak">↓ {downloads.toLocaleString()} downloads</span>
-						)}
-						{updatedAt && (
-							<time class="font-mono text-[11px] fg-weak" datetime={updatedAt instanceof Date ? updatedAt.toISOString() : updatedAt}>
-								Updated {formatDate(updatedAt)}
-							</time>
-						)}
-					</div>
+			{tech && tech.length > 0 && (
+				<div class="flex flex-wrap gap-1.5" aria-label="Technologies">
+					{tech.map(t => (
+						<Tag>{t}</Tag>
+					))}
+				</div>
+			)}
+		</header>
 
-					{tech && tech.length > 0 && (
-						<div class="flex flex-wrap gap-1.5" aria-label="Technologies">
-							{tech.map(t => (
-								<Tag>{t}</Tag>
-							))}
-						</div>
+		<div class="px-section py-8 border-b border-edge bg-surface-weak">
+			<div class="flex flex-wrap items-center gap-4">
+				<div class="flex items-center gap-3">
+					{packagist && (
+						<a href={packagist} target="_blank" rel="noopener noreferrer" class="font-mono text-[12px] fg-accent no-underline hover:underline">
+							Packagist <span aria-hidden="true">↗</span>
+						</a>
 					)}
-				</header>
-
-				<div class="px-section py-8 border-b border-edge bg-surface-weak">
-					<div class="flex flex-wrap items-center gap-4">
-						<div class="flex items-center gap-3">
-							{packagist && (
-								<a href={packagist} target="_blank" rel="noopener noreferrer" class="font-mono text-[12px] fg-accent no-underline hover:underline">
-									Packagist <span aria-hidden="true">↗</span>
-								</a>
-							)}
-							{github && (
-								<a href={github} target="_blank" rel="noopener noreferrer" class="font-mono text-[12px] fg-accent no-underline hover:underline">
-									GitHub <span aria-hidden="true">↗</span>
-								</a>
-							)}
-						</div>
-					</div>
+					{github && (
+						<a href={github} target="_blank" rel="noopener noreferrer" class="font-mono text-[12px] fg-accent no-underline hover:underline">
+							GitHub <span aria-hidden="true">↗</span>
+						</a>
+					)}
 				</div>
-
-				<div class="px-section py-12 pb-16 prose prose-xl">
-					<Content />
-				</div>
-			</article>
-
-			<section class="px-section py-12 border-t border-edge" aria-label="Work with me">
-				<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-4">Work with me</p>
-				<p class="text-[16px] fg leading-relaxed max-w-[52ch] mb-6">
-					I help SaaS teams build and maintain high-quality APIs. If you need help with your PHP or Laravel project, let's talk.
-				</p>
-				<div class="flex flex-wrap items-center gap-3">
-					<a
-						href="https://juststeveking.link"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="inline-flex items-center gap-2 px-5 py-2.5 font-mono font-semibold text-sm rounded-lg bg-surface-strong fg-inverted no-underline transition-colors hover:opacity-90"
-					>
-						Book a discovery call <span aria-hidden="true">→</span>
-					</a>
-					<a href="/services" class="font-mono text-[13px] fg-accent no-underline hover:underline">
-						See all services
-					</a>
-				</div>
-			</section>
-
-			<SiteFooter />
+			</div>
 		</div>
-	</main>
+
+		<div class="px-section py-section pb-16 prose prose-xl">
+			<Content />
+		</div>
+	</article>
+
+	<section class="px-section py-section border-t border-edge" aria-label="Work with me">
+		<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-4">Work with me</p>
+		<p class="text-[16px] fg leading-relaxed max-w-[52ch] mb-6">
+			I help SaaS teams build and maintain high-quality APIs. If you need help with your PHP or Laravel project, let's talk.
+		</p>
+		<div class="flex flex-wrap items-center gap-3">
+			<a
+				href="https://juststeveking.link"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="inline-flex items-center gap-2 px-5 py-2.5 font-mono font-semibold text-sm rounded-lg bg-surface-strong fg-inverted no-underline transition-colors hover:opacity-90"
+			>
+				Book a discovery call <span aria-hidden="true">→</span>
+			</a>
+			<a href="/services" class="font-mono text-[13px] fg-accent no-underline hover:underline">
+				See all services
+			</a>
+		</div>
+	</section>
 </Layout>

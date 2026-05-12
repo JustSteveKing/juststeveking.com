@@ -110,7 +110,7 @@
   <!-- Header -->
   <div class="flex items-stretch border-b border-edge bg-surface">
     <!-- Traffic lights -->
-    <div class="flex items-center gap-1.5 px-5 border-r border-edge shrink-0" aria-hidden="true">
+    <div class="sm:hidden md:flex items-center gap-1.5 md:px-5 border-r border-edge shrink-0" aria-hidden="true">
       <span class="w-2.5 h-2.5 rounded-full bg-[var(--color-border)]"></span>
       <span class="w-2.5 h-2.5 rounded-full bg-[var(--color-border)]"></span>
       <span class="w-2.5 h-2.5 rounded-full bg-[var(--color-border)]"></span>
@@ -124,7 +124,7 @@
           aria-selected={activeIndex === i}
           aria-controls="diagnostic-output"
           onclick={() => runScan(i)}
-          class="flex items-center gap-2 px-5 py-3 text-[12px] border-r border-edge transition-colors"
+          class="flex items-center sm:gap-1 md:gap-2 px-5 py-3 text-[12px] border-r border-edge transition-colors"
           class:fg-strong={activeIndex === i}
           class:fg-weak={activeIndex !== i}
           style={activeIndex === i ? 'border-bottom: 2px solid var(--color-accent); margin-bottom: -1px;' : ''}

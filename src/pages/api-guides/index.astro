@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, PageHeader } from '@/components';
+import { PageHeader } from '@/components';
 import { site } from '@/config';
 import { apiGuides as pageMeta } from '@/config/pages';
 
@@ -27,48 +27,40 @@ const guidesSchema = {
 ---
 
 <Layout {...pageMeta} jsonLd={guidesSchema}>
-	<main id="main-content" class="landing">
-		<div class="landing-container">
-			<SiteHeader />
+	<PageHeader
+		prompt="$ api-guide --list"
+		title="API Guides"
+		subtitle="Practical, opinionated guides on API design patterns. When to use them, when to avoid them, and the trade-offs."
+	/>
 
-			<PageHeader
-				prompt="$ api-guide --list"
-				title="API Guides"
-				subtitle="Practical, opinionated guides on API design patterns. When to use them, when to avoid them, and the trade-offs."
-			/>
-
-			<section aria-label="API guides">
-				<ul class="list-none p-0 m-0" role="list">
-					{guides.map(guide => (
-						<li class="border-b border-edge last:border-b-0">
-							<a
-								href={`/api-guides/${guide.data.slug ?? guide.id}`}
-								class="flex flex-col gap-2 px-section py-6 no-underline transition-colors hover:bg-surface-weak sm:flex-row sm:justify-between sm:items-start sm:gap-6"
-							>
-								<div class="flex flex-col gap-1.5 min-w-0">
-									<span class="text-[15px] font-medium fg-strong leading-snug">{guide.data.title}</span>
-									<span class="text-[13px] fg leading-snug line-clamp-2">{guide.data.description}</span>
-									{guide.data.tags.length > 0 && (
-										<div class="flex flex-wrap gap-1.5 mt-1">
-											{guide.data.tags.map(tag => (
-												<span class="font-mono text-[11px] fg-weak bg-surface-weak border border-edge-weak rounded-[3px] px-2 py-0.5">{tag}</span>
-											))}
-										</div>
-									)}
+	<section aria-label="API guides">
+		<ul class="list-none p-0 m-0" role="list">
+			{guides.map(guide => (
+				<li class="border-b border-edge last:border-b-0">
+					<a
+						href={`/api-guides/${guide.data.slug ?? guide.id}`}
+						class="flex flex-col gap-2 px-section py-6 no-underline transition-colors hover:bg-surface-weak sm:flex-row sm:justify-between sm:items-start sm:gap-6"
+					>
+						<div class="flex flex-col gap-1.5 min-w-0">
+							<span class="text-[15px] font-medium fg-strong leading-snug">{guide.data.title}</span>
+							<span class="text-[13px] fg leading-snug line-clamp-2">{guide.data.description}</span>
+							{guide.data.tags.length > 0 && (
+								<div class="flex flex-wrap gap-1.5 mt-1">
+									{guide.data.tags.map(tag => (
+										<span class="font-mono text-[11px] fg-weak bg-surface-weak border border-edge-weak rounded-[3px] px-2 py-0.5">{tag}</span>
+									))}
 								</div>
-								<div class="flex items-center gap-2 shrink-0 sm:flex-col sm:items-end">
-									<span class={`font-mono text-[11px] uppercase tracking-[0.06em] font-semibold ${guide.data.complexity === 'intro' ? 'fg-success' : guide.data.complexity === 'advanced' ? 'fg-accent' : 'fg-weak'}`}>
-										{guide.data.complexity}
-									</span>
-									<span class="font-mono text-[11px] fg-weak">{guide.data.category}</span>
-								</div>
-							</a>
-						</li>
-					))}
-				</ul>
-			</section>
-
-			<SiteFooter />
-		</div>
-	</main>
+							)}
+						</div>
+						<div class="flex items-center gap-2 shrink-0 sm:flex-col sm:items-end">
+							<span class={`font-mono text-[11px] uppercase tracking-[0.06em] font-semibold ${guide.data.complexity === 'intro' ? 'fg-success' : guide.data.complexity === 'advanced' ? 'fg-accent' : 'fg-weak'}`}>
+								{guide.data.complexity}
+							</span>
+							<span class="font-mono text-[11px] fg-weak">{guide.data.category}</span>
+						</div>
+					</a>
+				</li>
+			))}
+		</ul>
+	</section>
 </Layout>

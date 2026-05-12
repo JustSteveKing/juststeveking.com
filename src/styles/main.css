@@ -52,6 +52,7 @@
   --color-track-mgr: #8839ef; /* Latte Mauve — Manager track */
 
   --section-padding-x: 80px;
+  --section-padding-y: 64px;
   --container-max-width: 1080px;
   --nav-gap: 40px;
   --header-height: 72px;
@@ -767,7 +768,10 @@
 
   /* Responsive */
   @media (max-width: 1120px) {
-    :root { --section-padding-x: 40px; }
+    :root { 
+      --section-padding-x: 40px;
+      --section-padding-y: 48px;
+    }
   }
 
   @media (max-width: 980px) {
@@ -779,7 +783,10 @@
   }
 
   @media (max-width: 900px) {
-    :root { --section-padding-x: 24px; }
+    :root { 
+      --section-padding-x: 20px;
+      --section-padding-y: 40px;
+    }
 
     .landing-nav { display: none; }
 
@@ -798,10 +805,18 @@
   }
 
   @media (max-width: 600px) {
-    :root { --section-padding-x: 16px; }
+    :root { 
+      --section-padding-x: 16px;
+      --section-padding-y: 32px;
+    }
 
     .hero {
       padding: 48px var(--section-padding-x);
+    }
+
+    .landing-header {
+      padding-top: 16px;
+      padding-bottom: 16px;
     }
 
     .hero h1 { font-size: 24px; }
@@ -856,10 +871,15 @@
   .border-accent    { border-color: var(--color-accent); }
 
   .px-section { padding-inline: var(--section-padding-x); }
+  .py-section { padding-block: var(--section-padding-y); }
 
   /* Visually hidden */
   .visually-hidden {
     @apply sr-only;
+  }
+
+  @media (max-width: 600px) {
+    .px-section { padding-inline: calc(var(--section-padding-x) - 50px); }
   }
 }
 

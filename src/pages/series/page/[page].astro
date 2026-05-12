@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, PageHeader } from '@/components';
+import { PageHeader } from '@/components';
 import { site } from '@/config';
 import { series as pageMeta } from '@/config/pages';
 import { PAGE_SIZE } from '@/utils/articles';
@@ -49,10 +49,6 @@ const seriesSchema = {
 	description={pageMeta.description}
 	jsonLd={seriesSchema}
 >
-	<main id="main-content" class="landing">
-		<div class="landing-container">
-			<SiteHeader />
-
 			<PageHeader
 				prompt={`$ ls series/ --page ${currentPage}`}
 				title="Series"
@@ -116,8 +112,4 @@ const seriesSchema = {
 					)}
 				</div>
 			</nav>
-
-			<SiteFooter />
-		</div>
-	</main>
 </Layout>

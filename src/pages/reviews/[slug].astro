@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, Breadcrumb, Tag } from '@/components';
+import { Breadcrumb, Tag } from '@/components';
 import { site } from '@/config';
 import { formatDate } from '@/utils/format';
 
@@ -45,51 +45,43 @@ const reviewSchema = {
 ---
 
 <Layout {...pageMeta} jsonLd={reviewSchema}>
-	<main id="main-content" class="landing">
-		<div class="landing-container">
-			<SiteHeader />
+	<article>
+		<header class="px-section pt-12 pb-10 border-b border-edge">
+			<Breadcrumb items={[
+				{ label: 'Reviews', href: '/reviews' },
+				{ label: subject },
+			]} />
 
-			<article>
-				<header class="px-section pt-12 pb-10 border-b border-edge">
-					<Breadcrumb items={[
-						{ label: 'Reviews', href: '/reviews' },
-						{ label: subject },
-					]} />
+			<h1 class="text-[28px] font-bold fg-strong leading-tight mb-4 max-w-[60ch]">{title}</h1>
+			<p class="text-base leading-[1.65] fg max-w-[60ch] mb-5">{description}</p>
 
-					<h1 class="text-[28px] font-bold fg-strong leading-tight mb-4 max-w-[60ch]">{title}</h1>
-					<p class="text-base leading-[1.65] fg max-w-[60ch] mb-5">{description}</p>
+			<div class="flex items-center gap-3.5 flex-wrap mb-4">
+				<time class="font-mono text-[13px] fg-weak" datetime={pubDate.toISOString()}>
+					{formatDate(pubDate)}
+				</time>
+				<span class="font-mono text-[11px] font-bold fg-accent uppercase tracking-[0.08em] border border-edge rounded-[3px] px-1.5 py-0.5" style="border-color: var(--color-accent);">{badge}</span>
+				{subjectUrl && (
+					<a
+						href={subjectUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="font-mono text-[12px] fg-weak no-underline transition-colors hover:text-accent"
+					>
+						{subject} <span aria-hidden="true">↗</span>
+						<span class="visually-hidden">(opens in new tab)</span>
+					</a>
+				)}
+			</div>
 
-					<div class="flex items-center gap-3.5 flex-wrap mb-4">
-						<time class="font-mono text-[13px] fg-weak" datetime={pubDate.toISOString()}>
-							{formatDate(pubDate)}
-						</time>
-						<span class="font-mono text-[11px] font-bold fg-accent uppercase tracking-[0.08em] border border-edge rounded-[3px] px-1.5 py-0.5" style="border-color: var(--color-accent);">{badge}</span>
-						{subjectUrl && (
-							<a
-								href={subjectUrl}
-								target="_blank"
-								rel="noopener noreferrer"
-								class="font-mono text-[12px] fg-weak no-underline transition-colors hover:text-accent"
-							>
-								{subject} <span aria-hidden="true">↗</span>
-								<span class="visually-hidden">(opens in new tab)</span>
-							</a>
-						)}
-					</div>
+			{tags.length > 0 && (
+				<div class="flex flex-wrap gap-1.5" aria-label="Tags">
+					{tags.map(tag => (
+						<Tag>{tag}</Tag>
+					))}
+				</div>
+			)}
+		</header>
 
-					{tags.length > 0 && (
-						<div class="flex flex-wrap gap-1.5" aria-label="Tags">
-							{tags.map(tag => (
-								<Tag>{tag}</Tag>
-							))}
-						</div>
-					)}
-				</header>
-
-				<Content />
-			</article>
-
-			<SiteFooter />
-		</div>
-	</main>
+		<Content />
+	</article>
 </Layout>

@@ -1,7 +1,7 @@
 ---
 import type { GetStaticPathsResult } from 'astro';
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, PageHeader, Breadcrumb } from '@/components';
+import { PageHeader, Breadcrumb } from '@/components';
 import { ArticleList, ArticlePagination } from '@/components/articles';
 import { site } from '@/config';
 import { getAllArticles, getAllTags, slugify, PAGE_SIZE } from '@/utils/articles';
@@ -54,34 +54,26 @@ const tagSchema = {
 ---
 
 <Layout {...pageMeta} jsonLd={tagSchema}>
-	<main id="main-content" class="landing">
-		<div class="landing-container">
-			<SiteHeader />
+	<PageHeader
+		prompt={`$ git tag -l '${tagName}'`}
+		title={`#${tagName}`}
+		subtitle={`${total} article${total === 1 ? '' : 's'} with this tag`}
+	/>
 
-			<PageHeader
-				prompt={`$ git tag -l '${tagName}'`}
-				title={`#${tagName}`}
-				subtitle={`${total} article${total === 1 ? '' : 's'} with this tag`}
-			/>
+	<Breadcrumb variant="filter" items={[
+		{ label: 'All articles', href: '/articles' },
+		{ label: `#${tagName}` },
+	]} />
 
-			<Breadcrumb variant="filter" items={[
-				{ label: 'All articles', href: '/articles' },
-				{ label: `#${tagName}` },
-			]} />
+	<section aria-label={`Articles tagged ${tagName}`}>
+		<ArticleList articles={articles} />
+	</section>
 
-			<section aria-label={`Articles tagged ${tagName}`}>
-				<ArticleList articles={articles} />
-			</section>
-
-			<ArticlePagination
-				currentPage={1}
-				totalPages={totalPages}
-				total={total}
-				prevHref={null}
-				nextHref={nextHref}
-			/>
-
-			<SiteFooter />
-		</div>
-	</main>
+	<ArticlePagination
+		currentPage={1}
+		totalPages={totalPages}
+		total={total}
+		prevHref={null}
+		nextHref={nextHref}
+	/>
 </Layout>

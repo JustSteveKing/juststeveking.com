@@ -1,6 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, PageHeader, Card, Badge, SectionLabel } from '@/components';
+import { PageHeader, Card, Badge, SectionLabel } from '@/components';
 import { services as pageMeta } from '@/config/pages';
 import { site } from '@/config';
 import { servicesOfferings as offerings, servicesProcess as process } from '@/data/content';
@@ -16,21 +16,17 @@ const servicesSchema = {
 ---
 
 <Layout {...pageMeta} jsonLd={servicesSchema}>
-	<main id="main-content" class="landing">
-		<div class="landing-container">
-			<SiteHeader />
-
 			<PageHeader
 				prompt="$ cat services.md"
 				title="Services"
 				subtitle="Practical API consulting and engineering leadership support for SaaS teams. No retainers you don't need, no deliverables that gather dust."
 			/>
 
-			<section class="px-section py-12 border-b border-edge" aria-label="Service offerings">
+			<section class="px-section py-section border-b border-edge" aria-label="Service offerings">
 				<div class="grid gap-6 sm:grid-cols-2">
 					{offerings.map(service => (
 						<Card as="article" class="flex flex-col overflow-hidden">
-							<div class="px-6 py-5 border-b border-edge-weak bg-surface-weak">
+							<div class="px-4 md:px-6 py-5 border-b border-edge-weak bg-surface-weak">
 								<p class="font-mono text-[11px] fg-weak mb-2" aria-hidden="true">{service.prompt}</p>
 								<div class="flex items-center gap-2 flex-wrap">
 									<h2 class="text-base font-bold fg-strong">{service.title}</h2>
@@ -41,7 +37,7 @@ const servicesSchema = {
 								<p class="mt-1 text-[13px] fg leading-snug">{service.tagline}</p>
 							</div>
 
-							<div class="flex flex-col flex-1 px-6 py-5 gap-5">
+							<div class="flex flex-col flex-1 px-4 md:px-6 py-5 gap-5">
 								<p class="text-sm fg leading-relaxed">{service.description}</p>
 
 								<div>
@@ -66,7 +62,7 @@ const servicesSchema = {
 				</div>
 			</section>
 
-			<section class="px-section py-12 border-b border-edge" aria-label="How it works">
+			<section class="px-section py-section border-b border-edge" aria-label="How it works">
 				<SectionLabel class="mb-6">How it works</SectionLabel>
 				<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 					{process.map(step => (
@@ -79,7 +75,7 @@ const servicesSchema = {
 				</div>
 			</section>
 
-			<section class="px-section py-12" aria-label="Get in touch">
+			<section class="px-section py-section" aria-label="Get in touch">
 				<h2 class="text-2xl font-bold tracking-tight fg-strong mb-3">Ready to get started?</h2>
 				<p class="fg max-w-[52ch] leading-relaxed mb-8">
 					Start with a free 30-minute discovery call. We'll work out what you need, whether there's a fit, and what the right shape of engagement looks like.
@@ -102,8 +98,4 @@ const servicesSchema = {
 					</a>
 				</div>
 			</section>
-
-			<SiteFooter />
-		</div>
-	</main>
 </Layout>

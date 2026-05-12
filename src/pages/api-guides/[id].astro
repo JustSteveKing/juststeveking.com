@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, Breadcrumb } from '@/components';
+import { Breadcrumb } from '@/components';
 import { site } from '@/config';
 
 export async function getStaticPaths() {
@@ -31,67 +31,59 @@ const guideSchema = {
 ---
 
 <Layout title={title} description={description} ogImage={`/og/api-guides/${guide.id}.webp`} jsonLd={guideSchema}>
-	<main id="main-content" class="landing">
-		<div class="landing-container">
-			<SiteHeader />
+	<article>
+		<header class="px-section py-section border-b border-edge">
+			<Breadcrumb items={[
+				{ label: 'API Guides', href: '/api-guides' },
+				{ label: category },
+			]} />
 
-			<article>
-				<header class="px-section pt-12 pb-10 border-b border-edge">
-					<Breadcrumb items={[
-						{ label: 'API Guides', href: '/api-guides' },
-						{ label: category },
-					]} />
+			<h1 class="text-[28px] font-bold fg-strong leading-tight mb-4 max-w-[60ch]">{title}</h1>
+			<p class="text-base fg leading-relaxed max-w-[60ch] mb-5">{description}</p>
 
-					<h1 class="text-[28px] font-bold fg-strong leading-tight mb-4 max-w-[60ch]">{title}</h1>
-					<p class="text-base fg leading-relaxed max-w-[60ch] mb-5">{description}</p>
+			<div class="flex items-center gap-3 flex-wrap mb-6">
+				<span class={`font-mono text-[11px] uppercase tracking-[0.06em] font-semibold ${complexity === 'intro' ? 'fg-success' : complexity === 'advanced' ? 'fg-accent' : 'fg-weak'}`}>
+					{complexity}
+				</span>
+				<span class="font-mono text-[11px] fg-weak">{category}</span>
+				{apiStyles.map(s => (
+					<span class="font-mono text-[11px] fg-weak border border-edge-weak rounded-[3px] px-2 py-0.5">{s}</span>
+				))}
+			</div>
 
-					<div class="flex items-center gap-3 flex-wrap mb-6">
-						<span class={`font-mono text-[11px] uppercase tracking-[0.06em] font-semibold ${complexity === 'intro' ? 'fg-success' : complexity === 'advanced' ? 'fg-accent' : 'fg-weak'}`}>
-							{complexity}
-						</span>
-						<span class="font-mono text-[11px] fg-weak">{category}</span>
-						{apiStyles.map(s => (
-							<span class="font-mono text-[11px] fg-weak border border-edge-weak rounded-[3px] px-2 py-0.5">{s}</span>
-						))}
-					</div>
-
-					<div class="grid gap-4 sm:grid-cols-2 max-w-[72ch]">
-						<div class="p-4 rounded-xl border border-edge bg-surface-weak">
-							<p class="font-mono text-[10px] uppercase tracking-widest fg-success font-semibold mb-2">Use when</p>
-							<p class="text-[13px] fg leading-relaxed">{useWhen}</p>
-						</div>
-						<div class="p-4 rounded-xl border border-edge bg-surface-weak">
-							<p class="font-mono text-[10px] uppercase tracking-widest fg-weak font-semibold mb-2">Avoid when</p>
-							<p class="text-[13px] fg leading-relaxed">{avoidWhen}</p>
-						</div>
-					</div>
-				</header>
-
-				<div class="px-section py-12 prose prose-xl">
-					<Content />
+			<div class="grid gap-4 sm:grid-cols-2 max-w-[72ch]">
+				<div class="p-4 rounded-xl border border-edge bg-surface-weak">
+					<p class="font-mono text-[10px] uppercase tracking-widest fg-success font-semibold mb-2">Use when</p>
+					<p class="text-[13px] fg leading-relaxed">{useWhen}</p>
 				</div>
-			</article>
-
-			<!-- CTA -->
-			<section class="px-section py-12 border-t border-edge" aria-label="Work with me">
-				<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-4">Need hands-on help?</p>
-				<p class="text-[16px] fg leading-relaxed max-w-[52ch] mb-6">
-					If your API has design problems like these in production, an audit can surface the highest-risk issues in a week.
-				</p>
-				<div class="flex flex-wrap items-center gap-3">
-					<a
-						href="/services"
-						class="inline-flex items-center gap-2 px-5 py-2.5 font-mono font-semibold text-sm rounded-lg bg-surface-strong fg-inverted no-underline transition-colors hover:opacity-90"
-					>
-						See the services →
-					</a>
-					<a href="/api-guides" class="font-mono text-[13px] fg-accent no-underline hover:underline">
-						← Back to guides
-					</a>
+				<div class="p-4 rounded-xl border border-edge bg-surface-weak">
+					<p class="font-mono text-[10px] uppercase tracking-widest fg-weak font-semibold mb-2">Avoid when</p>
+					<p class="text-[13px] fg leading-relaxed">{avoidWhen}</p>
 				</div>
-			</section>
+			</div>
+		</header>
 
-			<SiteFooter />
+		<div class="px-section py-section prose prose-xl">
+			<Content />
 		</div>
-	</main>
+	</article>
+
+	<!-- CTA -->
+	<section class="px-section py-section border-t border-edge" aria-label="Work with me">
+		<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-4">Need hands-on help?</p>
+		<p class="text-[16px] fg leading-relaxed max-w-[52ch] mb-6">
+			If your API has design problems like these in production, an audit can surface the highest-risk issues in a week.
+		</p>
+		<div class="flex flex-wrap items-center gap-3">
+			<a
+				href="/services"
+				class="inline-flex items-center gap-2 px-5 py-2.5 font-mono font-semibold text-sm rounded-lg bg-surface-strong fg-inverted no-underline transition-colors hover:opacity-90"
+			>
+				See the services →
+			</a>
+			<a href="/api-guides" class="font-mono text-[13px] fg-accent no-underline hover:underline">
+				← Back to guides
+			</a>
+		</div>
+	</section>
 </Layout>

@@ -1,8 +1,10 @@
 ---
 import "@/styles/main.css";
-import ClientRouter from 'astro/components/ClientRouter.astro';
+import ClientRouter from 'astro:components/ClientRouter.astro';
+import { SiteHeader, SiteFooter } from '@/components';
 import { site } from "@/config";
 import type { SEOProps } from "@/types";
+
 
 interface Props extends SEOProps {
 	jsonLd?: Record<string, unknown> | Record<string, unknown>[];
@@ -92,6 +94,12 @@ const pageSchemas = jsonLd
 	</head>
 	<body>
 		<a href="#main-content" class="skip-link">Skip to main content</a>
-		<slot />
+		<main id="main-content" class="landing">
+			<div class="landing-container">
+				<SiteHeader />
+				<slot />
+				<SiteFooter />
+			</div>
+		</main>
 	</body>
 </html>

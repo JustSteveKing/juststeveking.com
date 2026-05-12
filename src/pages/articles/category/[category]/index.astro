@@ -1,7 +1,7 @@
 ---
 import type { GetStaticPathsResult } from 'astro';
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, PageHeader, Breadcrumb } from '@/components';
+import { PageHeader, Breadcrumb } from '@/components';
 import { ArticleList, ArticlePagination } from '@/components/articles';
 import { site } from '@/config';
 import { getAllArticles, getAllCategories, slugify, PAGE_SIZE } from '@/utils/articles';
@@ -54,34 +54,26 @@ const categorySchema = {
 ---
 
 <Layout {...pageMeta} jsonLd={categorySchema}>
-	<main id="main-content" class="landing">
-		<div class="landing-container">
-			<SiteHeader />
+	<PageHeader
+		prompt={`$ git log --grep='${categoryName}'`}
+		title={categoryName}
+		subtitle={`${total} article${total === 1 ? '' : 's'} in this category`}
+	/>
 
-			<PageHeader
-				prompt={`$ git log --grep='${categoryName}'`}
-				title={categoryName}
-				subtitle={`${total} article${total === 1 ? '' : 's'} in this category`}
-			/>
+	<Breadcrumb variant="filter" items={[
+		{ label: 'All articles', href: '/articles' },
+		{ label: categoryName },
+	]} />
 
-			<Breadcrumb variant="filter" items={[
-				{ label: 'All articles', href: '/articles' },
-				{ label: categoryName },
-			]} />
+	<section aria-label={`Articles in ${categoryName}`}>
+		<ArticleList articles={articles} />
+	</section>
 
-			<section aria-label={`Articles in ${categoryName}`}>
-				<ArticleList articles={articles} />
-			</section>
-
-			<ArticlePagination
-				currentPage={1}
-				totalPages={totalPages}
-				total={total}
-				prevHref={null}
-				nextHref={nextHref}
-			/>
-
-			<SiteFooter />
-		</div>
-	</main>
+	<ArticlePagination
+		currentPage={1}
+		totalPages={totalPages}
+		total={total}
+		prevHref={null}
+		nextHref={nextHref}
+	/>
 </Layout>

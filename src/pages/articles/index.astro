@@ -1,6 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, PageHeader } from '@/components';
+import { PageHeader } from '@/components';
 import { ArticleList, ArticlePagination } from '@/components/articles';
 import { articles as pageMeta } from '@/config/pages';
 import { site } from '@/config';
@@ -32,29 +32,21 @@ const articlesSchema = {
 ---
 
 <Layout {...pageMeta} jsonLd={articlesSchema}>
-	<main id="main-content" class="landing">
-		<div class="landing-container">
-			<SiteHeader />
+	<PageHeader
+		prompt={blogMeta.prompt}
+		title={blogMeta.title}
+		subtitle={blogMeta.subtitle}
+	/>
 
-			<PageHeader
-				prompt={blogMeta.prompt}
-				title={blogMeta.title}
-				subtitle={blogMeta.subtitle}
-			/>
+	<section aria-label="Articles">
+		<ArticleList articles={page} />
+	</section>
 
-			<section aria-label="Articles">
-				<ArticleList articles={page} />
-			</section>
-
-			<ArticlePagination
-				currentPage={1}
-				totalPages={totalPages}
-				total={sorted.length}
-				prevHref={null}
-				nextHref={nextHref}
-			/>
-
-			<SiteFooter />
-		</div>
-	</main>
+	<ArticlePagination
+		currentPage={1}
+		totalPages={totalPages}
+		total={sorted.length}
+		prevHref={null}
+		nextHref={nextHref}
+	/>
 </Layout>

@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, PageHeader } from '@/components';
+import { PageHeader } from '@/components';
 import { about as pageMeta } from '@/config/pages';
 import { site } from '@/config';
 import { aboutMeta, bio, stats, aboutLinks } from '@/data/content';
@@ -27,18 +27,14 @@ const aboutSchema = {
 ---
 
 <Layout {...pageMeta} jsonLd={aboutSchema}>
-	<main id="main-content" class="landing">
-		<div class="landing-container">
-			<SiteHeader />
-
-			<PageHeader
-				prompt={aboutMeta.prompt}
-				title={aboutMeta.title}
-				subtitle={aboutMeta.subtitle}
-			/>
+	<PageHeader
+		prompt={aboutMeta.prompt}
+		title={aboutMeta.title}
+		subtitle={aboutMeta.subtitle}
+	/>
 
 			<section aria-label="About Steve McDougall">
-				<div class="px-section py-24">
+				<div class="px-section py-section">
 					<div class="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12 lg:gap-16 items-start mb-16">
 						<div class="prose prose-xl max-w-none order-last lg:order-first">
 							{bio.map(paragraph => (
@@ -60,7 +56,7 @@ const aboutSchema = {
 						)}
 					</div>
 
-					<div class="flex justify-between gap-12 flex-wrap my-16 py-12 border-t border-b border-edge" aria-label="Key statistics">
+					<div class="flex justify-between gap-12 flex-wrap my-10 md:my-16 py-section border-t border-b border-edge" aria-label="Key statistics">
 						{stats.map(stat => (
 							<div class="flex flex-col gap-2">
 								<span class="font-mono text-3xl font-bold fg-accent leading-none">{stat.value}</span>
@@ -109,8 +105,4 @@ const aboutSchema = {
 					</nav>
 				</div>
 			</section>
-
-			<SiteFooter />
-		</div>
-	</main>
 </Layout>

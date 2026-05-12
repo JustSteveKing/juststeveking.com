@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter } from '@/components';
 import ApiDiagnostic from '@/components/ApiDiagnostic.svelte';
 import Card from '@/components/Card.astro';
 import SectionLabel from '@/components/SectionLabel.astro';
@@ -51,11 +50,6 @@ const tuiLines = [
 ---
 
 <Layout {...pageMeta} jsonLd={homeSchema}>
-	<main id="main-content" class="landing">
-		<div class="landing-container">
-
-			<SiteHeader />
-
 			<!-- Hero -->
 			<section class="hero" aria-labelledby="hero-heading">
 				<div class="hero-content">
@@ -121,7 +115,7 @@ const tuiLines = [
 			</section>
 
 			<!-- Stats -->
-			<section class="px-section py-16 border-b border-edge" aria-label={stats.tagline}>
+			<section class="px-section py-section border-b border-edge" aria-label={stats.tagline}>
 				<SectionLabel class="mb-10">{stats.tagline}</SectionLabel>
 				<div class="grid gap-8 sm:grid-cols-3">
 					{stats.items.map(stat => (
@@ -135,7 +129,7 @@ const tuiLines = [
 			</section>
 
 			<!-- Problems -->
-			<section class="px-section py-16 border-b border-edge" aria-label="Common API problems">
+			<section class="px-section py-section border-b border-edge" aria-label="Common API problems">
 				<div class="max-w-[56ch] mb-12">
 					<h2 class="font-mono text-[24px] font-bold fg-strong leading-snug mb-4">{problems.title}</h2>
 					<p class="text-[16px] fg leading-relaxed">{problems.description}</p>
@@ -152,7 +146,7 @@ const tuiLines = [
 			</section>
 
 			<!-- Framework -->
-			<section class="px-section py-16 border-b border-edge" aria-label="API Stability Framework">
+			<section class="px-section py-section border-b border-edge" aria-label="API Stability Framework">
 				<div class="max-w-[56ch] mb-12">
 					<SectionLabel class="mb-4">{framework.tagline}</SectionLabel>
 					<h2 class="font-mono text-[24px] font-bold fg-strong leading-snug mb-4">{framework.title}</h2>
@@ -173,7 +167,7 @@ const tuiLines = [
 			</section>
 
 			<!-- Testimonials -->
-			<section class="px-section py-16 border-b border-edge" aria-label="Testimonials">
+			<section class="px-section py-section border-b border-edge" aria-label="Testimonials">
 				<SectionLabel class="mb-10">Trusted by teams</SectionLabel>
 				<div class="grid gap-6 sm:grid-cols-2">
 					{testimonials.map(t => (
@@ -203,7 +197,7 @@ const tuiLines = [
 			</section>
 
 			<!-- Services preview -->
-			<section class="px-section py-16 border-b border-edge" aria-label="Services">
+			<section class="px-section py-section border-b border-edge" aria-label="Services">
 				<div class="flex items-end justify-between gap-4 flex-wrap mb-12">
 					<div class="max-w-[44ch]">
 						<SectionLabel class="mb-4">{servicesPreview.tagline}</SectionLabel>
@@ -224,7 +218,7 @@ const tuiLines = [
 			</section>
 
 			<!-- Final CTA -->
-			<section class="px-section py-20" aria-label="Get started">
+			<section class="px-section py-section" aria-label="Get started">
 				<div class="max-w-[52ch]">
 					<h2 class="font-mono text-[28px] font-bold fg-strong leading-snug mb-5">{finalCta.title}</h2>
 					<p class="text-[16px] fg leading-relaxed mb-10">
@@ -250,10 +244,6 @@ const tuiLines = [
 					</div>
 				</div>
 			</section>
-
-			<SiteFooter />
-		</div>
-	</main>
 
 	<script define:vars={{ features }}>
 		const tuiBody = document.querySelector('.tui-visual-body');

@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, PageHeader } from '@/components';
+import { PageHeader } from '@/components';
 import { site } from '@/config';
 import { videos as pageMeta } from '@/config/pages';
 import { PAGE_SIZE } from '@/utils/articles';
@@ -29,74 +29,66 @@ const videosSchema = {
 ---
 
 <Layout {...pageMeta} jsonLd={videosSchema}>
-	<main id="main-content" class="landing">
-		<div class="landing-container">
-			<SiteHeader />
+	<PageHeader
+		prompt="$ yt-dlp --list-formats juststeveking"
+		title="Videos"
+		subtitle={`YouTube videos, livestreams, and shorts on PHP, Laravel, and API development. ${all.length} videos total.`}
+	/>
 
-			<PageHeader
-				prompt="$ yt-dlp --list-formats juststeveking"
-				title="Videos"
-				subtitle={`YouTube videos, livestreams, and shorts on PHP, Laravel, and API development. ${all.length} videos total.`}
-			/>
-
-			<section aria-label="Videos" class="px-section py-10 border-b border-edge">
-				<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-					{items.map(video => {
-						const thumb = video.data.thumbnail ?? `https://img.youtube.com/vi/${video.data.videoId}/maxresdefault.jpg`;
-						const detailUrl = `/videos/${video.id}`;
-						return (
-							<article class="flex flex-col rounded-2xl border border-edge bg-surface overflow-hidden group">
-								<a href={detailUrl} class="block overflow-hidden aspect-video bg-surface-weak shrink-0" tabindex="-1" aria-hidden="true">
-									<img
-										src={thumb}
-										alt=""
-										loading="lazy"
-										decoding="async"
-										class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-									/>
-								</a>
-								<div class="flex flex-col flex-1 p-4 gap-2">
-									<div class="flex items-center gap-2 flex-wrap">
-										<span class="font-mono text-[10px] uppercase tracking-[0.08em] fg-accent font-semibold">
-											{typeLabels[video.data.type] ?? video.data.type}
-										</span>
-										{video.data.difficulty && (
-											<span class="font-mono text-[10px] fg-weak uppercase tracking-[0.06em]">{video.data.difficulty}</span>
-										)}
-									</div>
-									<a
-										href={detailUrl}
-										class="text-[14px] font-medium fg-strong leading-snug no-underline transition-colors hover:fg-accent line-clamp-2"
-									>
-										{video.data.title}
-									</a>
-									<p class="text-[12px] fg leading-relaxed line-clamp-2 flex-1">{video.data.description}</p>
-									<div class="flex items-center justify-between gap-2 mt-auto pt-2 border-t border-edge-weak">
-										<span class="font-mono text-[11px] fg-weak">{video.data.duration}</span>
-										{video.data.views && (
-											<span class="font-mono text-[11px] fg-weak">{video.data.views} views</span>
-										)}
-									</div>
-								</div>
-							</article>
-						);
-					})}
-				</div>
-			</section>
-
-			{totalPages > 1 && (
-				<nav aria-label="Video pagination" class="flex items-center justify-between gap-4 px-section py-5 border-b border-edge flex-wrap">
-					<span class="font-mono text-[12px] fg-weak">Page 1 of {totalPages}</span>
-					<a
-						href="/videos/page/2"
-						class="font-mono text-[12px] fg-accent no-underline hover:underline"
-					>
-						Next page →
-					</a>
-				</nav>
-			)}
-
-			<SiteFooter />
+	<section aria-label="Videos" class="px-section py-section border-b border-edge">
+		<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+			{items.map(video => {
+				const thumb = video.data.thumbnail ?? `https://img.youtube.com/vi/${video.data.videoId}/maxresdefault.jpg`;
+				const detailUrl = `/videos/${video.id}`;
+				return (
+					<article class="flex flex-col rounded-2xl border border-edge bg-surface overflow-hidden group">
+						<a href={detailUrl} class="block overflow-hidden aspect-video bg-surface-weak shrink-0" tabindex="-1" aria-hidden="true">
+							<img
+								src={thumb}
+								alt=""
+								loading="lazy"
+								decoding="async"
+								class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+							/>
+						</a>
+						<div class="flex flex-col flex-1 p-4 gap-2">
+							<div class="flex items-center gap-2 flex-wrap">
+								<span class="font-mono text-[10px] uppercase tracking-[0.08em] fg-accent font-semibold">
+									{typeLabels[video.data.type] ?? video.data.type}
+								</span>
+								{video.data.difficulty && (
+									<span class="font-mono text-[10px] fg-weak uppercase tracking-[0.06em]">{video.data.difficulty}</span>
+								)}
+							</div>
+							<a
+								href={detailUrl}
+								class="text-[14px] font-medium fg-strong leading-snug no-underline transition-colors hover:fg-accent line-clamp-2"
+							>
+								{video.data.title}
+							</a>
+							<p class="text-[12px] fg leading-relaxed line-clamp-2 flex-1">{video.data.description}</p>
+							<div class="flex items-center justify-between gap-2 mt-auto pt-2 border-t border-edge-weak">
+								<span class="font-mono text-[11px] fg-weak">{video.data.duration}</span>
+								{video.data.views && (
+									<span class="font-mono text-[11px] fg-weak">{video.data.views} views</span>
+								)}
+							</div>
+						</div>
+					</article>
+				);
+			})}
 		</div>
-	</main>
+	</section>
+
+	{totalPages > 1 && (
+		<nav aria-label="Video pagination" class="flex items-center justify-between gap-4 px-section py-5 border-b border-edge flex-wrap">
+			<span class="font-mono text-[12px] fg-weak">Page 1 of {totalPages}</span>
+			<a
+				href="/videos/page/2"
+				class="font-mono text-[12px] fg-accent no-underline hover:underline"
+			>
+				Next page →
+			</a>
+		</nav>
+	)}
 </Layout>

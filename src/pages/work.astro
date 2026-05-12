@@ -1,6 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, PageHeader } from '@/components';
+import { PageHeader } from '@/components';
 import { ResumeRole, ResumeSkillGroup, ResumeListItem } from '@/components/resume';
 import { work as pageMeta } from '@/config/pages';
 import { site } from '@/config';
@@ -55,10 +55,6 @@ const workSchema = {
 ---
 
 <Layout {...pageMeta} jsonLd={workSchema}>
-	<main id="main-content" class="landing">
-		<div class="landing-container">
-			<SiteHeader />
-
 			<PageHeader
 				prompt={workPageMeta.prompt}
 				title={workPageMeta.title}
@@ -132,8 +128,4 @@ const workSchema = {
 					))}
 				</ul>
 			</section>
-
-			<SiteFooter />
-		</div>
-	</main>
 </Layout>

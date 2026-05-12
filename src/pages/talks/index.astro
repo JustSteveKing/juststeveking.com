@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, PageHeader } from '@/components';
+import { PageHeader } from '@/components';
 import { site } from '@/config';
 import { talks as pageMeta } from '@/config/pages';
 import { talksMeta } from '@/data/content';
@@ -30,133 +30,125 @@ const talksSchema = {
 ---
 
 <Layout {...pageMeta} jsonLd={talksSchema}>
-	<main id="main-content" class="landing">
-		<div class="landing-container">
-			<SiteHeader />
+	<PageHeader
+		prompt={talksMeta.prompt}
+		title={talksMeta.title}
+		subtitle={`${talksMeta.subtitle} ${all.length} talks across ${upcoming.length > 0 ? `${upcoming.length} upcoming and ` : ''}${past.length} past events.`}
+	/>
 
-			<PageHeader
-				prompt={talksMeta.prompt}
-				title={talksMeta.title}
-				subtitle={`${talksMeta.subtitle} ${all.length} talks across ${upcoming.length > 0 ? `${upcoming.length} upcoming and ` : ''}${past.length} past events.`}
-			/>
-
-			{upcoming.length > 0 && (
-				<section aria-label="Upcoming talks" class="border-b border-edge">
-					<div class="px-section py-4 border-b border-edge-weak">
-						<p class="font-mono text-[11px] uppercase tracking-widest fg-accent font-semibold">Upcoming</p>
-					</div>
-					<ul class="list-none p-0 m-0" role="list">
-						{upcoming.map(talk => (
-							<li class="border-b border-edge last:border-b-0">
-								<div class="flex flex-col gap-3 px-section py-6 transition-colors hover:bg-surface-weak sm:flex-row sm:justify-between sm:items-start sm:gap-6">
-									<div class="flex flex-col gap-1.5 min-w-0">
-										<div class="flex items-center gap-2 flex-wrap">
-											<span class={`font-mono text-[10px] uppercase tracking-[0.08em] font-semibold ${categoryColors[talk.data.category] ?? 'fg-weak'}`}>
-												{talk.data.category}
-											</span>
-										</div>
-										{talk.data.url ? (
-											<a
-												href={talk.data.url}
-												target="_blank"
-												rel="noopener noreferrer"
-												class="text-[15px] font-medium fg-strong leading-snug no-underline transition-colors hover:fg-accent"
-											>
-												{talk.data.title}
+	{upcoming.length > 0 && (
+		<section aria-label="Upcoming talks" class="border-b border-edge">
+			<div class="px-section py-4 border-b border-edge-weak">
+				<p class="font-mono text-[11px] uppercase tracking-widest fg-accent font-semibold">Upcoming</p>
+			</div>
+			<ul class="list-none p-0 m-0" role="list">
+				{upcoming.map(talk => (
+					<li class="border-b border-edge last:border-b-0">
+						<div class="flex flex-col gap-3 px-section py-4 md:py-6 transition-colors hover:bg-surface-weak sm:flex-row sm:justify-between sm:items-start sm:gap-6">
+							<div class="flex flex-col gap-1.5 min-w-0">
+								<div class="flex items-center gap-2 flex-wrap">
+									<span class={`font-mono text-[10px] uppercase tracking-[0.08em] font-semibold ${categoryColors[talk.data.category] ?? 'fg-weak'}`}>
+										{talk.data.category}
+									</span>
+								</div>
+								{talk.data.url ? (
+									<a
+										href={talk.data.url}
+										target="_blank"
+										rel="noopener noreferrer"
+										class="text-[15px] font-medium fg-strong leading-snug no-underline transition-colors hover:fg-accent"
+									>
+										{talk.data.title}
+									</a>
+								) : (
+									<span class="text-[15px] font-medium fg-strong leading-snug">{talk.data.title}</span>
+								)}
+								<span class="text-[13px] fg-weak">{talk.data.event} — {talk.data.location}</span>
+								{talk.data.description && (
+									<p class="text-[13px] fg leading-relaxed line-clamp-2">{talk.data.description}</p>
+								)}
+								{(talk.data.slides || talk.data.video) && (
+									<div class="flex items-center gap-3 mt-1">
+										{talk.data.slides && (
+											<a href={talk.data.slides} target="_blank" rel="noopener noreferrer" class="font-mono text-[11px] fg-accent no-underline hover:underline">
+												Slides →
 											</a>
-										) : (
-											<span class="text-[15px] font-medium fg-strong leading-snug">{talk.data.title}</span>
 										)}
-										<span class="text-[13px] fg-weak">{talk.data.event} — {talk.data.location}</span>
-										{talk.data.description && (
-											<p class="text-[13px] fg leading-relaxed line-clamp-2">{talk.data.description}</p>
-										)}
-										{(talk.data.slides || talk.data.video) && (
-											<div class="flex items-center gap-3 mt-1">
-												{talk.data.slides && (
-													<a href={talk.data.slides} target="_blank" rel="noopener noreferrer" class="font-mono text-[11px] fg-accent no-underline hover:underline">
-														Slides →
-													</a>
-												)}
-												{talk.data.video && (
-													<a href={talk.data.video} target="_blank" rel="noopener noreferrer" class="font-mono text-[11px] fg-accent no-underline hover:underline">
-														Video →
-													</a>
-												)}
-											</div>
+										{talk.data.video && (
+											<a href={talk.data.video} target="_blank" rel="noopener noreferrer" class="font-mono text-[11px] fg-accent no-underline hover:underline">
+												Video →
+											</a>
 										)}
 									</div>
-									<div class="shrink-0">
-										<time class="font-mono text-[12px] fg-weak whitespace-nowrap" datetime={talk.data.date.toISOString()}>
-											{formatDate(talk.data.date)}
-										</time>
-									</div>
-								</div>
-							</li>
-						))}
-					</ul>
-				</section>
-			)}
-
-			<section aria-label="Past talks">
-				{upcoming.length > 0 && (
-					<div class="px-section py-4 border-b border-edge-weak">
-						<p class="font-mono text-[11px] uppercase tracking-widest fg-weak font-semibold">Past</p>
-					</div>
-				)}
-				<ul class="list-none p-0 m-0" role="list">
-					{past.map(talk => (
-						<li class="border-b border-edge last:border-b-0">
-							<div class="flex flex-col gap-3 px-section py-6 transition-colors hover:bg-surface-weak sm:flex-row sm:justify-between sm:items-start sm:gap-6">
-								<div class="flex flex-col gap-1.5 min-w-0">
-									<div class="flex items-center gap-2 flex-wrap">
-										<span class={`font-mono text-[10px] uppercase tracking-[0.08em] font-semibold ${categoryColors[talk.data.category] ?? 'fg-weak'}`}>
-											{talk.data.category}
-										</span>
-									</div>
-									{talk.data.url ? (
-										<a
-											href={talk.data.url}
-											target="_blank"
-											rel="noopener noreferrer"
-											class="text-[15px] font-medium fg-strong leading-snug no-underline transition-colors hover:fg-accent"
-										>
-											{talk.data.title}
-										</a>
-									) : (
-										<span class="text-[15px] font-medium fg-strong leading-snug">{talk.data.title}</span>
-									)}
-									<span class="text-[13px] fg-weak">{talk.data.event} — {talk.data.location}</span>
-									{talk.data.description && (
-										<p class="text-[13px] fg leading-relaxed line-clamp-2">{talk.data.description}</p>
-									)}
-									{(talk.data.slides || talk.data.video) && (
-										<div class="flex items-center gap-3 mt-1">
-											{talk.data.slides && (
-												<a href={talk.data.slides} target="_blank" rel="noopener noreferrer" class="font-mono text-[11px] fg-accent no-underline hover:underline">
-													Slides →
-												</a>
-											)}
-											{talk.data.video && (
-												<a href={talk.data.video} target="_blank" rel="noopener noreferrer" class="font-mono text-[11px] fg-accent no-underline hover:underline">
-													Video →
-												</a>
-											)}
-										</div>
-									)}
-								</div>
-								<div class="shrink-0">
-									<time class="font-mono text-[12px] fg-weak whitespace-nowrap" datetime={talk.data.date.toISOString()}>
-										{formatDate(talk.data.date)}
-									</time>
-								</div>
+								)}
 							</div>
-						</li>
-					))}
-				</ul>
-			</section>
+							<div class="shrink-0">
+								<time class="font-mono text-[12px] fg-weak whitespace-nowrap" datetime={talk.data.date.toISOString()}>
+									{formatDate(talk.data.date)}
+								</time>
+							</div>
+						</div>
+					</li>
+				))}
+			</ul>
+		</section>
+	)}
 
-			<SiteFooter />
-		</div>
-	</main>
+	<section aria-label="Past talks">
+		{upcoming.length > 0 && (
+			<div class="px-section py-4 border-b border-edge-weak">
+				<p class="font-mono text-[11px] uppercase tracking-widest fg-weak font-semibold">Past</p>
+			</div>
+		)}
+		<ul class="list-none p-0 m-0" role="list">
+			{past.map(talk => (
+				<li class="border-b border-edge last:border-b-0">
+					<div class="flex flex-col gap-3 px-section py-4 md:py-6 transition-colors hover:bg-surface-weak sm:flex-row sm:justify-between sm:items-start sm:gap-6">
+						<div class="flex flex-col gap-1.5 min-w-0">
+							<div class="flex items-center gap-2 flex-wrap">
+								<span class={`font-mono text-[10px] uppercase tracking-[0.08em] font-semibold ${categoryColors[talk.data.category] ?? 'fg-weak'}`}>
+									{talk.data.category}
+								</span>
+							</div>
+							{talk.data.url ? (
+								<a
+									href={talk.data.url}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="text-[15px] font-medium fg-strong leading-snug no-underline transition-colors hover:fg-accent"
+								>
+									{talk.data.title}
+								</a>
+							) : (
+								<span class="text-[15px] font-medium fg-strong leading-snug">{talk.data.title}</span>
+							)}
+							<span class="text-[13px] fg-weak">{talk.data.event} — {talk.data.location}</span>
+							{talk.data.description && (
+								<p class="text-[13px] fg leading-relaxed line-clamp-2">{talk.data.description}</p>
+							)}
+							{(talk.data.slides || talk.data.video) && (
+								<div class="flex items-center gap-3 mt-1">
+									{talk.data.slides && (
+										<a href={talk.data.slides} target="_blank" rel="noopener noreferrer" class="font-mono text-[11px] fg-accent no-underline hover:underline">
+											Slides →
+										</a>
+									)}
+									{talk.data.video && (
+										<a href={talk.data.video} target="_blank" rel="noopener noreferrer" class="font-mono text-[11px] fg-accent no-underline hover:underline">
+											Video →
+										</a>
+									)}
+								</div>
+							)}
+						</div>
+						<div class="shrink-0">
+							<time class="font-mono text-[12px] fg-weak whitespace-nowrap" datetime={talk.data.date.toISOString()}>
+								{formatDate(talk.data.date)}
+							</time>
+						</div>
+					</div>
+				</li>
+			))}
+		</ul>
+	</section>
 </Layout>
