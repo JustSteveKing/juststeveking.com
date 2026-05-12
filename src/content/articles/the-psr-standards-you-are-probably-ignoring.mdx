@@ -1,0 +1,652 @@
+---
+title: "The PSR Standards You Are Probably Ignoring"
+description: "Five PSR standards that most PHP developers skip. Master them and write code that works anywhere, tested easily, and tied to nothing."
+category: "PHP"
+tags: ["php", "psr", "architecture", "standards"]
+pubDate: "2026-05-11"
+featured: false
+draft: false
+---
+
+Most PHP developers know PSR-4. They know autoloading works, composer handles it, and they never have to think about it again. A fair number know PSR-12, or at least they have a linter enforcing it without them reading the spec. PSR-3 gets a mention whenever someone reaches for a logger.
+
+But then there is a second tier of standards that the PHP-FIG produced that are genuinely transformative for how you write PHP - and they get ignored almost entirely in favour of whatever abstraction your framework of choice has bolted on top of them. PSR-7, PSR-14, PSR-15, PSR-17, and PSR-18 describe a complete, coherent model for writing HTTP-aware PHP that is not tied to any one framework, any one HTTP client, or any one event dispatcher. Used together, they let you write code that works anywhere.
+
+I want to walk through each one, show you what they actually define, and demonstrate what you can build with them using nothing but pure PHP and a few well-chosen packages that implement the interfaces correctly.
+
+## Why This Matters
+
+Before getting into the specifics, it is worth understanding what PHP-FIG is actually trying to solve.
+
+The problem, historically, was that every framework built its own HTTP abstraction, its own event system, its own HTTP client, and none of them talked to each other. If you wrote a library that sent HTTP requests, you had to pick Guzzle or Symfony or curl and your users were stuck with your choice. If you wrote middleware, it worked in one framework and nowhere else.
+
+The PSR standards solve this by defining interfaces that describe behaviour, not implementation. A package that accepts a `Psr\Http\Message\RequestInterface` will work with any PSR-7 compliant request object, regardless of which library produced it. That is the deal. Write to the interface, not the implementation.
+
+Once you internalise that, everything else follows.
+
+## PSR-7: HTTP Message Interfaces
+
+PSR-7 defines a set of interfaces for representing HTTP messages - requests and responses. It covers both the client side (you are sending a request out to an API) and the server side (you are receiving a request from a browser or client).
+
+The core interfaces are:
+
+- `Psr\Http\Message\MessageInterface` - the base for both requests and responses, covering headers and body
+- `Psr\Http\Message\RequestInterface` - an outgoing client-side HTTP request
+- `Psr\Http\Message\ServerRequestInterface` - an incoming server-side HTTP request, with parsed body, cookies, uploaded files, and server params
+- `Psr\Http\Message\ResponseInterface` - an HTTP response
+- `Psr\Http\Message\StreamInterface` - the message body, represented as a stream
+- `Psr\Http\Message\UriInterface` - a URI
+
+The most important thing to understand about PSR-7 is that it is immutable. Every method that would modify state instead returns a new instance with the modification applied. This is deliberate. HTTP messages are values - they describe a state of affairs at a point in time - and treating them as mutable objects causes subtle bugs when you pass them through middleware stacks or middleware chains that need to inspect the original.
+
+Here is what working with a PSR-7 response looks like using `nyholm/psr7`, which is a lightweight, zero-dependency PSR-7 implementation:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Nyholm\Psr7\Response;
+use Nyholm\Psr7\Stream;
+
+$body = Stream::create((string) json_encode(['status' => 'ok', 'user' => 'steve'], JSON_THROW_ON_ERROR));
+
+$response = new Response(
+    status: 200,
+    headers: ['Content-Type' => 'application/json'],
+    body: $body,
+);
+
+// Because PSR-7 is immutable, withHeader returns a new instance
+$response = $response->withHeader('X-Request-Id', 'abc-123');
+
+echo $response->getStatusCode();             // 200
+echo $response->getHeaderLine('Content-Type'); // application/json
+echo $response->getBody();                    // {"status":"ok","user":"steve"}
+```
+
+And a server-side request:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Nyholm\Psr7\ServerRequest;
+
+$request = new ServerRequest(
+    method: 'POST',
+    uri: 'https://api.example.com/v1/users',
+    headers: ['Content-Type' => 'application/json'],
+    body: '{"name":"Steve","email":"steve@example.com"}',
+);
+
+$parsed = json_decode((string) $request->getBody(), true);
+
+echo $request->getMethod();           // POST
+echo $request->getUri()->getPath();   // /v1/users
+echo $parsed['name'];                 // Steve
+```
+
+Nothing here is framework-specific. Any code that accepts a `ServerRequestInterface` will work with this object.
+
+## PSR-17: HTTP Factories
+
+PSR-17 is the one that almost nobody talks about, which is a shame because it solves an obvious problem: how do you create PSR-7 objects without depending on a specific implementation?
+
+If your library needs to create a response, you cannot just call `new Nyholm\Psr7\Response()` without coupling yourself to Nyholm. PSR-17 defines factory interfaces that let you delegate object creation to whatever implementation the user has installed:
+
+- `Psr\Http\Message\RequestFactoryInterface`
+- `Psr\Http\Message\ResponseFactoryInterface`
+- `Psr\Http\Message\ServerRequestFactoryInterface`
+- `Psr\Http\Message\StreamFactoryInterface`
+- `Psr\Http\Message\UploadedFileFactoryInterface`
+- `Psr\Http\Message\UriFactoryInterface`
+
+Here is why this matters in practice. Say you are writing a library that handles API responses. Without PSR-17, you either hardcode a dependency on a specific PSR-7 implementation, or you ask users to pass in pre-built response objects. With PSR-17, you ask for a factory and let the user bring their own implementation:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+
+final readonly class JsonResponder
+{
+    public function __construct(
+        private ResponseFactoryInterface $responseFactory,
+        private StreamFactoryInterface $streamFactory,
+    ) {}
+
+    public function respond(mixed $data, int $status = 200): ResponseInterface
+    {
+        $body = $this->streamFactory->createStream(
+            (string) json_encode($data, JSON_THROW_ON_ERROR),
+        );
+
+        return $this->responseFactory
+            ->createResponse($status)
+            ->withHeader('Content-Type', 'application/json')
+            ->withBody($body);
+    }
+}
+```
+
+Wiring this up with Nyholm:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Nyholm\Psr7\Factory\Psr17Factory;
+
+$factory = new Psr17Factory();
+
+$responder = new JsonResponder(
+    responseFactory: $factory,
+    streamFactory: $factory,
+);
+
+$response = $responder->respond(['id' => 1, 'name' => 'Steve']);
+
+echo $response->getStatusCode();               // 200
+echo $response->getHeaderLine('Content-Type'); // application/json
+```
+
+Note that `Psr17Factory` from Nyholm implements all the PSR-17 factory interfaces, so a single instance satisfies both constructor parameters. This is a common pattern.
+
+PSR-7 and PSR-17 belong together. If you are using one, you should be using the other.
+
+## PSR-15: HTTP Server Request Handlers
+
+PSR-15 defines two interfaces for handling server-side HTTP requests.
+
+The first is `RequestHandlerInterface`:
+
+```php
+namespace Psr\Http\Server;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+interface RequestHandlerInterface
+{
+    public function handle(ServerRequestInterface $request): ResponseInterface;
+}
+```
+
+This is the thing at the end of the chain. It receives a request and returns a response. Your controller, your final handler, your application entry point - this is what it looks like.
+
+The second is `MiddlewareInterface`:
+
+```php
+namespace Psr\Http\Server;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+interface MiddlewareInterface
+{
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler,
+    ): ResponseInterface;
+}
+```
+
+Middleware receives a request and the next handler in the chain. It can inspect or modify the request before passing it on, inspect or modify the response coming back, short-circuit the chain by returning a response without calling `$handler->handle()`, or let the request pass through unchanged.
+
+Here is a concrete authentication middleware:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+final readonly class AuthMiddleware implements MiddlewareInterface
+{
+    public function __construct(
+        private ResponseFactoryInterface $responseFactory,
+    ) {}
+
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler,
+    ): ResponseInterface {
+        $token = $request->getHeaderLine('Authorization');
+
+        if ($token === '' || ! str_starts_with($token, 'Bearer ')) {
+            return $this->responseFactory
+                ->createResponse(401)
+                ->withHeader('WWW-Authenticate', 'Bearer');
+        }
+
+        // Attach the verified token to the request for downstream use
+        $request = $request->withAttribute('token', substr($token, 7));
+
+        return $handler->handle($request);
+    }
+}
+```
+
+And a simple dispatcher that chains middleware together:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+final class MiddlewareDispatcher implements RequestHandlerInterface
+{
+    /** @var list<MiddlewareInterface> */
+    private array $middleware = [];
+
+    public function __construct(
+        private readonly RequestHandlerInterface $fallback,
+    ) {}
+
+    public function pipe(MiddlewareInterface $middleware): self
+    {
+        $clone = clone $this;
+        $clone->middleware[] = $middleware;
+
+        return $clone;
+    }
+
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        if ($this->middleware === []) {
+            return $this->fallback->handle($request);
+        }
+
+        $middleware = $this->middleware[0];
+        $remaining = clone $this;
+        array_shift($remaining->middleware);
+
+        return $middleware->process($request, $remaining);
+    }
+}
+```
+
+Wiring it together:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// AuthMiddleware and MiddlewareDispatcher are defined in the samples above
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7\ServerRequest;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+$factory = new Psr17Factory();
+
+// The final handler - your application logic
+$handler = new class ($factory) implements RequestHandlerInterface {
+    public function __construct(
+        private readonly ResponseFactoryInterface $responseFactory,
+    ) {}
+
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        $token = $request->getAttribute('token');
+
+        return $this->responseFactory
+            ->createResponse(200)
+            ->withHeader('Content-Type', 'application/json');
+    }
+};
+
+$dispatcher = (new MiddlewareDispatcher($handler))
+    ->pipe(new AuthMiddleware($factory));
+
+$request = new ServerRequest('GET', '/api/users', [
+    'Authorization' => 'Bearer my-token-here',
+]);
+
+$response = $dispatcher->handle($request);
+
+echo $response->getStatusCode(); // 200
+```
+
+This is a working HTTP middleware stack in under 100 lines of pure PHP. No framework. No magic. The same `AuthMiddleware` class will work in Slim, in Mezzio, or in your own application - because it implements the interface, not a framework-specific contract.
+
+## PSR-14: Event Dispatcher
+
+PSR-14 defines a simple model for event dispatching and listening. It has three interfaces:
+
+`EventDispatcherInterface` - dispatches an event:
+
+```php
+namespace Psr\EventDispatcher;
+
+interface EventDispatcherInterface
+{
+    public function dispatch(object $event): object;
+}
+```
+
+`ListenerProviderInterface` - returns the listeners for a given event:
+
+```php
+namespace Psr\EventDispatcher;
+
+interface ListenerProviderInterface
+{
+    /** @return iterable<callable> */
+    public function getListenersForEvent(object $event): iterable;
+}
+```
+
+`StoppableEventInterface` - an optional interface for events that can stop propagation:
+
+```php
+namespace Psr\EventDispatcher;
+
+interface StoppableEventInterface
+{
+    public function isPropagationStopped(): bool;
+}
+```
+
+The separation between the dispatcher and the listener provider is deliberate and important. The dispatcher handles iteration and propagation. The listener provider handles the question of which listeners care about which events. Keeping them separate means you can swap out listener discovery strategies - a simple array-based provider, a container-aware provider, a provider that reads attribute annotations - without changing your dispatcher.
+
+Here is a working implementation:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\ListenerProviderInterface;
+use Psr\EventDispatcher\StoppableEventInterface;
+
+final class EventDispatcher implements EventDispatcherInterface
+{
+    public function __construct(
+        private readonly ListenerProviderInterface $listenerProvider,
+    ) {}
+
+    public function dispatch(object $event): object
+    {
+        $stoppable = $event instanceof StoppableEventInterface;
+
+        foreach ($this->listenerProvider->getListenersForEvent($event) as $listener) {
+            if ($stoppable && $event->isPropagationStopped()) {
+                break;
+            }
+
+            $listener($event);
+        }
+
+        return $event;
+    }
+}
+```
+
+A simple listener provider backed by an array:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Psr\EventDispatcher\ListenerProviderInterface;
+
+final class ListenerProvider implements ListenerProviderInterface
+{
+    /** @var array<class-string, list<callable>> */
+    private array $listeners = [];
+
+    public function on(string $eventClass, callable $listener): void
+    {
+        $this->listeners[$eventClass][] = $listener;
+    }
+
+    /** @return iterable<int, callable> */
+    public function getListenersForEvent(object $event): iterable
+    {
+        return $this->listeners[$event::class] ?? [];
+    }
+}
+```
+
+An event class is just a plain PHP object - no base class required:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+final class UserRegistered
+{
+    public function __construct(
+        public readonly string $userId,
+        public readonly string $email,
+        public readonly \DateTimeImmutable $registeredAt,
+    ) {}
+}
+```
+
+Wiring it up:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+$provider = new ListenerProvider();
+
+$provider->on(UserRegistered::class, function (UserRegistered $event): void {
+    echo "Sending welcome email to {$event->email}\n";
+});
+
+$provider->on(UserRegistered::class, function (UserRegistered $event): void {
+    echo "Provisioning account for user {$event->userId}\n";
+});
+
+$dispatcher = new EventDispatcher($provider);
+
+$dispatcher->dispatch(new UserRegistered(
+    userId: 'usr_01jt3x9a2b3c',
+    email: 'steve@example.com',
+    registeredAt: new \DateTimeImmutable(),
+));
+
+// Output:
+// Sending welcome email to steve@example.com
+// Provisioning account for user usr_01jt3x9a2b3c
+```
+
+Here is the thing about PSR-14 that trips people up: the event is returned from `dispatch()`. This is intentional. It allows listeners to enrich the event object, add metadata, or signal results back to the caller. If you dispatch a `ValidatePayment` event and your listener sets a `$result` property on it, the caller can read that property from the returned event.
+
+Combined with `StoppableEventInterface`, this gives you a clean model for short-circuiting pipelines. Dispatch an event that implements `StoppableEventInterface`, have the first listener that rejects something call a method to stop propagation, and the remaining listeners never run. No exceptions thrown. No global state mutated.
+
+## PSR-18: HTTP Client
+
+PSR-18 is arguably the most practically impactful standard of the group for anyone writing libraries or integrating with third-party APIs.
+
+It defines a single interface:
+
+```php
+namespace Psr\Http\Client;
+
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+
+interface ClientInterface
+{
+    public function sendRequest(RequestInterface $request): ResponseInterface;
+}
+```
+
+That is the entire interface. Send a PSR-7 request, get back a PSR-7 response. Any exception that is not about the response itself (network failures, DNS failures) must implement `Psr\Http\Client\ClientExceptionInterface`.
+
+There are two specific exception interfaces: `NetworkExceptionInterface` for failures where no response was received, and `RequestExceptionInterface` for malformed requests that cannot be sent.
+
+Here is why this changes how you write library code. Instead of hardcoding Guzzle or cURL, you accept a `ClientInterface` and let the user bring their own HTTP client. Guzzle implements PSR-18. Symfony's HTTP client implements PSR-18. So does cURL-backed clients like `php-http/curl-client`. Your library does not care which one is used:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
+
+final readonly class GithubClient
+{
+    private const BASE_URI = 'https://api.github.com';
+
+    public function __construct(
+        private ClientInterface $httpClient,
+        private RequestFactoryInterface $requestFactory,
+        private string $token,
+    ) {}
+
+    public function getUser(string $username): array
+    {
+        $request = $this->requestFactory
+            ->createRequest('GET', self::BASE_URI . '/users/' . $username)
+            ->withHeader('Authorization', 'Bearer ' . $this->token)
+            ->withHeader('Accept', 'application/vnd.github.v3+json')
+            ->withHeader('User-Agent', 'my-app/1.0');
+
+        $response = $this->httpClient->sendRequest($request);
+
+        if ($response->getStatusCode() !== 200) {
+            throw new \RuntimeException(
+                sprintf(
+                    'GitHub API returned %d for user %s',
+                    $response->getStatusCode(),
+                    $username,
+                ),
+            );
+        }
+
+        $data = json_decode(
+            json: (string) $response->getBody(),
+            associative: true,
+            flags: JSON_THROW_ON_ERROR,
+        );
+
+        if (! is_array($data)) {
+            throw new \RuntimeException('Unexpected response format from GitHub API');
+        }
+
+        return $data;
+    }
+}
+```
+
+The user of this class can pass in any PSR-18 compliant client. Guzzle 7, Symfony HTTP Client, a mock client in tests. The library does not care. Swapping from Guzzle to Symfony's HTTP client in production is a one-line change at the composition root - the `GithubClient` class is untouched.
+
+For tests, you can implement a dead-simple mock client:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+
+final class MockHttpClient implements ClientInterface
+{
+    /** @var list<ResponseInterface> */
+    private array $responses = [];
+
+    public function queue(ResponseInterface $response): void
+    {
+        $this->responses[] = $response;
+    }
+
+    public function sendRequest(RequestInterface $request): ResponseInterface
+    {
+        if ($this->responses === []) {
+            // In production code, this would implement ClientExceptionInterface.
+            // For a test double, a plain RuntimeException is sufficient.
+            throw new \RuntimeException('No responses queued in MockHttpClient');
+        }
+
+        return array_shift($this->responses);
+    }
+}
+```
+
+Testing `GithubClient` without touching the network:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7\Response;
+
+$factory = new Psr17Factory();
+$mockClient = new MockHttpClient();
+
+$body = $factory->createStream((string) json_encode([
+    'login' => 'juststeveking',
+    'name' => 'Steve',
+    'public_repos' => 42,
+], JSON_THROW_ON_ERROR));
+
+$mockClient->queue(
+    (new Response(200))
+        ->withHeader('Content-Type', 'application/json')
+        ->withBody($body),
+);
+
+$client = new GithubClient(
+    httpClient: $mockClient,
+    requestFactory: $factory,
+    token: 'test-token',
+);
+
+$user = $client->getUser('juststeveking');
+
+assert($user['login'] === 'juststeveking');
+assert($user['public_repos'] === 42);
+```
+
+Fast, deterministic, and no network dependency.
+
+## Putting It Together
+
+What these five standards give you, when used in combination, is a complete toolkit for building PHP code that makes no assumptions about the runtime environment.
+
+PSR-7 and PSR-17 give you a shared language for describing HTTP messages and creating them without coupling to an implementation. PSR-15 gives you a composable model for handling server requests through middleware. PSR-14 gives you a lightweight, decoupled event system. PSR-18 gives you an HTTP client abstraction that lets your code work with any compliant client.
+
+The packages you need to get started are minimal. `psr/http-message`, `psr/http-factory`, `psr/http-server-handler`, `psr/http-server-middleware`, `psr/event-dispatcher`, and `psr/http-client` are the interface packages from PHP-FIG. `nyholm/psr7` gives you a production-ready PSR-7 and PSR-17 implementation in a single package with no transitive dependencies. For PSR-18, Guzzle 7 ships with support out of the box, as does `symfony/http-client` with the `symfony/http-client-psr18` bridge.
+
+Frameworks have not replaced these standards. The good ones are built on top of them. Slim 4, Mezzio, and others use PSR-7 and PSR-15 natively throughout their stacks. What that means in practice is that middleware you write to the PSR-15 interface works in any of those frameworks without modification. HTTP clients you write against PSR-18 work anywhere a PSR-18 implementation is available.
+
+The argument for learning these standards is not that you should stop using frameworks. It is that the code you write when you understand them is better code - more portable, more testable, more explicit about its dependencies, and genuinely independent of the tool that runs it.
+
+The framework is the delivery mechanism. The interfaces are the architecture.
+
+*Want to go further? The PHP-FIG meta-document for each PSR explains the design decisions behind the interfaces in detail - including what was deliberately left out. Reading them alongside the code is worth your time.*
