@@ -42,7 +42,7 @@ $ php artisan migrate
 
 In your `.env` file add the following:
 
-```env
+```dotenv
 LOG_CHANNEL=eloquent
 ```
 

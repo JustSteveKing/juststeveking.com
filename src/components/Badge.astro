@@ -1,0 +1,23 @@
+---
+interface Props {
+  class?: string;
+  variant?: 'default' | 'amber' | 'violet' | 'surface';
+}
+
+const { class: className, variant = 'default' } = Astro.props;
+
+const variants = {
+  default: 'border-edge bg-surface/80 fg-weak',
+  amber: 'border-amber-500/30 bg-amber-500/10 text-amber-500',
+  violet: 'border-violet-500/30 bg-violet-500/10 text-violet-400',
+  surface: 'border-edge bg-surface/70 backdrop-blur fg-weak',
+};
+---
+
+<span class:list={[
+  'inline-flex rounded-full border px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em]',
+  variants[variant],
+  className
+]}>
+  <slot />
+</span>

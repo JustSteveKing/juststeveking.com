@@ -3,13 +3,14 @@ import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
 import { SiteHeader, SiteFooter } from '@/components';
 import ApiDiagnostic from '@/components/ApiDiagnostic.svelte';
+import Card from '@/components/Card.astro';
+import SectionLabel from '@/components/SectionLabel.astro';
 import { home as pageMeta } from '@/config/pages';
 import { site } from '@/config';
 import {
 	heroContent,
 	whatContent,
 	features,
-	tuiVisual,
 	homeStats as stats,
 	homeProblems as problems,
 	homeFramework as framework,
@@ -35,16 +36,17 @@ const homeSchema = {
 
 
 // Build tui visual HTML from structured JSON data
+const initialVisual = features[0].visual;
 const tuiLines = [
-	`<span class="tui-visual-dim">$</span> ${tuiVisual.command}`,
+	`<span class="tui-visual-dim">$</span> ${initialVisual.command}`,
 	'',
-	`  ${tuiVisual.scanning}`,
+	`  ${initialVisual.scanning}`,
 	'',
-	...tuiVisual.results.map(r =>
+	...initialVisual.results.map(r =>
 		`  <span class="tui-visual-dim">●</span> ${r.method.padEnd(7)} <span class="tui-visual-strong">${r.path.padEnd(22)}</span> <span class="tui-visual-dim">${r.detail.padEnd(13)}</span> [${r.status}]`
 	),
 	'',
-	`  <span class="tui-visual-green">${tuiVisual.summary}</span>`,
+	`  <span class="tui-visual-green">${initialVisual.summary}</span>`,
 ].join('\n');
 ---
 
@@ -120,14 +122,14 @@ const tuiLines = [
 
 			<!-- Stats -->
 			<section class="px-section py-16 border-b border-edge" aria-label={stats.tagline}>
-				<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-10">{stats.tagline}</p>
+				<SectionLabel class="mb-10">{stats.tagline}</SectionLabel>
 				<div class="grid gap-8 sm:grid-cols-3">
 					{stats.items.map(stat => (
-						<div class="flex flex-col gap-3 p-8 rounded-2xl border border-edge bg-surface">
+						<Card class="flex flex-col gap-3 p-8">
 							<span class="font-mono text-[48px] font-bold fg-accent leading-none">{stat.value}</span>
 							<p class="text-[15px] font-semibold fg-strong leading-snug">{stat.label}</p>
 							<p class="text-[14px] fg leading-relaxed">{stat.detail}</p>
-						</div>
+						</Card>
 					))}
 				</div>
 			</section>
@@ -140,11 +142,11 @@ const tuiLines = [
 				</div>
 				<div class="grid gap-6 sm:grid-cols-3">
 					{problems.items.map(problem => (
-						<div class="flex flex-col gap-4 p-8 rounded-2xl border border-edge bg-surface">
+						<Card class="flex flex-col gap-4 p-8">
 							<p class="font-mono text-[11px] fg-weak" aria-hidden="true">{problem.prompt}</p>
 							<h3 class="text-[16px] font-semibold fg-strong leading-snug">{problem.title}</h3>
 							<p class="text-[15px] fg leading-relaxed">{problem.desc}</p>
-						</div>
+						</Card>
 					))}
 				</div>
 			</section>
@@ -152,7 +154,7 @@ const tuiLines = [
 			<!-- Framework -->
 			<section class="px-section py-16 border-b border-edge" aria-label="API Stability Framework">
 				<div class="max-w-[56ch] mb-12">
-					<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-4">{framework.tagline}</p>
+					<SectionLabel class="mb-4">{framework.tagline}</SectionLabel>
 					<h2 class="font-mono text-[24px] font-bold fg-strong leading-snug mb-4">{framework.title}</h2>
 					<p class="text-[16px] fg leading-relaxed">{framework.description}</p>
 				</div>
@@ -172,10 +174,10 @@ const tuiLines = [
 
 			<!-- Testimonials -->
 			<section class="px-section py-16 border-b border-edge" aria-label="Testimonials">
-				<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-10">Trusted by teams</p>
+				<SectionLabel class="mb-10">Trusted by teams</SectionLabel>
 				<div class="grid gap-6 sm:grid-cols-2">
 					{testimonials.map(t => (
-						<figure class="flex flex-col gap-5 p-8 rounded-2xl border border-edge bg-surface">
+						<Card as="figure" class="flex flex-col gap-5 p-8">
 							<blockquote class="text-[16px] fg leading-relaxed m-0 flex-1">
 								<p>"{t.data.quote}"</p>
 							</blockquote>
@@ -195,7 +197,7 @@ const tuiLines = [
 									<p class="font-mono text-[12px] fg-weak">{t.data.author.role}, {t.data.author.company}</p>
 								</div>
 							</figcaption>
-						</figure>
+						</Card>
 					))}
 				</div>
 			</section>
@@ -204,19 +206,19 @@ const tuiLines = [
 			<section class="px-section py-16 border-b border-edge" aria-label="Services">
 				<div class="flex items-end justify-between gap-4 flex-wrap mb-12">
 					<div class="max-w-[44ch]">
-						<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-4">{servicesPreview.tagline}</p>
+						<SectionLabel class="mb-4">{servicesPreview.tagline}</SectionLabel>
 						<h2 class="font-mono text-[24px] font-bold fg-strong leading-snug">{servicesPreview.title}</h2>
 					</div>
 					<a href="/services" class="font-mono text-[14px] fg-accent no-underline hover:underline shrink-0">View all services →</a>
 				</div>
 				<div class="grid gap-6 sm:grid-cols-3">
 					{servicesPreview.items.map(service => (
-						<div class="flex flex-col gap-4 p-8 rounded-2xl border border-edge bg-surface">
+						<Card class="flex flex-col gap-4 p-8">
 							<p class="font-mono text-[11px] fg-weak" aria-hidden="true">{service.prompt}</p>
 							<h3 class="text-[16px] font-semibold fg-strong">{service.title}</h3>
 							<p class="text-[15px] fg leading-relaxed flex-1">{service.desc}</p>
 							<p class="text-[13px] fg-weak italic border-t border-edge-weak pt-4 mt-auto">{service.benefit}</p>
-						</div>
+						</Card>
 					))}
 				</div>
 			</section>
@@ -253,9 +255,27 @@ const tuiLines = [
 		</div>
 	</main>
 
-	<script>
-		const featureItems = document.querySelectorAll<HTMLElement>('.feature-item');
-		featureItems.forEach(item => {
+	<script define:vars={{ features }}>
+		const tuiBody = document.querySelector('.tui-visual-body');
+		const featureItems = document.querySelectorAll('.feature-item');
+
+		function buildTuiHtml(visual) {
+			const results = visual.results.map(r =>
+				`  <span class="tui-visual-dim">●</span> ${r.method.padEnd(7)} <span class="tui-visual-strong">${r.path.padEnd(22)}</span> <span class="tui-visual-dim">${r.detail.padEnd(13)}</span> [${r.status}]`
+			).join('\n');
+
+			return [
+				`<span class="tui-visual-dim">$</span> ${visual.command}`,
+				'',
+				`  ${visual.scanning}`,
+				'',
+				results,
+				'',
+				`  <span class="tui-visual-green">${visual.summary}</span>`,
+			].join('\n');
+		}
+
+		featureItems.forEach((item, index) => {
 			const activate = () => {
 				featureItems.forEach(i => {
 					i.classList.remove('active');
@@ -267,9 +287,14 @@ const tuiLines = [
 				item.setAttribute('aria-pressed', 'true');
 				const bull = item.querySelector('.bullet');
 				if (bull) bull.textContent = '[o]';
+
+				// Update TUI visual
+				if (tuiBody && features[index] && features[index].visual) {
+					tuiBody.innerHTML = buildTuiHtml(features[index].visual);
+				}
 			};
 			item.addEventListener('click', activate);
-			item.addEventListener('keydown', (e: KeyboardEvent) => {
+			item.addEventListener('keydown', (e) => {
 				if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
 			});
 		});

@@ -1,6 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, PageHeader } from '@/components';
+import { SiteHeader, SiteFooter, PageHeader, Card, Badge, SectionLabel } from '@/components';
 import { services as pageMeta } from '@/config/pages';
 import { site } from '@/config';
 import { servicesOfferings as offerings, servicesProcess as process } from '@/data/content';
@@ -29,13 +29,13 @@ const servicesSchema = {
 			<section class="px-section py-12 border-b border-edge" aria-label="Service offerings">
 				<div class="grid gap-6 sm:grid-cols-2">
 					{offerings.map(service => (
-						<article class="flex flex-col rounded-2xl border border-edge bg-surface overflow-hidden">
+						<Card as="article" class="flex flex-col overflow-hidden">
 							<div class="px-6 py-5 border-b border-edge-weak bg-surface-weak">
 								<p class="font-mono text-[11px] fg-weak mb-2" aria-hidden="true">{service.prompt}</p>
 								<div class="flex items-center gap-2 flex-wrap">
 									<h2 class="text-base font-bold fg-strong">{service.title}</h2>
 									{service.badge && (
-										<span class="font-mono text-[10px] font-bold fg-accent border border-accent rounded-[3px] px-1.5 py-0.5 uppercase tracking-[0.08em]">{service.badge}</span>
+										<Badge variant="amber" class="text-[10px] px-1.5 py-0.5">{service.badge}</Badge>
 									)}
 								</div>
 								<p class="mt-1 text-[13px] fg leading-snug">{service.tagline}</p>
@@ -58,16 +58,16 @@ const servicesSchema = {
 
 								<div class="mt-auto pt-4 border-t border-edge-weak flex items-center justify-between gap-4 flex-wrap">
 									<p class="text-[12px] fg-weak italic max-w-[32ch]">{service.goodFor}</p>
-									<span class="font-mono text-[11px] fg-weak border border-edge rounded-[3px] px-2 py-1 shrink-0">{service.duration}</span>
+									<Badge class="text-[11px] px-2 py-1 shrink-0">{service.duration}</Badge>
 								</div>
 							</div>
-						</article>
+						</Card>
 					))}
 				</div>
 			</section>
 
 			<section class="px-section py-12 border-b border-edge" aria-label="How it works">
-				<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-6">How it works</p>
+				<SectionLabel class="mb-6">How it works</SectionLabel>
 				<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 					{process.map(step => (
 						<div class="flex flex-col gap-2">

@@ -20,44 +20,94 @@
     {
       "type": "diagnose",
       "title": "Diagnose",
-      "description": "Find the hotspots, instrumentation gaps, and reliability failures that are actually costing you time."
+      "description": "Find the hotspots, instrumentation gaps, and reliability failures that are actually costing you time.",
+      "visual": {
+        "command": "php artisan api:diagnose",
+        "scanning": "Scanning API surface...",
+        "results": [
+          { "method": "GET", "path": "/api/v1/leads", "detail": "842ms avg", "status": "slow" },
+          { "method": "POST", "path": "/api/v1/webhooks", "detail": "12% errors", "status": "flaky" },
+          { "method": "GET", "path": "/api/v1/reports", "detail": "94 queries", "status": "N+1" }
+        ],
+        "summary": "3 endpoints need attention"
+      }
     },
     {
       "type": "stabilise",
       "title": "Stabilise",
-      "description": "Fix the riskiest endpoints, contracts, and bottlenecks first so the team can get back to building."
+      "description": "Fix the riskiest endpoints, contracts, and bottlenecks first so the team can get back to building.",
+      "visual": {
+        "command": "php artisan api:stabilise",
+        "scanning": "Applying performance patches...",
+        "results": [
+          { "method": "PATCH", "path": "/api/v1/leads", "detail": "Added index", "status": "fixed" },
+          { "method": "PATCH", "path": "/api/v1/webhooks", "detail": "Retry queue", "status": "fixed" },
+          { "method": "PATCH", "path": "/api/v1/reports", "detail": "Eager load", "status": "fixed" }
+        ],
+        "summary": "3 endpoints stabilised"
+      }
     },
     {
       "type": "scale",
       "title": "Scale",
-      "description": "Leave behind patterns, guardrails, and decision-making habits the team can keep using without me."
+      "description": "Leave behind patterns, guardrails, and decision-making habits the team can keep using without me.",
+      "visual": {
+        "command": "php artisan api:benchmark",
+        "scanning": "Stress testing API...",
+        "results": [
+          { "method": "10k", "path": "concurrent users", "detail": "45ms p95", "status": "pass" },
+          { "method": "50k", "path": "concurrent users", "detail": "112ms p95", "status": "pass" },
+          { "method": "100k", "path": "concurrent users", "detail": "245ms p95", "status": "pass" }
+        ],
+        "summary": "System verified for scale"
+      }
     },
     {
       "type": "audit",
       "title": "API Audit",
-      "description": "A focused investigation into the performance, reliability, and design issues slowing your team down."
+      "description": "A focused investigation into the performance, reliability, and design issues slowing your team down.",
+      "visual": {
+        "command": "analyze --scope=full",
+        "scanning": "Reviewing API architecture...",
+        "results": [
+          { "method": "SEC", "path": "Auth patterns", "detail": "Validated", "status": "OK" },
+          { "method": "PERF", "path": "Hot path analysis", "detail": "4 hotspots", "status": "WARN" },
+          { "method": "DOCS", "path": "OpenAPI Spec", "detail": "Incomplete", "status": "FIX" }
+        ],
+        "summary": "Full report generated at ./audit.md"
+      }
     },
     {
       "type": "advisory",
       "title": "Ongoing Advisory",
-      "description": "Strategic technical support for engineering leaders and senior engineers navigating hard API and architecture decisions."
+      "description": "Strategic technical support for engineering leaders and senior engineers navigating hard API and architecture decisions.",
+      "visual": {
+        "command": "tail -f /var/log/advisory",
+        "scanning": "Monitoring technical decisions...",
+        "results": [
+          { "method": "STRAT", "path": "Auth Strategy", "detail": "Reviewed", "status": "OK" },
+          { "method": "ARCH", "path": "Pagination Spec", "detail": "Drafted", "status": "OK" },
+          { "method": "TEAM", "path": "Senior Mentoring", "detail": "Completed", "status": "OK" }
+        ],
+        "summary": "Strategic alignment maintained"
+      }
     },
     {
       "type": "oss",
       "title": "Open Source",
-      "description": "PHP packages for SDK building, HTTP clients, authentication, and API tooling."
+      "description": "PHP packages for SDK building, HTTP clients, authentication, and API tooling.",
+      "visual": {
+        "command": "composer require juststeveking/php-sdk",
+        "scanning": "Installing packages...",
+        "results": [
+          { "method": "INST", "path": "php-sdk", "detail": "v2.0.0", "status": "done" },
+          { "method": "INST", "path": "http-slim", "detail": "v1.4.2", "status": "done" },
+          { "method": "INST", "path": "transporter", "detail": "v1.1.0", "status": "done" }
+        ],
+        "summary": "Packages ready for use"
+      }
     }
   ],
-  "tuiVisual": {
-    "command": "php artisan api:diagnose",
-    "scanning": "Scanning API surface...",
-    "results": [
-      { "method": "GET", "path": "/api/v1/leads", "detail": "842ms avg", "status": "slow" },
-      { "method": "POST", "path": "/api/v1/webhooks", "detail": "12% errors", "status": "flaky" },
-      { "method": "GET", "path": "/api/v1/reports", "detail": "94 queries", "status": "N+1" }
-    ],
-    "summary": "3 endpoints need attention"
-  },
   "stats": {
     "tagline": "Why teams trust me",
     "items": [

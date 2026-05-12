@@ -82,6 +82,12 @@ export interface Feature {
 	type: string;
 	title: string;
 	description: string;
+	visual: {
+		command: string;
+		scanning: string;
+		results: TuiResult[];
+		summary: string;
+	};
 }
 
 export interface PackageCommand {

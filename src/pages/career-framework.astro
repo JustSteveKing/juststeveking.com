@@ -1,7 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { SiteHeader, SiteFooter, PageHeader } from '@/components';
-import Card from '@/components/Card.astro';
+import { SiteHeader, SiteFooter, PageHeader, Card, Badge } from '@/components';
 import LevelCard from '@/components/career/LevelCard.astro';
 import PathwayDiagram from '@/components/career/PathwayDiagram.astro';
 import { levels, icLevels, managerLevels } from '@/data/career-framework';
@@ -21,9 +20,7 @@ import { careerFramework as pageMeta } from '@/config/pages';
 
       <section class="border-b border-edge border-t-0 py-6 px-6 md:px-12">
         <div class="jump-nav-wrap">
-          <div class="inline-flex rounded-full border border-edge bg-surface/70 px-3 py-1 backdrop-blur">
-            <p class="font-mono text-[0.65rem] uppercase tracking-[0.12em] fg-weak">Jump to level</p>
-          </div>
+          <Badge variant="surface">Jump to level</Badge>
 
           <nav class="jump-nav mt-3 flex flex-wrap gap-2" aria-label="Jump to level">
             {levels.map((level) => (
@@ -44,7 +41,7 @@ import { careerFramework as pageMeta } from '@/config/pages';
           </nav>
         </div>
 
-        <Card interactive={false} class="mt-6 rounded-2xl border border-edge bg-surface-weak p-6">
+        <Card class="mt-6 bg-surface-weak p-6">
           <div class="grid gap-6 md:grid-cols-3">
             <div>
               <p class="font-mono text-[0.65rem] uppercase tracking-widest fg-weak">How to use this</p>
@@ -64,7 +61,7 @@ import { careerFramework as pageMeta } from '@/config/pages';
 
       <section class="border-b border-edge p-6 md:p-12">
         <div class="fade-up max-w-4xl" style="--fade-delay: 60ms;">
-          <p class="mb-3 inline-flex rounded-full border border-edge bg-surface/80 px-3 py-1 font-mono text-[0.7rem] uppercase tracking-[0.08em] fg-weak">Framework shape</p>
+          <Badge class="mb-3">Framework shape</Badge>
           <h2 class="mb-3 text-2xl font-bold tracking-tight">Two Paths</h2>
           <p class="fg leading-relaxed">
             Engineering growth is not one ladder. The Individual Contributor path is about technical depth, execution,
@@ -80,7 +77,7 @@ import { careerFramework as pageMeta } from '@/config/pages';
 
       <section class="border-b border-edge p-6 md:p-12">
         <div class="fade-up max-w-4xl" style="--fade-delay: 120ms;">
-          <p class="mb-3 inline-flex rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 font-mono text-[0.7rem] uppercase tracking-[0.08em] text-amber-500">Individual contributor</p>
+          <Badge variant="amber" class="mb-3">Individual contributor</Badge>
           <h2 class="mb-3 text-2xl font-bold tracking-tight">Individual Contributor Track</h2>
           <p class="fg leading-relaxed">
             Six levels from early career to company-wide technical leadership. SE3 is a valid long-term destination,
@@ -97,7 +94,7 @@ import { careerFramework as pageMeta } from '@/config/pages';
 
       <section class="border-b border-edge p-6 md:p-12">
         <div class="fade-up max-w-4xl" style="--fade-delay: 180ms;">
-          <p class="mb-3 inline-flex rounded-full border border-violet-500/30 bg-violet-500/10 px-3 py-1 font-mono text-[0.7rem] uppercase tracking-[0.08em] text-violet-400">People manager</p>
+          <Badge variant="violet" class="mb-3">People manager</Badge>
           <h2 class="mb-3 text-2xl font-bold tracking-tight">People Manager Track</h2>
           <p class="fg leading-relaxed">
             Two levels covering team and multi-team leadership. The measure of success shifts from your personal
@@ -114,7 +111,7 @@ import { careerFramework as pageMeta } from '@/config/pages';
 
       <section class="border-b border-edge p-6 md:p-12">
         <div class="fade-up max-w-4xl" style="--fade-delay: 240ms;">
-          <p class="mb-3 inline-flex rounded-full border border-edge bg-surface/80 px-3 py-1 font-mono text-[0.7rem] uppercase tracking-[0.08em] fg-weak">Operating principles</p>
+          <Badge class="mb-3">Operating principles</Badge>
           <h2 class="mb-3 text-2xl font-bold tracking-tight">What Makes This Work</h2>
           <p class="fg leading-relaxed">
             A framework only works when teams use it in real conversations. These principles keep it grounded,
@@ -122,7 +119,7 @@ import { careerFramework as pageMeta } from '@/config/pages';
           </p>
 
           <div class="mt-8 grid gap-6 sm:grid-cols-2">
-            <Card interactive={false} class="group relative overflow-hidden rounded-2xl border border-edge bg-surface p-6 transition-all duration-200 hover:-translate-y-0.5">
+            <Card class="group relative overflow-hidden p-6 transition-all duration-200 hover:-translate-y-0.5">
               <div class="absolute inset-x-0 top-0 h-px bg-linear-to-r from-amber-500/85 to-cyan-400/85"></div>
               <h3 class="text-sm font-semibold fg-strong">Honest timelines</h3>
               <p class="mt-2 text-sm leading-relaxed fg">
@@ -131,7 +128,7 @@ import { careerFramework as pageMeta } from '@/config/pages';
               </p>
             </Card>
 
-            <Card interactive={false} class="group relative overflow-hidden rounded-2xl border border-edge bg-surface p-6 transition-all duration-200 hover:-translate-y-0.5">
+            <Card class="group relative overflow-hidden p-6 transition-all duration-200 hover:-translate-y-0.5">
               <div class="absolute inset-x-0 top-0 h-px bg-linear-to-r from-emerald-400/85 to-lime-400/85"></div>
               <h3 class="text-sm font-semibold fg-strong">SE3 is a destination</h3>
               <p class="mt-2 text-sm leading-relaxed fg">
@@ -140,7 +137,7 @@ import { careerFramework as pageMeta } from '@/config/pages';
               </p>
             </Card>
 
-            <Card interactive={false} class="group relative overflow-hidden rounded-2xl border border-edge bg-surface p-6 transition-all duration-200 hover:-translate-y-0.5">
+            <Card class="group relative overflow-hidden p-6 transition-all duration-200 hover:-translate-y-0.5">
               <div class="absolute inset-x-0 top-0 h-px bg-linear-to-r from-sky-400/85 to-blue-500/85"></div>
               <h3 class="text-sm font-semibold fg-strong">Different shapes are valid</h3>
               <p class="mt-2 text-sm leading-relaxed fg">
@@ -149,7 +146,7 @@ import { careerFramework as pageMeta } from '@/config/pages';
               </p>
             </Card>
 
-            <Card interactive={false} class="group relative overflow-hidden rounded-2xl border border-edge bg-surface p-6 transition-all duration-200 hover:-translate-y-0.5">
+            <Card class="group relative overflow-hidden p-6 transition-all duration-200 hover:-translate-y-0.5">
               <div class="absolute inset-x-0 top-0 h-px bg-linear-to-r from-violet-400/85 to-fuchsia-400/85"></div>
               <h3 class="text-sm font-semibold fg-strong">Used in both directions</h3>
               <p class="mt-2 text-sm leading-relaxed fg">
@@ -160,6 +157,151 @@ import { careerFramework as pageMeta } from '@/config/pages';
           </div>
         </div>
       </section>
+
+      <section class="p-6 md:p-12 reveal">
+        <div class="max-w-3xl">
+          <h2 class="text-3xl font-bold tracking-tight mb-4 fg-strong">Want help implementing this with your team?</h2>
+          <p class="fg mb-8 leading-relaxed">
+            I help engineering leaders turn frameworks like this into practical operating systems for 1:1s,
+            performance cycles, and promotion calibration.
+          </p>
+          <div class="flex flex-wrap items-center gap-3">
+            <a
+              href="/services"
+              class="inline-flex items-center gap-2.5 px-7 py-3.5 font-bold rounded-2xl bg-amber-500 hover:bg-amber-400 text-zinc-950 transition-all duration-300 shadow-xl shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1"
+            >
+              Explore Consulting
+            </a>
+            <a
+              href="https://juststeveking.link"
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-2.5 px-7 py-3.5 font-bold rounded-2xl border border-edge fg hover:border-amber-500/60 hover:text-amber-500 transition-all duration-300"
+            >
+              Book a Discovery Call
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <SiteFooter />
+    </div>
+
+    <button
+      type="button"
+      id="back-to-top"
+      class="pointer-events-none fixed right-5 bottom-5 z-30 inline-flex h-11 w-11 translate-y-2 items-center justify-center rounded-full border border-edge bg-surface/90 fg opacity-0 shadow-xl backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-500/70 hover:text-amber-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+      aria-label="Back to top"
+    >
+      <span aria-hidden="true" class="text-lg leading-none">↑</span>
+    </button>
+  </main>
+
+  <style>
+    .jump-nav-wrap {
+      position: sticky;
+      top: 0.75rem;
+      z-index: 20;
+    }
+
+    .jump-nav {
+      position: sticky;
+      top: 2.6rem;
+      z-index: 21;
+    }
+
+    .jump-nav a[data-active='true'] {
+      transform: translateY(-1px);
+    }
+
+    .jump-nav a[data-track='ic'][data-active='true'] {
+      border-color: color-mix(in oklab, var(--color-amber-500) 60%, transparent);
+      background-color: color-mix(in oklab, var(--color-amber-500) 14%, transparent);
+      color: var(--color-amber-500);
+    }
+
+    .jump-nav a[data-track='manager'][data-active='true'] {
+      border-color: color-mix(in oklab, var(--color-violet-400) 60%, transparent);
+      background-color: color-mix(in oklab, var(--color-violet-500) 16%, transparent);
+      color: var(--color-violet-400);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .fade-up {
+        animation: fade-up 0.5s ease-out both;
+        animation-delay: var(--fade-delay, 0ms);
+      }
+
+      @keyframes fade-up {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    }
+  </style>
+
+  <script is:inline>
+    const levelLinks = Array.from(document.querySelectorAll('[data-level-link]'));
+    const levelSections = Array.from(document.querySelectorAll('[data-level-section="true"]'));
+    const backToTopButton = document.getElementById('back-to-top');
+
+    if (levelLinks.length && levelSections.length && 'IntersectionObserver' in window) {
+      const byId = new Map(levelLinks.map((el) => [el.getAttribute('data-level-id'), el]));
+
+      const setActive = (id) => {
+        for (const link of levelLinks) {
+          link.setAttribute('data-active', String(link.getAttribute('data-level-id') === id));
+        }
+      };
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+          if (visible[0]) {
+            setActive(visible[0].target.id);
+          }
+        },
+        {
+          rootMargin: '-20% 0px -65% 0px',
+          threshold: [0.1, 0.25, 0.5],
+        },
+      );
+
+      for (const section of levelSections) {
+        observer.observe(section);
+      }
+
+      const firstId = levelSections[0]?.id;
+      if (firstId && byId.has(firstId)) {
+        setActive(firstId);
+      }
+    }
+
+    if (backToTopButton) {
+      const updateBackToTop = () => {
+        const show = window.scrollY > 700;
+        backToTopButton.classList.toggle('opacity-0', !show);
+        backToTopButton.classList.toggle('translate-y-2', !show);
+        backToTopButton.classList.toggle('pointer-events-none', !show);
+      };
+
+      window.addEventListener('scroll', updateBackToTop, { passive: true });
+      updateBackToTop();
+
+      backToTopButton.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+  </script>
+</Layout>
 
       <section class="p-6 md:p-12 reveal">
         <div class="max-w-3xl">

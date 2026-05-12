@@ -57,12 +57,6 @@ export const heroContent = homeRaw.hero;
 export const whatContent = homeRaw.what;
 export const features: Feature[] = homeRaw.features;
 export const packageCommands: PackageCommand[] = homeRaw.packages;
-export const tuiVisual: {
-	command: string;
-	scanning: string;
-	results: TuiResult[];
-	summary: string;
-} = homeRaw.tuiVisual;
 
 export const homeStats = homeRaw.stats;
 export const homeProblems = homeRaw.problems;

@@ -4,3 +4,6 @@ export { default as PageHeader } from './PageHeader.astro';
 export { default as SiteFooter } from './SiteFooter.astro';
 export { default as SiteHeader } from './SiteHeader.astro';
 export { default as Tag } from './Tag.astro';
+export { default as Card } from './Card.astro';
+export { default as SectionLabel } from './SectionLabel.astro';
+export { default as Badge } from './Badge.astro';

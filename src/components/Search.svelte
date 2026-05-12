@@ -138,7 +138,6 @@
   <!-- Overlay -->
   <div
     class="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] px-4"
-    onkeydown={onKeydown}
   >
     <!-- Backdrop -->
     <div
@@ -155,6 +154,7 @@
       aria-label="Site search"
       tabindex="-1"
       class="relative w-full max-w-xl rounded-2xl border border-edge bg-surface shadow-2xl overflow-hidden"
+      onkeydown={onKeydown}
     >
       <!-- Input row -->
       <div class="flex items-center gap-3 px-4 py-3 border-b border-edge">
@@ -166,6 +166,7 @@
           bind:this={inputEl}
           id="search-input"
           type="search"
+          role="combobox"
           aria-label="Search site content"
           aria-autocomplete="list"
           aria-controls="search-results"
