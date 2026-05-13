@@ -12,32 +12,33 @@ function isCurrent(href: string): boolean {
 }
 ---
 
-<header class="landing-header" role="banner">
-	<a href="/" class="landing-logo" aria-label="juststeveking — home">
+<header class="sticky top-0 z-[100] bg-surface flex items-center justify-between px-section py-4 sm:py-6 border-b border-edge" role="banner">
+	<a href="/" class="flex items-center gap-1.5 font-bold text-base text-text-strong no-underline hover:no-underline" aria-label="juststeveking — home">
 		<Logo class="size-8 text-text-strong" />
 	</a>
 
 	<button
-			class="mobile-menu-btn"
+			class="flex min-[901px]:hidden items-center justify-center w-10 h-10 p-0 bg-transparent border-none text-text-strong cursor-pointer order-1 ml-auto mobile-menu-btn"
 			aria-label="Open navigation menu"
 			aria-expanded="false"
 			aria-controls="landing-mobile-nav"
 			aria-haspopup="true"
 		>
-		<svg class="menu-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+		<svg class="menu-icon block w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
 			<rect x="5" y="8" width="14" height="2"></rect>
 			<rect x="5" y="14" width="14" height="2"></rect>
 		</svg>
-		<svg class="close-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+		<svg class="close-icon hidden w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
 			<rect x="5" y="11" width="14" height="2" transform="rotate(45 12 12)"></rect>
 			<rect x="5" y="11" width="14" height="2" transform="rotate(-45 12 12)"></rect>
 		</svg>
 	</button>
 
-	<nav class="landing-nav" aria-label="Main navigation">
+	<nav class="hidden min-[901px]:flex items-center gap-[var(--nav-gap)]" aria-label="Main navigation">
 		{navLinks.map(link => (
 			<a
 				href={link.href}
+				class="text-text-strong text-sm border-b border-transparent hover:no-underline hover:border-current aria-[current=page]:border-current"
 				{...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
 				{...(isCurrent(link.href) ? { 'aria-current': 'page' } : {})}
 			>
@@ -50,7 +51,7 @@ function isCurrent(href: string): boolean {
 </header>
 
 <nav
-	class="mobile-nav"
+	class="fixed top-[var(--header-height)] inset-x-0 bottom-0 bg-surface z-[99] px-section py-8 flex flex-col gap-4 opacity-0 invisible transition-all duration-200 min-[901px]:hidden mobile-nav"
 	id="landing-mobile-nav"
 	aria-label="Mobile navigation"
 	aria-hidden="true"
@@ -59,6 +60,7 @@ function isCurrent(href: string): boolean {
 	{navLinks.map(link => (
 		<a
 			href={link.href}
+			class="text-text-strong text-base py-2 no-underline"
 			{...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
 			{...(isCurrent(link.href) ? { 'aria-current': 'page' } : {})}
 		>
@@ -67,6 +69,15 @@ function isCurrent(href: string): boolean {
 		</a>
 	))}
 </nav>
+
+<style>
+	:global(.mobile-nav-open) .menu-icon { display: none; }
+	:global(.mobile-nav-open) .close-icon { display: block !important; }
+	:global(.mobile-nav-open) .mobile-nav {
+		opacity: 1 !important;
+		visibility: visible !important;
+	}
+</style>
 
 <script>
 	const menuBtn = document.querySelector<HTMLButtonElement>('.mobile-menu-btn');

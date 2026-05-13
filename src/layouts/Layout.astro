@@ -92,10 +92,10 @@ const pageSchemas = jsonLd
 
 		<ClientRouter />
 	</head>
-	<body>
+	<body class="group">
 		<a href="#main-content" class="skip-link">Skip to main content</a>
-		<main id="main-content" class="landing">
-			<div class="landing-container">
+		<main id="main-content" class="flex flex-col items-center min-h-screen gap-16">
+			<div class="w-full max-w-[var(--container-max-width)] border-b max-[900px]:border-x-0 min-[901px]:border-x border-edge overflow-x-clip">
 				<SiteHeader />
 				<slot />
 				<SiteFooter />
