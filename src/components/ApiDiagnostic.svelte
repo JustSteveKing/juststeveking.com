@@ -139,7 +139,7 @@
       onclick={() => runScan(activeIndex)}
       disabled={busy}
       aria-label="Re-run scan"
-      class="flex flex-1 items-center gap-2 px-5 py-3 text-[12px] fg-weak border-l border-edge transition-colors hover:fg-accent disabled:opacity-40 disabled:cursor-not-allowed"
+      class="flex sm:flex-1 items-center gap-2 px-5 py-3 text-[12px] fg-weak border-l border-edge transition-colors hover:fg-accent disabled:opacity-40 disabled:cursor-not-allowed"
     >
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5" class:animate-spin={busy} aria-hidden="true">
         <path d="M13.5 8A5.5 5.5 0 1 1 10 3.07" stroke-linecap="round"/>
