@@ -1,0 +1,170 @@
+---
+title: "Your First ERD"
+description: "Map entities and relationships before you write migrations so your schema starts on solid ground."
+category: Career
+pubDate: 2026-05-18
+series: "from-requirements-to-reality"
+tags: ["erd", "database-design", "data-modeling", "software-architecture"]
+shouldCrossPost: true
+---
+
+Up until now, everything we have done has been about understanding the problem. We interrogated the brief, surfaced the assumptions, wrote user stories, and shaped the features into bounded pieces of work. That is a lot of thinking before touching anything technical, and it is exactly the right order to do things in.
+
+Now we get to use that thinking. Because once you know what your application needs to do, the next question is: what does it need to remember?
+
+That question is what an Entity Relationship Diagram is designed to answer.
+
+## What an ERD Actually Is
+
+An ERD is a visual map of the data your application works with. It shows you the things your system needs to store (entities), the properties those things have (attributes), and the connections between them (relationships).
+
+Before you write a single migration, before you think about table names or column types, drawing an ERD gives you a bird's-eye view of your entire data model. It lets you spot problems, ask questions, and make decisions on paper, where changing your mind costs nothing.
+
+I have seen developers skip this step and pay for it later. A misunderstood relationship between two entities can mean a painful migration weeks into a build, or worse, a data model that quietly produces wrong results and nobody notices until a client reports it. Fifteen minutes with a pencil and a blank page is a much cheaper way to find those problems.
+
+## The Building Blocks
+
+Every ERD is made of three things.
+
+**Entities** are the nouns in your system. The things your application tracks and stores. In Clarity, the entities we can already see from our user stories are: organisations, users, requests, comments, and attachments.
+
+**Attributes** are the properties of each entity. A user has a name, an email address, and a role. A request has a title, a description, and a status. Attributes map directly to the columns you will eventually write in your migrations.
+
+**Relationships** are the connections between entities. An organisation has many users. A user can submit many requests. A request can have many comments. These connections are what give your data model its shape, and getting them right is the most important part of the exercise.
+
+## Cardinality
+
+When you draw a relationship between two entities, you need to describe how many of one thing can be connected to how many of another. This is called cardinality, and there are three basic types.
+
+**One-to-one.** One record in table A corresponds to exactly one record in table B. These are relatively rare. An example might be a user having one profile, where the profile data lives in a separate table.
+
+**One-to-many.** One record in table A corresponds to many records in table B. This is the most common relationship in most applications. One organisation has many users. One user has many requests. One request has many comments.
+
+**Many-to-many.** Many records in table A can be connected to many records in table B. This always requires a pivot table. An example in Clarity might be if we allowed a request to be tagged, where a request can have many tags and a tag can belong to many requests.
+
+Getting cardinality wrong is the most expensive ERD mistake. If you model a one-to-many relationship as a one-to-one, you will hit a wall the moment a second record tries to attach itself somewhere it cannot go. Drawing it out first makes these mistakes obvious before they are baked into your schema.
+
+## Drawing the Clarity ERD
+
+Let me walk through how I would build the Clarity ERD from our user stories and shaped features.
+
+I start by listing every entity I can see:
+
+- Organisation
+- User
+- Request
+- Comment
+- Attachment
+
+Then for each entity, I list its attributes. I am not worrying about data types yet, just the fields that need to exist.
+
+**Organisation:** id, name, created_at
+
+**User:** id, organisation_id, name, email, password, role (client or team_member), sub_role (developer or admin, nullable), invited_at, created_at
+
+**Request:** id, organisation_id, submitted_by (user_id), assigned_to (user_id, nullable), title, description, status, created_at, updated_at
+
+**Comment:** id, request_id, user_id, body, is_internal, created_at
+
+**Attachment:** id, request_id, user_id, filename, path, mime_type, created_at
+
+Now the relationships:
+
+- An Organisation has many Users
+- An Organisation has many Requests
+- A User (client) submits many Requests
+- A User (developer) is assigned to many Requests
+- A Request has many Comments
+- A Request has many Attachments
+- A User posts many Comments
+
+In Mermaid syntax, which I would recommend learning because it lets you write diagrams as code and store them in version control alongside your project, this looks like:
+
+```
+erDiagram
+    Organisation {
+        uuid id
+        string name
+        timestamp created_at
+    }
+
+    User {
+        uuid id
+        uuid organisation_id
+        string name
+        string email
+        string role
+        string sub_role
+        timestamp invited_at
+        timestamp created_at
+    }
+
+    Request {
+        uuid id
+        uuid organisation_id
+        uuid submitted_by
+        uuid assigned_to
+        string title
+        text description
+        string status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    Comment {
+        uuid id
+        uuid request_id
+        uuid user_id
+        text body
+        boolean is_internal
+        timestamp created_at
+    }
+
+    Attachment {
+        uuid id
+        uuid request_id
+        uuid user_id
+        string filename
+        string path
+        string mime_type
+        timestamp created_at
+    }
+
+    Organisation ||--o{ User : "has many"
+    Organisation ||--o{ Request : "has many"
+    User ||--o{ Request : "submits"
+    User ||--o{ Comment : "posts"
+    Request ||--o{ Comment : "has many"
+    Request ||--o{ Attachment : "has many"
+```
+
+Render that in any Mermaid viewer and you get a complete picture of the Clarity data model. Every entity, every attribute, every relationship, on a single page.
+
+## Reading the Diagram
+
+The notation on the relationship lines is worth understanding. In Mermaid ERDs, each side of a relationship is described with two symbols: one for the minimum cardinality and one for the maximum.
+
+`||` means exactly one. `o{` means zero or more. So `||--o{` reads as: exactly one on the left, zero or more on the right.
+
+Put together, `Organisation ||--o{ User` reads as: one organisation has zero or more users. An organisation can exist with no users yet (useful when you first create it), but every user belongs to exactly one organisation.
+
+## What the ERD Is Telling You
+
+The real value of drawing this out is what you notice when you step back and look at it.
+
+I can already see a potential question in the Clarity diagram. The `Request` entity has two foreign keys pointing at `User`: `submitted_by` and `assigned_to`. That is fine and intentional, but it means when you build the Eloquent relationships on the `Request` model, you will need named relationships rather than a single `belongsTo`. Something like `submitter()` and `assignee()` rather than just `user()`. That is a small thing, but it is much better to notice it here than halfway through writing a controller.
+
+I can also see that `Comment` and `Attachment` both have a `user_id`. That means both clients and team members can post comments and add attachments, which matches our user stories. If the stories said only team members could add attachments, that `user_id` column would need a constraint we would need to enforce at the application layer. The diagram surfaces that decision.
+
+This is what ERDs are actually for. Not documentation. Not formality. They are a thinking tool that forces you to look at your data model as a whole before you start building pieces of it in isolation.
+
+## Putting It Into Practice
+
+Take the project from the previous exercises and draw an ERD for it. Start with just the entities and relationships, then add attributes once the structure feels right.
+
+Use Mermaid if you want to keep it in code, or draw.io if you prefer a visual tool. The format matters less than the act of drawing it out and looking at what it tells you.
+
+Pay particular attention to your foreign keys. For every relationship line you draw, ask yourself: does this direction make sense? What happens if the parent record is deleted? Is there anything here that I assumed was a one-to-many that might actually be a many-to-many?
+
+*In the next article, we are going to go deeper on relationships and cardinality, look at some of the most common ERD mistakes, and talk about how to catch the wrong relationship on paper before it becomes the wrong migration in production.*
+

@@ -1,0 +1,105 @@
+---
+title: "Reading Between the Lines"
+description: "Learn how to spot hidden assumptions in a brief before you turn it into code."
+category: Career
+pubDate: 2026-05-18
+series: "from-requirements-to-reality"
+tags: ["requirements", "requirements-analysis", "business-requirements", "developer-mindset"]
+shouldCrossPost: true
+---
+
+In the last article, I asked you to take the Clarity brief and write down every question you would want answered before you started building. If you did that exercise, you probably found somewhere between five and fifteen questions depending on how deeply you read into it.
+
+Here is what I have found over the years: the first time developers do that exercise, they mostly surface technical questions. Things like "should I use a polymorphic relationship?" or "what database should I use?". Those are not bad questions, but they are the wrong starting point. They are implementation questions dressed up as requirements questions, and they put the cart firmly in front of the horse.
+
+The questions that actually matter before you write a line of code are business questions. And learning to ask them is one of the most valuable skills you can develop as you move towards mid-level.
+
+## The Brief, Revisited
+
+Let us look at the Clarity brief again:
+
+> "We need a tool where our clients can submit project requests, and our team can manage and track them. Clients should be able to see the status of their requests, and we need to be able to assign them to developers."
+
+On the surface, this looks like a reasonable starting point. You could probably sketch out a rough data model from it in ten minutes. But read it again, and this time treat every noun and every verb with suspicion.
+
+Every noun is a potential entity. Every verb is a potential action. And every place where the brief is vague is a place where an unstated assumption is hiding.
+
+## Interrogating the Nouns
+
+Let us pull out the nouns: clients, tool, project requests, team, status, developers.
+
+These seem obvious until you start asking questions about them.
+
+**Clients.** Are clients individual people, or organisations? Can a single organisation have multiple client users? If a client submits a request, can another person from the same organisation see it? This alone could mean the difference between a simple `users` table and a full `organisations -> users` relationship.
+
+**Project requests.** What actually constitutes a request? Is it just a title and a description? Does it have attachments? Can it have a priority? Can a client submit multiple requests at the same time, and if so, are those requests independent or grouped somehow?
+
+**Team.** Who is "our team"? Are these people with admin access to everything, or do different team members have different permissions? Can a developer only see requests assigned to them, or all requests?
+
+**Status.** This one word is carrying an enormous amount of weight. Is "status" a simple label (pending, in progress, done) or is it a proper workflow with defined transitions? Can a client change the status, or only view it? Can a developer set any status, or only move it forward?
+
+**Developers.** Are developers a separate user type from clients, or just users with a different role? Can a developer also be a client on a different project?
+
+None of these are trick questions. They are the kind of thing a product manager or a client would answer in a thirty-minute call. But if you skip straight to building, you are making silent choices about all of them, and those choices will come back to cost you.
+
+## Interrogating the Verbs
+
+Now the verbs: submit, manage, track, see, assign.
+
+**Submit.** Can a client edit a request after submitting it? Can they delete it? Is there a draft state before submission, or is it submit-or-nothing?
+
+**Manage and track.** These are vague by nature. What does managing a request look like? Adding notes? Updating status? Logging time? The brief does not say, which means this is a gap you need to close before you start.
+
+**See.** Can clients only see the status, or can they see the full request detail and any notes added by the team? Is there a concept of private notes that clients should not see?
+
+**Assign.** Can a request be assigned to multiple developers? What happens when the assigned developer is unavailable? Is assignment visible to the client?
+
+## The Questions Worth Asking
+
+When I am working from a brief like this, I structure my questions into three categories.
+
+The first is **scope questions**. These define the boundaries of what we are building. What is explicitly included? What is explicitly out of scope? For Clarity, that might be: are we building client authentication ourselves, or are clients invited via a link?
+
+The second is **actor questions**. These define who can do what. For every type of user in the system, I want to know what actions they can take, what they can see, and what restrictions apply to them.
+
+The third is **data questions**. These define the shape of the information we are working with. What does each entity look like? What are its required fields? What are its optional fields? What are the relationships between entities?
+
+You do not need formal workshops or long documents to work through these. A simple shared notes document and a conversation with whoever owns the brief is often enough. The goal is not to write a specification novel. It is to surface the decisions that have already been made implicitly, and make them explicit before they become mistakes.
+
+## Applying This to Clarity
+
+After running this process on the Clarity brief, here is what I would want confirmed before I drew a single diagram:
+
+**On actors:**
+- There are two distinct user types: clients and team members
+- Clients belong to an organisation, and organisations can have multiple client users
+- Team members have a role of either developer or admin
+- Admins can manage everything; developers can manage requests assigned to them
+
+**On requests:**
+- A request has a title, description, and optional file attachments
+- Requests are submitted by a client user and belong to their organisation
+- Requests move through a defined set of statuses: submitted, in review, in progress, on hold, completed
+- Only team members can change the status of a request
+- Clients can edit their request while it is in the submitted state; after that, it is read-only for them
+
+**On assignment:**
+- A request can be assigned to one developer at a time
+- Assignment is visible to the client
+- Developers can see all requests, not just their own
+
+**On comments:**
+- Both clients and team members can add comments to a request
+- Team members can mark a comment as internal, which hides it from clients
+
+These are the confirmed assumptions we will carry forward through the rest of this series. Notice that none of them are technical decisions. We have not decided on a database, a framework, a caching strategy, or a queue driver. We have simply defined the shape of the problem we are solving.
+
+That comes next.
+
+## Putting It Into Practice
+
+Take a project you are currently working on, or one you have worked on recently. Go back to the original brief or requirements you were given. Now apply the noun-and-verb interrogation to it. How many questions can you surface that were never explicitly answered? How many of those questions did you answer yourself, silently, while you were building?
+
+Write them down. You might be surprised how many decisions were made without anyone realising a decision was being made.
+
+*In the next article, we will take the confirmed Clarity assumptions and turn them into properly structured user stories, and explore what the difference between a task and a feature actually means in practice.*

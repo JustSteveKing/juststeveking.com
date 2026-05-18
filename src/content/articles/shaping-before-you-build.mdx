@@ -1,0 +1,127 @@
+---
+title: "Shaping Before You Build"
+description: "Shape features before coding so scope, approach, and boundaries are clear from the start."
+category: Career
+pubDate: 2026-05-18
+series: "from-requirements-to-reality"
+tags: ["shaping", "scope-management", "product-thinking", "planning"]
+shouldCrossPost: true
+---
+
+We now have a solid set of user stories for Clarity. We know who the actors are, what they need to do, and what done looks like for each feature. That is real progress. But there is a gap between a well-written user story and something a developer can confidently pick up and build within a reasonable timeframe.
+
+That gap is what shaping is designed to close.
+
+Shaping is a concept from the Shape Up methodology, written by Ryan Singer at Basecamp. If you have not read it, I would strongly recommend it. It is free at basecamp.com/shapeup, and it is one of the most practical pieces of writing on software product development I have come across. This article is not a replacement for it, but it will introduce you to the core ideas and show you how to apply them to Clarity.
+
+## The Problem Shaping Solves
+
+User stories are great for describing what a user needs. They are not great at describing how much work that need represents, or how to build it in a way that is actually feasible within a given timeframe.
+
+Without shaping, a story like "as a client, I want to add a comment to my request" can balloon into a real-time threaded messaging system with emoji reactions and read receipts, or it can be a simple text box that posts to a list. Both satisfy the story. One takes two days to build, the other takes two months.
+
+Shaping forces you to make that decision deliberately, before anyone writes a line of code. It gives features a specific form: a defined scope, a considered approach, and an explicit boundary around what is included and what is not.
+
+## The Three Elements of a Shaped Feature
+
+Every shaped feature has three components.
+
+The first is **appetite**. This is the amount of time you are willing to spend on the feature, decided upfront. Not an estimate of how long it will take, but a deliberate decision about how much it is worth. This is one of the most powerful ideas in Shape Up, and it inverts the normal way teams think about time. Instead of estimating a feature and then planning around that estimate, you decide how much time a feature deserves and then shape the work to fit inside that boundary.
+
+The second is **the solution**. This is a rough sketch of how the feature will work, at a level of detail that is enough to build from without being so prescriptive that it removes all creative problem-solving from the developer. Shape Up calls these "fat marker sketches" because the point is to communicate structure and flow, not pixel-perfect detail.
+
+The third is **the boundaries**. This is an explicit list of what is not included. Boundaries are as important as the solution itself, because they are what prevent scope from quietly expanding during the build. If you do not write down what is out of scope, someone will assume it is in scope.
+
+## Writing a Pitch
+
+The output of shaping is called a pitch. A pitch is a short document that captures all three elements and makes the case for why the feature is worth building in this cycle.
+
+A pitch is not a specification. It does not tell developers exactly how to implement something. It tells them what problem they are solving, roughly how it should work, how much time they have, and what the edges of the work are.
+
+Let me write a pitch for one of the Clarity features.
+
+---
+
+**Pitch: Request Comments**
+
+**Appetite:** Two days
+
+**Problem:** Clients and team members currently have no way to communicate directly on a specific request within Clarity. Context gets lost in email threads, and there is no record of decisions or questions attached to the work itself.
+
+**Solution:** A simple comment thread on each request detail page. Any user with access to the request can post a comment. Team members can mark a comment as internal, which hides it from clients. Comments appear in chronological order. No threading, no reactions, no editing after posting in the first version.
+
+**Rough sketch:**
+
+```
+Request detail page
+---------------------
+[ Request title ]
+[ Status badge ] [ Assigned to: Sarah ]
+[ Description ]
+
+Comments
+---------
+[ Client User ] 14 May
+Can you confirm the deadline for this?
+
+[ Developer ] 15 May  [internal]
+Need to check with the PM before responding.
+
+[ Text area: Add a comment... ]
+[ Internal? checkbox ] [ Post comment ]
+```
+
+**Out of scope:**
+- Threaded replies
+- Editing or deleting comments
+- Emoji reactions or mentions
+- Email notifications on new comments (deferred to a later cycle)
+- File attachments on comments
+
+---
+
+Look at what that pitch gives you. A developer picking this up knows exactly what they are building, roughly how it should look and behave, how long they have to build it, and where the edges of the work are. They are not going to spend a day building a notification system because they assumed it was included. They are not going to build a threaded reply UI because no one said not to.
+
+That clarity (again, no pun intended) is what makes teams fast. Not velocity metrics, not sprint ceremonies. Clear, bounded work.
+
+## Appetite as a Design Tool
+
+I want to spend a moment on appetite specifically, because it is the idea most developers initially resist.
+
+The instinct when you hear "two days for a comment system" is to think about all the things a comment system could be and conclude that two days is not enough. But that framing is backwards. The appetite is not a constraint on what you could build. It is a statement about what the problem is worth solving right now.
+
+A comment thread that works and ships in two days is more valuable than a fully-featured messaging system that takes six weeks and delays everything else. You can always come back and add threading, notifications, and mentions in a later cycle if the basic version proves its value. What you cannot do is un-spend six weeks.
+
+This is one of the most important mental shifts in moving from junior to mid-level. Juniors often think about features in terms of what they could be. Mid-level developers think about features in terms of what they need to be, right now, to solve the problem in front of them.
+
+## Shaping the Clarity Features
+
+Let me apply appetites to the full set of Clarity user stories, so we have a shaped backlog to build from as the series continues.
+
+**Client authentication and onboarding**
+Appetite: three days. Clients are invited by an admin, set a password via an invitation link, and log in. No social auth, no self-registration.
+
+**Submitting a request**
+Appetite: two days. Title, description, and optional file attachments. Status set to "submitted" on creation.
+
+**Request status and assignment**
+Appetite: two days. Team members can update status and assign a developer. Status and assignee are visible to clients. No real-time updates in the first version; a page refresh is acceptable.
+
+**Comment thread**
+Appetite: two days. As pitched above.
+
+**Team member management**
+Appetite: one day. Admins can invite team members by email, set their role, and deactivate their account. Invitations expire after 48 hours.
+
+**Request list views**
+Appetite: one day. Clients see a list of their own requests. Team members see all requests with basic filtering by status.
+
+That is the full Clarity application shaped into six discrete pieces of work, with a total appetite of twelve days. That is not an estimate of how long it will take. It is a decision about how much time the initial version of Clarity is worth. If any piece of work is running over its appetite, the right question is not "how do we go faster?" but "what can we remove from this piece to fit inside the time we agreed it was worth?"
+
+## Putting It Into Practice
+
+Take one of the user stories you wrote in the last exercise and write a pitch for it. Define an appetite, sketch a rough solution, and write out the out of scope list.
+
+The out of scope list is the most important part. Be honest about what you are tempted to include, and then deliberately leave it out.
+
+*In the next article, we are going to move from features into data, and look at how to draw your first Entity Relationship Diagram before you write a single migration.*

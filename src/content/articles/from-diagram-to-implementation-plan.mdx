@@ -1,0 +1,114 @@
+---
+title: "From Diagram To Implementation Plan"
+description: "Turn your diagrams and design notes into a clear build order that respects dependencies."
+category: Career
+pubDate: 2026-05-18
+series: "from-requirements-to-reality"
+tags: ["implementation-planning", "dependencies", "project-planning", "software-architecture"]
+shouldCrossPost: true
+---
+
+We have covered a lot of ground in this series. We started with a vague client brief, interrogated it until the real requirements surfaced, wrote user stories with acceptance criteria, shaped those stories into bounded features, drew an ERD, built a system diagram, and looked at how layers give every piece of code a clear home.
+
+That is the full design process. Now we need to translate it into something a developer can actually execute.
+
+This article is about sequencing. Taking everything we have designed and turning it into an ordered build plan that respects dependencies, minimises wasted work, and lets you deliver value as early as possible.
+
+## Why Sequence Matters
+
+A common junior developer instinct is to start with the most interesting part. The feature that sounds fun to build, the component that uses a technology you want to learn, the part of the system that feels most novel. That is understandable, but it is usually the wrong starting point.
+
+The right starting point is the foundation. The code that everything else depends on. If you build the request management system before you have authentication in place, you will either need to stub out user identity in ways that do not reflect reality, or you will need to go back and retrofit it later. Both options cost time you cannot get back.
+
+Sequencing is the discipline of asking: what has to exist before this can be built? Work backwards from every feature until you hit something that has no dependencies, and that is where you start.
+
+## Identifying Dependencies
+
+Let me map the dependencies for the Clarity features we shaped in article four.
+
+**Client authentication and onboarding** has no dependencies on other features. It needs the database and the user model, but those are foundational. This goes first.
+
+**Team member management** depends on authentication being in place (admins need to be logged in to invite people) and on the user model having role support. It is almost as foundational as authentication itself, and it needs to exist before any meaningful testing of the application can happen.
+
+**Request submission** depends on authentication (to know who is submitting) and on organisations existing (to associate the request correctly). Team member management should also be done first so there is at least one admin user to test with.
+
+**Request status and assignment** depends on requests existing. It also depends on team members existing, because you cannot assign a request to a developer who does not exist in the system. This comes after submission.
+
+**Comment thread** depends on requests existing. It could technically be built in parallel with request status and assignment, but sharing the request detail page means they are better built in sequence to avoid integration friction.
+
+**Request list views** depend on requests existing and on the basic request detail page being in place. This should be the last feature built, because it is a read view over data that all the other features create.
+
+## The Build Order
+
+With dependencies mapped, the sequence becomes clear:
+
+1. Foundations: database, models, migrations, and base application structure
+2. Authentication: client login, team member login, invitation flow
+3. Team member management: invite, role assignment, deactivation
+4. Request submission: form, validation, attachment upload, status initialisation
+5. Request status and assignment: status transitions, developer assignment, client visibility
+6. Comment thread: posting, internal flag, client-facing view
+7. Request list views: client list, team list, basic status filtering
+
+Each step builds on the last. Each step produces something testable before the next step begins. And each step delivers a piece of working software rather than a collection of half-built components.
+
+## Writing the Tickets
+
+A build order is not yet a set of tickets. You still need to break each step into discrete pieces of work that a developer can pick up and complete in a day or two.
+
+Here is how I would break down step four, request submission, into individual tickets.
+
+**Ticket: Request model and migration**
+Create the `requests` table migration with all columns from the ERD. Create the `Request` Eloquent model with the `HasUlids` trait, fillable columns, and the `submitter` and `assignee` relationships. Write a model factory for use in tests.
+
+**Ticket: Attachment model and migration**
+Create the `attachments` table migration. Create the `Attachment` model with its relationship back to `Request`. Configure the file storage driver. Write a model factory.
+
+**Ticket: Submit request endpoint**
+Create the `StoreRequestRequest` form request with validation rules and a `payload()` method. Create the `StoreRequestPayload` DTO. Create the `SubmitRequest` action. Create the `StoreController`. Wire up the route. Write feature tests covering successful submission, validation failures, and attachment handling.
+
+**Ticket: Request detail page**
+Create the Livewire component for the request detail view. Display title, description, status, assignee, and attachments. Scope the view so clients only see their own requests. Write feature tests covering client access and unauthorised access attempts.
+
+Four tickets for one feature, each independently completable and testable. A developer picking up any one of these knows exactly what done looks like, because the acceptance criteria from the user stories map directly onto the test cases.
+
+## The Relationship Between Stories and Tickets
+
+User stories describe what the system should do from a user's perspective. Tickets describe the technical work required to make that happen. They are not the same thing, and conflating them is a common source of confusion.
+
+A single user story often maps to multiple tickets. The "submit a request" story from article three maps to at least the four tickets above. That is fine. The story is the goal. The tickets are the path.
+
+When you write a ticket, you should be able to point to the user story it is serving. If a ticket cannot be connected to a user story, ask whether it needs to exist. Infrastructure work (setting up CI, configuring deployment, writing base test helpers) is an exception, but application feature work should always be traceable back to a user need.
+
+## Checking the Plan Against the ERD
+
+Before you start building, do one final check. Go back to your ERD and make sure every entity and every relationship has a corresponding ticket.
+
+In the Clarity plan, let me verify:
+
+- Organisation: covered in the authentication step
+- User: covered in authentication and team member management
+- Request: covered in request submission
+- Comment: covered in the comment thread step
+- Attachment: covered in request submission
+- All relationships: each foreign key maps to a ticket that creates the parent entity before the child entity
+
+If any entity in your ERD does not have a corresponding ticket, you have a gap. Either you have forgotten something, or that entity is not actually needed for the current scope. Either way, better to find that now than two weeks into the build.
+
+## The Plan as a Living Document
+
+A build plan is not a contract. Requirements change, technical discoveries shift priorities, and features that seemed simple turn out to be more complex than they appeared. A good plan is one that absorbs those changes without falling apart.
+
+The way you make a plan resilient is by keeping the dependencies clear. If you know that request status depends on request submission, and request submission depends on authentication, then when authentication takes longer than expected you can immediately see what is blocked and communicate that clearly. You are not surprised. You are just updating the schedule with an accurate picture of what is affected.
+
+That kind of clarity is what teams rely on mid-level developers to provide. Not perfect predictions, but an accurate, up-to-date map of where the work stands and what it connects to.
+
+## Putting It Into Practice
+
+Take the project you have been working with throughout this series. Map the dependencies between your shaped features. Write a build order. Then break the first two steps into individual tickets.
+
+For each ticket, make sure you can answer these questions: what does done look like? What does it depend on? Which user story does it serve?
+
+If any of those questions is hard to answer, the ticket needs more work before anyone picks it up.
+
+*In the final article, we are going to step back from Clarity and talk about what this entire process represents: the shift in thinking that defines a mid-level developer, and where to take these skills from here.*

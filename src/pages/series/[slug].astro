@@ -43,21 +43,27 @@ const items = [
 	})),
 ].sort((a, b) => b.date.getTime() - a.date.getTime());
 
+const pageUrl = `${site.url}/series/${slug}`;
+
 const seriesSchema = {
 	'@context': 'https://schema.org',
 	'@type': 'Series',
 	name: series.data.title,
 	description: series.data.description,
-	url: `${site.url}/series/${slug}`,
+	url: pageUrl,
 	author: { '@type': 'Person', name: site.author },
+};
+
+const pageMeta = {
+	title: series.data.title,
+	description: series.data.description,
+	ogImage: `/og/series/${slug}.webp`,
+	canonicalUrl: pageUrl,
 };
 ---
 
-<Layout 
-	title={`${series.data.title} — Series`}
-	description={series.data.description}
-	jsonLd={seriesSchema}
->
+<Layout {...pageMeta} jsonLd={seriesSchema}>
+
 	<PageHeader
 		prompt={`$ series view --id ${slug}`}
 		title={series.data.title}
@@ -65,7 +71,7 @@ const seriesSchema = {
 	/>
 
 	<section aria-label="Series content" class="px-section py-10 border-b border-edge">
-		<div class="flex flex-col gap-8 max-w-[800px]">
+		<div class="flex flex-col gap-8 max-w-200">
 			{items.map(item => (
 				<article class="flex flex-col gap-2 group">
 					<div class="flex items-center gap-3">

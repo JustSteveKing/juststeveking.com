@@ -1,0 +1,198 @@
+---
+title: "Thinking In Layers"
+description: "Use layered thinking to place logic in the right part of your application before it turns into a mess."
+category: Career
+pubDate: 2026-05-18
+series: "from-requirements-to-reality"
+tags: ["separation-of-concerns", "layered-architecture", "laravel", "software-architecture"]
+shouldCrossPost: true
+---
+
+Ask a junior developer where a piece of logic should live and you will usually get one of two answers: the controller, or the model. Ask a mid-level developer the same question and they will ask you a question back: what kind of logic is it?
+
+That distinction is the heart of this article.
+
+Separation of concerns is one of those principles you hear about early in your career and nod along to without fully internalising what it means in practice. It sounds obvious. Of course different concerns should be separated. But when you are staring at a controller that has grown to three hundred lines and you are not sure how it got there, the theory suddenly feels less clear than it did.
+
+In this article we are going to look at what separation of concerns actually means inside a Laravel application, why fat controllers are a symptom of an architectural problem rather than a code quality problem, and how thinking in layers changes the way you make decisions about where code should live.
+
+## What a Layer Actually Is
+
+A layer is a group of code that has a single, well-defined job. Code inside a layer should only do that job. When it needs to do something outside that job, it should hand off to a different layer rather than doing the work itself.
+
+In a Laravel application, the layers I work with look like this.
+
+**The HTTP layer** handles everything related to the incoming request and the outgoing response. Controllers, middleware, form requests, and responses live here. This layer's job is to receive input, validate it, hand it to the business layer, and return a response. It does not make business decisions. It does not query the database directly.
+
+**The business layer** contains the logic that makes your application do what it is supposed to do. Actions, services, and domain objects live here. This layer does not know anything about HTTP. It receives data, applies rules, and returns results. It can talk to the data layer to read or write records.
+
+**The data layer** handles persistence. Models, query builders, and repository classes live here. This layer knows how to find, create, update, and delete records. It does not apply business rules. It does not know about HTTP.
+
+Three layers. Three jobs. Each one knowing about its own responsibilities and nothing else.
+
+## Why Fat Controllers Happen
+
+A fat controller is not a discipline problem. It is an architectural vacuum.
+
+When a team does not have a clear shared understanding of what belongs where, logic accumulates in the most obvious place. Controllers are obvious. They are where the request arrives, so they are where people start writing code. And once code is there, more code gets added next to it because it is easier to extend an existing file than to create a new one.
+
+Before long you have a controller that validates input, queries the database, sends emails, dispatches jobs, formats responses, and handles error cases. It has absorbed everything because nothing had a clear home.
+
+The fix is not to refactor the controller. It is to give every kind of logic a home so that developers always know where to put new code.
+
+## Applying Layers to Clarity
+
+Let me walk through a concrete example using Clarity's request submission feature.
+
+A client submits a new request. Here is what needs to happen:
+
+1. Validate the input (title required, description required, attachments optional)
+2. Create the request record associated with the client's organisation
+3. Store any uploaded attachments
+4. Set the initial status to "submitted"
+5. Return a response confirming the submission
+
+Without layers, all of that logic tends to end up in the controller. Here is what that looks like, and why it is a problem:
+
+```php
+// The kind of controller you want to avoid
+public function store(Request $request): JsonResponse
+{
+    $validated = $request->validate([
+        'title' => ['required', 'string', 'max:255'],
+        'description' => ['required', 'string'],
+        'attachments.*' => ['nullable', 'file', 'max:10240'],
+    ]);
+
+    $projectRequest = ProjectRequest::create([
+        'organisation_id' => auth()->user()->organisation_id,
+        'submitted_by' => auth()->id(),
+        'title' => $validated['title'],
+        'description' => $validated['description'],
+        'status' => 'submitted',
+    ]);
+
+    if ($request->hasFile('attachments')) {
+        foreach ($request->file('attachments') as $file) {
+            $path = $file->store('attachments');
+            $projectRequest->attachments()->create([
+                'user_id' => auth()->id(),
+                'filename' => $file->getClientOriginalName(),
+                'path' => $path,
+                'mime_type' => $file->getMimeType(),
+            ]);
+        }
+    }
+
+    return response()->json(['data' => $projectRequest->load('attachments')], 201);
+}
+```
+
+This is not terrible code. It works. But it is doing too many jobs at once. It is validating, creating records, handling file storage, and formatting a response, all in the same method. Testing it in isolation is difficult because it is deeply coupled to the HTTP request object. Reusing any of this logic (say, if requests could also be submitted via an import job) means duplicating it or extracting it under pressure.
+
+Now here is the same feature with layers applied:
+
+```php
+// The Form Request handles validation
+class StoreRequestRequest extends FormRequest
+{
+    public function rules(): array
+    {
+        return [
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
+            'attachments.*' => ['nullable', 'file', 'max:10240'],
+        ];
+    }
+
+    public function payload(): StoreRequestPayload
+    {
+        return new StoreRequestPayload(
+            organisationId: auth()->user()->organisation_id,
+            submittedBy: auth()->id(),
+            title: $this->input('title'),
+            description: $this->input('description'),
+            attachments: $this->file('attachments', []),
+        );
+    }
+}
+```
+
+```php
+// The Action handles the business logic
+final readonly class SubmitRequest
+{
+    public function execute(StoreRequestPayload $payload): ProjectRequest
+    {
+        $projectRequest = ProjectRequest::create([
+            'organisation_id' => $payload->organisationId,
+            'submitted_by' => $payload->submittedBy,
+            'title' => $payload->title,
+            'description' => $payload->description,
+            'status' => 'submitted',
+        ]);
+
+        foreach ($payload->attachments as $file) {
+            $path = $file->store('attachments');
+            $projectRequest->attachments()->create([
+                'user_id' => $payload->submittedBy,
+                'filename' => $file->getClientOriginalName(),
+                'path' => $path,
+                'mime_type' => $file->getMimeType(),
+            ]);
+        }
+
+        return $projectRequest;
+    }
+}
+```
+
+```php
+// The Controller handles HTTP in and HTTP out
+final readonly class StoreController
+{
+    public function __construct(
+        private SubmitRequest $submitRequest,
+    ) {}
+
+    public function __invoke(StoreRequestRequest $request): JsonResponse
+    {
+        $projectRequest = $this->submitRequest->execute(
+            payload: $request->payload(),
+        );
+
+        return response()->json(
+            ['data' => $projectRequest->load('attachments')],
+            201,
+        );
+    }
+}
+```
+
+The controller is now four lines of meaningful logic. It receives a validated payload, calls an action, and returns a response. It knows nothing about how the request is created or how attachments are stored. Those are the action's job.
+
+The action knows nothing about HTTP. It receives a payload object and does the work. You could call it from a console command, a queued job, or a test, and it would behave identically each time.
+
+## Where the Model Fits In
+
+You will notice the model does not appear much in the code above beyond `ProjectRequest::create()` and the `attachments()` relationship. That is intentional.
+
+Models in a layered application are responsible for representing a database record and its relationships. They are not responsible for business rules, validation, or application logic. A model that has methods like `submitAndNotifyClient()` or `assignToAvailableDeveloper()` is doing the action's job, and it will become harder to test and maintain as that logic grows.
+
+Keep models focused. They know about their table, their columns, their relationships, and their casts. Everything else belongs in a layer above them.
+
+## This Is Not Dogma
+
+I want to be clear that layers are a tool, not a religion. A simple CRUD endpoint that reads a record and returns it does not need an action class. Adding indirection where none is needed creates noise without creating value.
+
+The question to ask is: is this logic complex enough, or reusable enough, that it deserves its own home? If the answer is yes, extract it. If the answer is no, keep it in the controller and move on.
+
+Mid-level developers learn to make that call. Juniors often apply patterns uniformly regardless of context, which leads to over-engineering simple things. The goal is judgment, not rule-following.
+
+## Putting It Into Practice
+
+Take a controller from a project you have worked on and look at it honestly. How many jobs is it doing? Can you identify which lines belong in the HTTP layer, which belong in the business layer, and which belong in the data layer?
+
+You do not need to refactor it right now. Just practice the act of categorising what you see. That categorisation instinct is what you are building, and it comes from practice more than from reading.
+
+*In the next article, we are going to bring everything together and look at how to turn your ERD and architecture diagram into a sequenced build plan that a developer can actually follow.*

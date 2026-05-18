@@ -1,0 +1,149 @@
+---
+title: "Relationships, Cardinality, and the Questions Your Schema Is Asking"
+description: "Understand relationship types and cardinality so your schema reflects how your data really connects."
+category: Career
+pubDate: 2026-05-18
+series: "from-requirements-to-reality"
+tags: ["erd", "cardinality", "database-design", "data-modeling"]
+shouldCrossPost: true
+---
+
+In the last article we drew the Clarity ERD and ended up with a clean diagram covering five entities and seven relationships. If you followed along and drew one for your own project, you probably found a few things that surprised you. That is normal, and it is exactly the point.
+
+Now I want to go deeper. Drawing an ERD is one skill. Reading what it is telling you is another, and the second one is where the real value lives.
+
+In this article we are going to look at the three relationship types in detail, walk through the most common mistakes I see developers make when modelling data, and show you how to catch them at the diagram stage before they become painful migrations.
+
+## The Three Relationships, Properly
+
+We covered these briefly in the last article, but they deserve more attention.
+
+### One-to-One
+
+A one-to-one relationship means one record in table A maps to exactly one record in table B, and that mapping is unique on both sides.
+
+These are less common than people expect. When a developer reaches for a one-to-one, I always ask: why is this data in a separate table? Sometimes there is a good reason. You might have a `users` table and a `user_profiles` table where the profile data is large, infrequently accessed, and cleaner to separate. Or you might have a base `users` table that is extended by either a `client_profiles` table or a `team_member_profiles` table depending on role.
+
+But a lot of the time, a one-to-one relationship is a sign that the data should just live in the same table. Before you commit to one, ask yourself whether there is a genuine reason for the separation or whether you are adding complexity without adding value.
+
+In Clarity, we do not have any one-to-one relationships. The model is clean enough that everything fits in its own entity without needing auxiliary tables.
+
+### One-to-Many
+
+This is the workhorse of relational data modelling. One record in table A is referenced by many records in table B. The foreign key lives on the "many" side.
+
+In Clarity: one organisation has many users, so `organisation_id` lives on the `users` table. One request has many comments, so `request_id` lives on the `comments` table. The pattern is consistent.
+
+The mistake I see most often with one-to-many is putting the foreign key on the wrong side. If you put `user_ids` (as some kind of serialised array) on the `organisations` table instead of `organisation_id` on the `users` table, you have inverted the relationship and created a mess. You cannot join efficiently, you cannot enforce referential integrity, and you will hit a wall the moment you need to query it properly.
+
+The rule is simple: the foreign key always goes on the child. The "many" side. If you are unsure which side is the child, ask yourself which record is owned by the other. A user is owned by an organisation. A comment is owned by a request. The owned record holds the foreign key.
+
+### Many-to-Many
+
+A many-to-many relationship means records on both sides can be connected to multiple records on the other side. You cannot model this directly with a foreign key on either table. You need a pivot table that sits between them and holds the connection.
+
+Clarity does not have a many-to-many in the current design, so let me add one to illustrate the point. Suppose we wanted to add tagging to requests, where a request can have many tags and a tag can be applied to many requests. That is a classic many-to-many.
+
+The entities involved:
+
+```
+Request {
+    uuid id
+    string title
+    ...
+}
+
+Tag {
+    uuid id
+    string name
+    string colour
+}
+
+RequestTag {
+    uuid request_id
+    uuid tag_id
+}
+```
+
+The `RequestTag` pivot table is the relationship. It holds nothing but the two foreign keys (and sometimes additional data about the relationship itself, like a `created_at` timestamp or a user who applied the tag).
+
+In Laravel, this maps to a `belongsToMany` relationship on both models:
+
+```php
+// Request model
+public function tags(): BelongsToMany
+{
+    return $this->belongsToMany(Tag::class, 'request_tags');
+}
+
+// Tag model
+public function requests(): BelongsToMany
+{
+    return $this->belongsToMany(Request::class, 'request_tags');
+}
+```
+
+The common mistake here is not recognising when you have a many-to-many. Developers often start by modelling it as a one-to-many and then discover mid-build that the constraint they assumed does not hold. When you spot a noun in your application that sounds like it could belong to many different records of another type, treat it as a signal to check whether you are looking at a pivot.
+
+## Common ERD Mistakes
+
+Let me walk through the mistakes I see most often and how to spot them before they cause problems.
+
+### Storing arrays in a column
+
+If you ever find yourself writing `tags: string` or `assigned_to: json` on an entity, stop. That is almost always a sign that the data belongs in a related table. Arrays in columns cannot be indexed properly, cannot be joined against, and are a maintenance headache the moment the data inside them grows or needs to be queried individually.
+
+In the Clarity ERD, `assigned_to` is a single foreign key pointing at one user. That is correct because our business rule says a request has one assignee. But if the requirement had been "a request can be assigned to multiple developers", the right answer would be an `assignments` pivot table, not a JSON array of user IDs in a column.
+
+### The missing pivot
+
+Related to the above: when you draw a many-to-many relationship between two entities without drawing the pivot table, you have an incomplete diagram. Always draw the pivot explicitly. It forces you to think about what data the relationship itself carries, and it makes the migration obvious when you get to that stage.
+
+### Nullable foreign keys as a shortcut
+
+It is tempting to make a foreign key nullable when you are not sure whether a relationship will always exist. Sometimes that is correct. In Clarity, `assigned_to` on `Request` is nullable because a request might not have an assignee yet. That is a real business rule.
+
+But sometimes a nullable foreign key is a sign that the relationship is modelled incorrectly. If you find yourself with a record that should always belong to a parent but the foreign key keeps being null in practice, the relationship direction might be wrong, or the data might belong in a different table entirely.
+
+### Conflating user roles with user types
+
+This one is specific to applications like Clarity, but it comes up constantly. When your system has multiple types of users (clients and team members, customers and staff, students and teachers), there is a temptation to use a single `role` column and call it done.
+
+Sometimes that is fine. But if the two user types have genuinely different data requirements, different relationships to other entities, or different constraints on what they can do, a single role column will not hold the weight. You end up with columns that are only relevant to one type of user, nullable columns everywhere, and logic scattered across your codebase to handle the differences.
+
+In the Clarity design I chose a single `users` table with a `role` column and a nullable `sub_role`. That works for our use case because the data requirements for clients and team members are similar enough. But it is a decision worth examining on your own projects. If the profiles for your two user types are genuinely different shapes, a polymorphic users table or a base users table with separate profile tables might serve you better.
+
+## Revisiting the Clarity ERD
+
+Now that we have covered these in detail, let me take one more look at the Clarity diagram and point out the decisions that are worth noting.
+
+The `Request` entity has two foreign keys pointing at `User`: `submitted_by` and `assigned_to`. This is intentional, but it means the Eloquent relationships on `Request` need to be named explicitly to avoid ambiguity:
+
+```php
+public function submitter(): BelongsTo
+{
+    return $this->belongsTo(User::class, 'submitted_by');
+}
+
+public function assignee(): BelongsTo
+{
+    return $this->belongsTo(User::class, 'assigned_to');
+}
+```
+
+If you wrote `$this->belongsTo(User::class)` without the second argument, Laravel would look for a `user_id` column that does not exist. Naming the foreign key explicitly in the relationship definition is the correct approach here, and the ERD is what made this obvious before we wrote a single line of code.
+
+The `Comment` entity has `is_internal` as a boolean. This is a simple field, but it carries real access control logic: when `is_internal` is true, the comment must be excluded from any query that is serving data to a client user. That is an application-layer concern rather than a schema concern, but spotting it on the diagram is a reminder to handle it consistently across every query that touches comments.
+
+## Putting It Into Practice
+
+Go back to the ERD you drew in the last exercise. Now look at every relationship line and ask these questions for each one:
+
+- Is the foreign key on the correct side?
+- Is this truly a one-to-many, or could it become a many-to-many as the application grows?
+- Are there any arrays or JSON fields that should be a related table?
+- Are there any nullable foreign keys that feel like shortcuts rather than genuine business rules?
+
+Fix what you find. A diagram is cheap to change. A migration is not.
+
+*In the next article, we are going to step back from the data model and look at the bigger picture: what application architecture actually means for backend developers, and how to draw a simple system diagram that shows how the pieces of Clarity fit together.*

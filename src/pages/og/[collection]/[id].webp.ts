@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const [articles, talks, packages, videos, apiGuides, testimonials, podcasts, reviews] =
+  const [articles, talks, packages, videos, apiGuides, testimonials, podcasts, reviews, series] =
     await Promise.all([
       getCollection('articles'),
       getCollection('talks'),
@@ -21,16 +21,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
       getCollection('testimonials'),
       getCollection('podcasts'),
       getCollection('reviews'),
+      getCollection('series'),
     ]);
 
   const dynamicPaths = [
     ...articles.map(e => ({
       params: { collection: 'articles', id: e.id },
-      props: { title: e.data.title, description: e.data.description } satisfies Props,
+      props: { title: e.data.title, description: e.data.description ?? '' } satisfies Props,
     })),
     ...reviews.map(e => ({
       params: { collection: 'reviews', id: e.id },
-      props: { title: e.data.title, description: e.data.description } satisfies Props,
+      props: { title: e.data.title, description: e.data.description ?? '' } satisfies Props,
     })),
     ...talks.map(e => ({
       params: { collection: 'talks', id: e.id },
@@ -38,15 +39,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
     })),
     ...packages.map(e => ({
       params: { collection: 'packages', id: e.id },
-      props: { title: e.data.name, description: e.data.description } satisfies Props,
+      props: { title: e.data.name, description: e.data.description ?? '' } satisfies Props,
     })),
     ...videos.map(e => ({
       params: { collection: 'videos', id: e.id },
-      props: { title: e.data.title, description: e.data.description } satisfies Props,
+      props: { title: e.data.title, description: e.data.description ?? '' } satisfies Props,
     })),
     ...apiGuides.map(e => ({
       params: { collection: 'api-guides', id: e.id },
-      props: { title: e.data.title, description: e.data.description } satisfies Props,
+      props: { title: e.data.title, description: e.data.description ?? '' } satisfies Props,
     })),
     ...testimonials.map(e => ({
       params: { collection: 'testimonials', id: e.id },
@@ -54,6 +55,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
     })),
     ...podcasts.map(e => ({
       params: { collection: 'podcasts', id: e.id },
+      props: { title: e.data.title, description: e.data.description ?? '' } satisfies Props,
+    })),
+    ...series.map(e => ({
+      params: { collection: 'series', id: e.id },
       props: { title: e.data.title, description: e.data.description ?? '' } satisfies Props,
     })),
   ];

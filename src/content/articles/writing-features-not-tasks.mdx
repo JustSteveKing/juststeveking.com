@@ -1,0 +1,164 @@
+---
+title: "Writing Features Not Tasks"
+description: "Turn vague tasks into user-focused features with clearer outcomes and better stories."
+category: Career
+pubDate: 2026-05-18
+series: "from-requirements-to-reality"
+tags: ["requirements", "user-stories", "product-thinking", "developer-mindset"]
+shouldCrossPost: true
+---
+
+If you have ever looked at a ticket in your backlog and felt genuinely unsure where to start, there is a good chance the ticket was written as a task rather than a feature. It is one of the most common sources of confusion for junior developers, and it is almost never talked about directly.
+
+The difference matters more than you might think. Tasks describe what to build. Features describe why it needs to exist and what it should enable. That distinction changes everything from how you estimate work, to how you test it, to how you know when you are actually done.
+
+In this article we are going to look at what a properly written feature actually looks like, introduce the concept of user stories as a tool for capturing them, and apply all of it to Clarity using the confirmed assumptions we established in the last article.
+
+## Tasks vs Features
+
+Let me show you the difference with a concrete example.
+
+Here is a task:
+
+> Add a status column to the requests table.
+
+Here is the same thing written as a feature:
+
+> As a client, I want to see the current status of my submitted request, so that I know whether the team has started working on it.
+
+The task tells a developer to do something. The feature tells everyone involved why it matters, who benefits from it, and what outcome it is trying to produce.
+
+That distinction has real consequences. If I hand you a task, you can complete it and technically be done. You can add the column, run the migration, and close the ticket. But you have not built anything a user can actually interact with. The feature, on the other hand, only counts as done when a client can log in, find their request, and read a meaningful status value. That is a fundamentally different definition of done.
+
+The format I just used has a name. It is a user story.
+
+## What a User Story Actually Is
+
+A user story follows a simple template:
+
+> As a [type of user], I want to [do something], so that [I achieve some goal].
+
+Each part of that template is doing a specific job.
+
+The **actor** ("as a client") anchors the story to a real person in your system with a real perspective. It forces you to think about who is actually going to use this thing, rather than thinking about it in the abstract.
+
+The **action** ("I want to see the current status") describes the behaviour the system needs to support. It is written from the user's point of view, not the developer's. You will notice it says "see the status", not "query the status from the database". That is deliberate. Implementation details do not belong in a user story.
+
+The **goal** ("so that I know whether the team has started working on it") is the part most people skip, and it is often the most valuable. The goal is what gives you a basis for questioning whether you are building the right thing. If you cannot articulate a meaningful goal for a feature, that is a signal worth paying attention to.
+
+## Acceptance Criteria
+
+A user story on its own is not quite enough to build from. You also need acceptance criteria: a concrete list of conditions that must be true for the story to be considered complete.
+
+Acceptance criteria answer the question: "how do we know this is done?"
+
+Here is the status visibility story with acceptance criteria added:
+
+**Story:** As a client, I want to see the current status of my submitted request, so that I know whether the team has started working on it.
+
+**Acceptance criteria:**
+- The request detail page displays the current status
+- The status reflects one of the defined values: submitted, in review, in progress, on hold, completed
+- The status updates in real time when a team member changes it, without requiring a page refresh
+- The client cannot change the status themselves; the field is read-only for them
+
+Now you have something you can actually build against. You have a clear definition of done, a set of testable conditions, and a user perspective that keeps you grounded in what actually matters.
+
+## Writing Stories for Clarity
+
+Let us take the confirmed assumptions from the last article and turn them into a proper set of user stories. I am going to organise them by actor, because that is the most natural way to think about the scope of work.
+
+### Client stories
+
+**Submitting a request**
+
+As a client, I want to submit a project request with a title, description, and optional attachments, so that I can communicate what I need from the team.
+
+Acceptance criteria:
+- The submission form requires a title and description
+- Attachments are optional and support common file types
+- After submission, the request status is set to "submitted" automatically
+- The client is redirected to the request detail page after a successful submission
+
+**Editing a request**
+
+As a client, I want to edit my request while it is in the submitted state, so that I can correct mistakes or add information before the team begins reviewing it.
+
+Acceptance criteria:
+- Edit controls are visible only when the request is in the "submitted" state
+- Once the status moves past "submitted", the edit controls are hidden
+- Edits do not reset the request status
+
+**Tracking request status**
+
+As a client, I want to see the current status of my request and who it has been assigned to, so that I have visibility into where things stand without needing to chase the team.
+
+Acceptance criteria:
+- The request detail page shows the current status and the assigned developer's name
+- If no developer has been assigned yet, a placeholder is shown rather than a blank field
+- Status changes are reflected without requiring a page refresh
+
+**Adding a comment**
+
+As a client, I want to add a comment to my request, so that I can ask questions or provide additional context as the work progresses.
+
+Acceptance criteria:
+- Clients can post a comment on any request they own
+- Comments appear in chronological order
+- Internal comments marked by team members are not visible to clients
+
+### Team member stories
+
+**Reviewing and updating request status**
+
+As a team member, I want to update the status of a request, so that clients and colleagues have an accurate picture of where the work stands.
+
+Acceptance criteria:
+- Team members can move a request to any valid status
+- Status changes are logged with a timestamp and the team member's name
+- The client is notified when the status changes
+
+**Assigning a request**
+
+As a team member, I want to assign a request to a developer, so that ownership is clear and the developer knows what they are responsible for.
+
+Acceptance criteria:
+- Any team member can assign a request
+- Only one developer can be assigned at a time
+- Reassigning a request replaces the previous assignment rather than stacking them
+
+**Adding an internal comment**
+
+As a team member, I want to mark a comment as internal, so that I can communicate with colleagues about a request without the client seeing the discussion.
+
+Acceptance criteria:
+- Internal comments are visually distinct in the team view
+- Internal comments are completely hidden in the client view
+- A team member can toggle the internal flag before submitting a comment
+
+### Admin stories
+
+**Managing team members**
+
+As an admin, I want to invite and manage team members, so that I can control who has access to the system and what role they hold.
+
+Acceptance criteria:
+- Admins can invite users by email
+- Invitations expire after 48 hours if not accepted
+- Admins can change a team member's role or deactivate their account
+
+## What This Set of Stories Gives You
+
+Look at what we have built here. From a single vague paragraph in a client brief, we now have a complete set of structured, testable, actor-anchored stories that describe the entire surface area of the Clarity application.
+
+Every story has a clear definition of done. Every story is written from a user's perspective. And every story is independent enough that a developer could pick one up and work on it without needing to understand the whole system first.
+
+That last point matters a lot when you are working in a team. Vague tasks create dependencies and confusion. Well-written stories create clarity (no pun intended) and autonomy.
+
+## Putting It Into Practice
+
+Take the project from the last article's exercise and write three user stories from it. Pick stories from different actors if you can. For each story, write at least three acceptance criteria.
+
+Then ask yourself honestly: could someone else on your team pick up one of those stories and know exactly what done looks like? If the answer is no, the story needs more work.
+
+*In the next article, we are going to move from user stories to feature shaping, and look at how the Shape Up methodology gives you a practical framework for deciding what to build and how much time it is worth.*

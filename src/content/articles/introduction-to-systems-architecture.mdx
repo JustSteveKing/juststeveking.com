@@ -1,0 +1,115 @@
+---
+title: "Introduction To Systems Architecture"
+description: "Learn how to map application components, layers, and dependencies before you start building."
+category: Career
+pubDate: 2026-05-18
+series: "from-requirements-to-reality"
+tags: ["software-architecture", "system-design", "application-design", "planning"]
+shouldCrossPost: true
+---
+
+We have a clear problem definition, a set of shaped features, and a data model we trust. At this point, a lot of developers would consider the design work done and start writing code. And honestly, for a project the size of Clarity, you probably could. The application is small enough that its structure is mostly implied by the framework.
+
+But this series is about building the habits that carry you through larger, more complex projects. And on those projects, skipping the architecture diagram is where things start to quietly go wrong.
+
+In this article I want to introduce you to what architecture actually means for application developers, and show you how to draw a simple system diagram for Clarity that captures how the pieces fit together.
+
+## What Architecture Means at This Level
+
+When most developers hear "architecture", they think about large distributed systems, microservices, cloud infrastructure diagrams with dozens of boxes and arrows going everywhere. That is one kind of architecture, and it is not what we are talking about here.
+
+For application developers, architecture is about a simpler set of questions. What are the major components of this system? How does data flow between them? What are the boundaries between different concerns? Where do external dependencies plug in?
+
+You do not need to be designing a distributed system to benefit from answering those questions. Even a straightforward Laravel application has meaningful architecture: a web layer that handles HTTP, a business logic layer that does the actual work, a data layer that talks to the database, and often a set of external integrations sitting alongside all of that. Understanding where those layers are and how they connect is what lets you make good decisions about where code should live.
+
+## Components vs Layers
+
+There are two ways to think about application structure, and both are useful in different contexts.
+
+**Layers** describe a vertical slice through your application. Think of the classic presentation layer, business logic layer, data access layer split. Data comes in at the top, passes through the layers, and comes out as a response. Each layer only talks to the layer directly below it. This is a useful mental model for thinking about separation of concerns inside a single application.
+
+**Components** describe horizontal groupings of related functionality. Authentication is a component. The request management system is a component. Notifications are a component. A component might span multiple layers internally, but it has a clear boundary and a clear responsibility.
+
+In practice, most applications use both mental models at once. The layers tell you how code flows inside a component. The components tell you how the system is divided at a higher level.
+
+## Drawing a System Diagram
+
+A system diagram does not need to be elaborate. Its job is to show the major components of your system, how they connect, and where external dependencies sit. You are not trying to document every class or every database query. You are drawing a map that helps you and your team understand the shape of what you are building.
+
+Here is a Mermaid diagram for Clarity:
+
+```
+flowchart TD
+    Browser["Browser / Client"]
+
+    subgraph App ["Clarity Application"]
+        Web["Web Layer\n(Routes, Controllers, Middleware)"]
+        Auth["Auth Component\n(Login, Invitation, Sessions)"]
+        Requests["Request Management\n(Submit, Status, Assignment)"]
+        Comments["Comments\n(Post, Internal Flag)"]
+        Attachments["Attachments\n(Upload, Storage)"]
+        Notifications["Notifications\n(Status Changes, Comments)"]
+    end
+
+    subgraph Data ["Data Layer"]
+        DB[("PostgreSQL")]
+        Storage["File Storage"]
+        Cache["Cache"]
+    end
+
+    Browser --> Web
+    Web --> Auth
+    Web --> Requests
+    Web --> Comments
+    Web --> Attachments
+    Requests --> Notifications
+    Comments --> Notifications
+    Auth --> DB
+    Requests --> DB
+    Comments --> DB
+    Attachments --> DB
+    Attachments --> Storage
+    Auth --> Cache
+```
+
+This is not a detailed technical specification. It is a conversation starter. It shows that Clarity has a web layer handling incoming requests, five functional components sitting behind it, a database and file storage for persistence, a cache layer, and a notifications pathway that gets triggered by changes in the request and comment components.
+
+## What the Diagram Reveals
+
+Even a simple diagram like this surfaces useful questions.
+
+The notifications component appears as a box but is currently undefined. What does it actually do? Does it send emails? Does it push in-app notifications? Does it use a queue? That is a decision we have deferred, and the diagram makes that deferral visible. For the initial version of Clarity, we scoped email notifications on comments out of the first cycle. The component box is still there, which means when we come back to build it, we have a clear place for it to sit.
+
+The file storage box is separate from the database. That is intentional. Attachments are stored on disk or in an object store, not as blobs in the database. The diagram captures that decision explicitly. A developer joining the project later can see at a glance that attachments have their own storage concern, rather than discovering it buried in a model.
+
+The cache layer connects only to the auth component in this version. That is a starting point, not a permanent constraint. As Clarity grows and request list queries become more expensive, caching will expand to cover other components. Having it on the diagram from the start means that growth is natural rather than bolted on.
+
+## Architecture as a Communication Tool
+
+One of the things I value most about architecture diagrams is that they create a shared vocabulary for a team. When everyone can point at the same diagram and say "the request management component" or "the web layer", discussions become sharper. You spend less time talking past each other and more time talking about the actual problem.
+
+That shared vocabulary is especially valuable when something goes wrong. If a bug is affecting comments but not requests, a team with a clear component diagram can focus their investigation quickly. If performance is degrading under load, having the data flow documented means you can reason about where the bottleneck is likely to be.
+
+This is one of the reasons mid-level developers tend to be better debugging partners than juniors, even when the junior has been on the codebase longer. It is not that they know more code. It is that they think in components and flows rather than individual files and functions. The architecture diagram is how you start building that mental model.
+
+## Clarity's Architecture in Plain Language
+
+Let me describe the Clarity architecture in prose, the way you might explain it to a new team member.
+
+Clarity is a single Laravel application served over HTTP. All incoming requests pass through the web layer, which handles routing, authentication middleware, and request validation. Behind the web layer, the application is divided into four main functional areas: request management, comments, attachments, and authentication.
+
+Request management is the core of the application. It covers the full lifecycle of a client request from submission through completion, including status transitions and developer assignment. Comments sit alongside request management and share the same request context, with the addition of the internal flag that controls client visibility. Attachments handle file uploads and connect to external file storage rather than the database.
+
+Authentication covers client login via password, team member login, and the invitation flow. Session state is cached to reduce database load on authenticated requests.
+
+Notifications are triggered by events in the request and comment components. In the first version of Clarity, notifications are out of scope. The component is acknowledged in the architecture but not built yet.
+
+Data persistence uses PostgreSQL for relational data and a file storage service for attachments. The application does not use a search index or a message queue in the initial version.
+
+## Putting It Into Practice
+
+Draw a system diagram for your own project using the same approach. Start with the major components you can identify, then add the data layer and any external dependencies. Draw arrows to show how data flows between them.
+
+Then write a plain-language description of the architecture the way I did above. If you struggle to write it in a few clear paragraphs, the diagram probably needs more work. The prose and the diagram should tell the same story.
+
+*In the next article, we are going to look at separation of concerns in more detail, understand why the "fat controller" problem is really an architectural symptom, and start thinking about what belongs in each layer of a Laravel application.*

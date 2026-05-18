@@ -1,0 +1,73 @@
+---
+title: "Stop Writing Code First"
+description: "Think through requirements, assumptions, and structure before you open your editor."
+category: Career
+pubDate: 2026-05-18
+series: "from-requirements-to-reality"
+tags: ["requirements", "planning", "software-architecture", "developer-mindset"]
+shouldCrossPost: true
+---
+
+There is a habit almost every junior developer shares. A client sends over a brief, or a ticket lands in your queue, and within minutes your editor is open and your fingers are moving. It feels productive. It feels like progress.
+
+It is almost always the wrong move.
+
+This is the first article in a series called **From Requirements to Reality**, designed for developers who are ready to stop thinking like juniors and start thinking like mid-level engineers. Over the course of this series, we are going to work through a fictional product called **Clarity**, a client project management tool where clients submit requests and developers scope and track them. Every concept we explore will be applied to Clarity, so by the end you will have seen a complete design process play out from a vague brief all the way to an implementation plan.
+
+But before we can do any of that, we need to talk about the most expensive habit in software development.
+
+## The Cost of Jumping Straight In
+
+When you are junior, speed feels like the measure of your value. The faster you can translate a requirement into working code, the better you are doing. That instinct makes sense early on. You are learning by doing, and doing means writing code.
+
+The problem is that this habit does not scale. As projects grow in complexity and your role in them grows with it, the cost of building the wrong thing becomes enormous. Refactoring a misunderstood feature three weeks after it was built is not just slower than getting it right the first time. It is often more expensive than the original build, because now you have tests to update, documentation to revise, and sometimes downstream code that relied on the wrong behaviour.
+
+Mid-level developers do not move faster than juniors by typing more quickly. They move faster by spending time upfront that prevents expensive mistakes downstream.
+
+## What "Designing Before You Build" Actually Means
+
+When I say design, I do not mean wireframes or Figma files (though those have their place). I mean asking a specific set of questions before a single migration, controller, or model gets created.
+
+Those questions look something like this:
+
+- What problem is this feature actually solving?
+- Who is it for, and what do they need to be able to do?
+- What data does this feature create, read, update, or delete?
+- How does it connect to what already exists?
+- What does success look like, and how would we know if it had not worked?
+
+These are not big questions. They do not require a week of planning or a product manager. They require maybe thirty minutes of thinking, a notepad, and the willingness to slow down before you speed up.
+
+## Introducing Clarity
+
+Throughout this series we will apply every concept to Clarity. Here is the initial brief, written exactly the way a real client might send it:
+
+> "We need a tool where our clients can submit project requests, and our team can manage and track them. Clients should be able to see the status of their requests, and we need to be able to assign them to developers."
+
+If you opened your editor right now, what would you build? A `requests` table? A `users` table? A status column? Maybe a polymorphic relationship between clients and developers?
+
+All of those might end up being correct. But right now, you do not actually know enough to make those decisions well. There are at least a dozen unstated assumptions buried inside that brief. We have no idea whether "clients" and "developers" live in the same users table or separate ones. We do not know what "status" means: is it a free-text field, an enum, a workflow? We do not know if one request can be assigned to multiple developers, or only one. We do not know if clients can edit their requests after submission.
+
+Every one of those unknowns is a fork in your schema. Pick the wrong path and you are doing a data migration at the worst possible time.
+
+## The Mindset Shift
+
+The thing that separates a junior developer from a mid-level one is not the number of Laravel packages they have memorised or how quickly they can scaffold a resource. It is the ability to look at a requirement and ask "what do I not yet know?" before asking "how do I build this?"
+
+This series is going to build that muscle systematically. We will cover:
+
+- How to read a client brief and extract what they actually need (not just what they said)
+- How to turn requirements into properly shaped features using user stories
+- How to draw an ERD before you write a migration
+- How to think about system architecture at the application level
+- How to turn all of that design work into a sequenced build plan
+
+Each article will apply its concepts directly to Clarity, so you will see the thinking, not just the theory.
+
+## Putting It Into Practice
+
+Before the next article, take the Clarity brief above and write down every question you would want answered before you started building. Do not try to answer them, just list them. How many can you find?
+
+The number might surprise you.
+
+*In the next article, we will take that brief apart properly and look at how to extract the real requirements hiding inside it.*
