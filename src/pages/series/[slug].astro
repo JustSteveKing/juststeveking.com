@@ -23,10 +23,11 @@ if (!series) {
 const allArticles = await getCollection('articles', ({ data }) => data.series?.id === slug);
 const allVideos = await getCollection('videos', ({ data }) => data.series?.id === slug);
 
-// Combine and sort by date
+// Combine and sort by order property, then by date as fallback
 const items = [
 	...allArticles.map(a => ({
 		type: 'article' as const,
+		order: a.data.order,
 		date: a.data.pubDate,
 		title: a.data.title,
 		description: a.data.description,
@@ -35,13 +36,24 @@ const items = [
 	})),
 	...allVideos.map(v => ({
 		type: 'video' as const,
+		order: v.data.order,
 		date: v.data.publishedDate,
 		title: v.data.title,
 		description: v.data.description,
 		url: `/videos/${v.id}`,
 		data: v,
 	})),
-].sort((a, b) => b.date.getTime() - a.date.getTime());
+].sort((a, b) => {
+	// If both have order, sort by order
+	if (a.order !== undefined && b.order !== undefined) {
+		return a.order - b.order;
+	}
+	// If only one has order, prioritize it
+	if (a.order !== undefined) return -1;
+	if (b.order !== undefined) return 1;
+	// Fall back to date sorting
+	return b.date.getTime() - a.date.getTime();
+});
 
 const pageUrl = `${site.url}/series/${slug}`;
 

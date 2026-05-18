@@ -45,6 +45,7 @@ const articles = defineCollection({
     readingTime: z.number().optional(),
     canonical: z.string().url().optional(),
     series: reference('series').optional(),
+    order: z.number().optional(),
     sponsor: z
       .object({
         name: z.string(),
