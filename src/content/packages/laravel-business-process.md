@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/laravel-business-process"
 link: "https://github.com/JustSteveKing/laravel-business-process"
 tech: ["PHP"]
 featured: false
-downloads: 3608
-monthlyDownloads: 85
+downloads: 3622
+monthlyDownloads: 78
 stars: 66
 version: "dev-main"
-updatedAt: "2026-05-09"
+updatedAt: "2026-05-19"
 ---
 
 # Laravel Business Process
@@ -18,7 +18,7 @@ updatedAt: "2026-05-09"
 <!-- BADGES_START -->
 [![Latest Version][badge-release]][packagist]
 [![Software License][badge-license]][license]
-[![Run Tests](https://github.com/JustSteveKing/laravel-business-process/actions/workflows/tests.yml/badge.svg)](https://github.com/JustSteveKing/laravel-business-process/actions/workflows/tests.yml)
+[](https://github.com/JustSteveKing/laravel-business-process/actions/workflows/tests.yml)
 [![PHP Version][badge-php]][php]
 [![Total Downloads][badge-downloads]][downloads]
 

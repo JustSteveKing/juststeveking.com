@@ -6,23 +6,23 @@ github: "https://github.com/JustSteveKing/resume-php"
 link: "https://github.com/JustSteveKing/resume-php"
 tech: ["PHP"]
 featured: false
-downloads: 338
-monthlyDownloads: 95
+downloads: 364
+monthlyDownloads: 90
 stars: 106
 version: "dev-main"
-updatedAt: "2026-05-09"
+updatedAt: "2026-05-19"
 ---
 
 # Resume PHP
 
 A PHP library for building and working with the [JSON Resume](https://jsonresume.org/) schema.
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/juststeveking/resume-php.svg?style=flat-square)](https://packagist.org/packages/juststeveking/resume-php)
-[![Total Downloads](https://img.shields.io/packagist/dt/juststeveking/resume-php.svg?style=flat-square)](https://packagist.org/packages/juststeveking/resume-php)
-[![License](https://img.shields.io/packagist/l/juststeveking/resume-php.svg?style=flat-square)](./LICENSE)
-[![Tests](https://github.com/juststeveking/resume-php/actions/workflows/tests.yml/badge.svg)](https://github.com/juststeveking/resume-php/actions/workflows/tests.yml)
-[![Static Analysis](https://github.com/juststeveking/resume-php/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/juststeveking/resume-php/actions/workflows/static-analysis.yml)
-[![Code Style](https://github.com/juststeveking/resume-php/actions/workflows/code-style.yml/badge.svg)](https://github.com/juststeveking/resume-php/actions/workflows/code-style.yml)
+[](https://packagist.org/packages/juststeveking/resume-php)
+[](https://packagist.org/packages/juststeveking/resume-php)
+[](./LICENSE)
+[](https://github.com/juststeveking/resume-php/actions/workflows/tests.yml)
+[](https://github.com/juststeveking/resume-php/actions/workflows/static-analysis.yml)
+[](https://github.com/juststeveking/resume-php/actions/workflows/code-style.yml)
 
 ## Introduction
 

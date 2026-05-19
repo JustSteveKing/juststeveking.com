@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/laravel-feature-flags"
 link: "https://github.com/JustSteveKing/laravel-feature-flags"
 tech: ["PHP", "Laravel"]
 featured: false
-downloads: 51525
-monthlyDownloads: 624
+downloads: 51886
+monthlyDownloads: 874
 stars: 177
 version: "dev-main"
-updatedAt: "2026-05-10"
+updatedAt: "2026-05-19"
 ---
 
 # Laravel Feature Flags

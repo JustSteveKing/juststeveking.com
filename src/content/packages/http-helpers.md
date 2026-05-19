@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/http-helpers"
 link: "https://github.com/JustSteveKing/http-helpers"
 tech: ["PHP", "Laravel"]
 featured: false
-downloads: 9211
-monthlyDownloads: 1
+downloads: 9213
+monthlyDownloads: 3
 stars: 6
 version: "dev-main"
-updatedAt: "2026-05-04"
+updatedAt: "2026-05-19"
 ---
 
 # HTTP Helpers

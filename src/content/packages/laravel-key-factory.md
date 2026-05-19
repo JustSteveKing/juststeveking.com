@@ -6,19 +6,19 @@ github: "https://github.com/JustSteveKing/laravel-key-factory"
 link: "https://github.com/JustSteveKing/laravel-key-factory"
 tech: ["PHP"]
 featured: false
-downloads: 1540
-monthlyDownloads: 131
+downloads: 1656
+monthlyDownloads: 247
 stars: 6
 version: "dev-main"
-updatedAt: "2026-05-09"
+updatedAt: "2026-05-19"
 ---
 
 # A simple package to generate Eloquent Model Keys
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/juststeveking/laravel-key-factory.svg?style=flat-square)](https://packagist.org/packages/juststeveking/laravel-key-factory)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/juststeveking/laravel-key-factory/run-tests?label=tests)](https://github.com/juststeveking/laravel-key-factory/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/juststeveking/laravel-key-factory/Check%20&%20fix%20styling?label=code%20style)](https://github.com/juststeveking/laravel-key-factory/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/juststeveking/laravel-key-factory.svg?style=flat-square)](https://packagist.org/packages/juststeveking/laravel-key-factory)
+[](https://packagist.org/packages/juststeveking/laravel-key-factory)
+[](https://github.com/juststeveking/laravel-key-factory/actions?query=workflow%3Arun-tests+branch%3Amain)
+[](https://github.com/juststeveking/laravel-key-factory/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
+[](https://packagist.org/packages/juststeveking/laravel-key-factory)
 
 Laravel Key Factory is a simple package to generate Eloquent Model Keys for your models easily. This is something I do quite often, instead of using UUID's which can be quite unfriendly to look at, I use Model keys which are unique strings generated for each model.
 
