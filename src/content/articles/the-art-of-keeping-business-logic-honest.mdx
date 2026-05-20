@@ -1,0 +1,748 @@
+---
+title: "The Art Of Keeping Business Logic Honest"
+description: ""
+category: Laravel
+shouldCrossPost: true
+pubDate: 2026-05-20
+minRead: 12
+author:
+  name: Steve McDougall
+  avatar:
+    src: https://avatars.githubusercontent.com/u/6368379?v=4
+    alt: Steve McDougall
+tags: []
+---
+
+There is a moment in most long-lived applications where you open a controller and find a block of conditionals that nobody quite understands anymore. Something like `if ($entity->status === 'pending' && $this->someFlag)` buried inside a service class, half-guarding a transition that was probably fine when someone wrote it but now nobody wants to touch. The business logic has drifted from the code, and the code is quietly lying about what the system actually does.
+
+I have been building a platform recently where I could see this problem coming from a long way off. The domain has entities that go through well-defined lifecycles - things move through stages, transitions have rules, and when a transition happens, a bunch of other things need to follow. The instinct is to reach for a big use case class, or a service that handles everything in sequence. But that approach tends to collapse under its own weight as requirements change.
+
+Instead, I ended up with a two-layer pattern: a strict state machine for each entity that owns nothing but transition rules, and a separate workflow engine that responds to those transitions and orchestrates the follow-on work. This article is about how that pattern holds together and why I think it is worth the setup cost.
+
+
+## The Problem With Ad-Hoc Status Management
+
+Before getting into the pattern, it is worth being honest about what you are replacing. Most applications manage entity status as a string column and a handful of conditionals scattered across services. When you need to add a new status, you add it to the column's allowed values and start writing `if` checks wherever it matters. This works fine for simple lifecycles. It starts to hurt when:
+
+- You have 5+ statuses and a non-trivial transition graph
+- Different transitions need different side effects
+- Some transitions involve async operations that can fail halfway through
+- You need an audit trail of who triggered what and when
+
+The state machine pattern addresses the first two. The workflow engine addresses the last two. Together they handle the full picture.
+
+## Layer One: The State Machine
+
+A state machine in this pattern is deliberately narrow. Its only job is to know which transitions are legal and to produce a domain event when one is performed. It does not send emails. It does not touch the database. It does not call other services.
+
+Here is what a simple order lifecycle might look like:
+
+```
+OrderStatus:
+  draft -> submitted -> approved -> fulfilled
+  submitted -> rejected
+  approved -> cancelled
+```
+
+The entity enforces this. If you try to transition from `draft` directly to `fulfilled`, you get a domain exception - not a silent data integrity problem discovered six months later.
+
+```php
+// src/Orders/Domain/Order.php
+
+final class Order
+{
+    private OrderStatus $status;
+
+    public function submit(): OrderSubmitted
+    {
+        if ($this->status !== OrderStatus::Draft) {
+            throw new InvalidTransitionException(
+                "Cannot submit an order in status {$this->status->value}."
+            );
+        }
+
+        $this->status = OrderStatus::Submitted;
+
+        return new OrderSubmitted(
+            orderId: $this->id,
+            submittedAt: new \DateTimeImmutable(),
+        );
+    }
+
+    public function approve(string $approvedBy): OrderApproved
+    {
+        if ($this->status !== OrderStatus::Submitted) {
+            throw new InvalidTransitionException(
+                "Cannot approve an order in status {$this->status->value}."
+            );
+        }
+
+        $this->status = OrderStatus::Approved;
+
+        return new OrderApproved(
+            orderId: $this->id,
+            approvedBy: $approvedBy,
+            approvedAt: new \DateTimeImmutable(),
+        );
+    }
+}
+```
+
+Notice that each method returns a domain event rather than dispatching it. The calling layer - a use case - is responsible for taking that event, persisting it to an event log, and firing it into the Laravel event system. The domain entity stays clean.
+
+```php
+// src/Orders/Application/ApproveOrder.php
+
+final class ApproveOrder
+{
+    public function __construct(
+        private readonly OrderRepositoryContract $repository,
+    ) {}
+
+    public function execute(string $orderId, string $approvedBy): array
+    {
+        $order = $this->repository->findById($orderId);
+        $event = $order->approve($approvedBy);
+
+        $this->repository->save($order);
+
+        return [$event];
+    }
+}
+```
+
+```php
+// app/Http/Controllers/Orders/V1/ApproveController.php
+
+public function __invoke(ApproveOrderRequest $request, string $orderId): JsonResponse
+{
+    $events = $this->approveOrder->execute($orderId, $request->user()->id);
+
+    foreach ($events as $event) {
+        $this->eventLog->record($event, $orderId, 'order', $request->user()->id);
+        Event::dispatch($event);
+    }
+
+    return new JsonDataResponse(data: ['approved' => true]);
+}
+```
+
+This separation matters more than it might look. The use case is testable without Laravel. The domain entity has no infrastructure dependencies. The event log gets written before any side effects fire, so you always have a record of what happened even if something downstream blows up.
+
+## Layer Two: The Workflow Engine
+
+The state machine tells you that a transition happened. The workflow engine decides what to do about it.
+
+A workflow is a named, ordered list of steps triggered by a domain event. Steps are discrete PHP classes. The engine runs them in order, persists progress after each one, and can pause mid-workflow waiting for an external signal before continuing.
+
+A workflow instance is the running execution of a workflow definition for a specific entity. The definition - the list of steps - lives entirely in code. The instance - which step we are on, what has happened so far - lives in the database.
+
+This distinction is important. Changing a workflow is a code change with a readable diff. You do not need a migration to add a step. The engine always uses the current definition code when it resumes a paused instance.
+
+### Defining a Workflow
+
+```php
+// app/Workflows/OrderApproval/OrderApprovalWorkflow.php
+
+final class OrderApprovalWorkflow implements WorkflowDefinitionContract
+{
+    public static function name(): string
+    {
+        return 'order_approval';
+    }
+
+    public function steps(): array
+    {
+        return [
+            ValidateOrderItems::class,
+            ReserveInventory::class,
+            CreateInvoice::class,
+            AwaitPayment::class,
+            NotifyFulfillmentTeam::class,
+        ];
+    }
+}
+```
+
+Every step implements the same contract:
+
+```php
+interface WorkflowStepContract
+{
+    public function execute(WorkflowContext $context): StepResult;
+    public function timeoutSeconds(): ?int;
+    public function maxAttempts(): int;
+}
+```
+
+A step returns one of three outcomes: complete, await, or fail.
+
+```php
+// src/Workflow/Domain/StepResult.php
+
+final class StepResult
+{
+    private function __construct(
+        public readonly string $outcome,
+        public readonly ?string $awaitSignal,
+        public readonly ?string $failReason,
+        public readonly array $contextUpdates,
+    ) {}
+
+    public static function complete(array $contextUpdates = []): self
+    {
+        return new self('complete', null, null, $contextUpdates);
+    }
+
+    public static function await(string $signal, array $contextUpdates = []): self
+    {
+        return new self('await', $signal, null, $contextUpdates);
+    }
+
+    public static function fail(string $reason): self
+    {
+        return new self('fail', null, $reason, []);
+    }
+}
+```
+
+The `AwaitPayment` step, for example, does not poll an external payment service. It parks the workflow:
+
+```php
+// app/Workflows/OrderApproval/Steps/AwaitPayment.php
+
+final class AwaitPayment implements WorkflowStepContract
+{
+    public function execute(WorkflowContext $context): StepResult
+    {
+        return StepResult::await('payment_succeeded');
+    }
+
+    public function timeoutSeconds(): ?int
+    {
+        return 604800; // 7 days
+    }
+
+    public function maxAttempts(): int
+    {
+        return 1;
+    }
+}
+```
+
+The engine sets the instance status to `awaiting`, stores the signal name it is waiting for, and stops. When the payment provider's webhook arrives, it delivers the signal:
+
+```php
+// app/Jobs/ProcessPaymentWebhook.php
+
+$instances = $this->workflowRepository->findAwaitingSignalForAggregate(
+    aggregateId: $orderId,
+    signal: 'payment_succeeded',
+);
+
+foreach ($instances as $instance) {
+    $this->engine->signal(
+        instanceId: $instance->id,
+        signal: 'payment_succeeded',
+        signalData: [
+            'payment_id' => $payment->id,
+            'paid_at'    => now()->toIso8601String(),
+        ],
+    );
+}
+```
+
+The engine resumes from the step after `AwaitPayment` and carries the signal data forward in the context. The `NotifyFulfillmentTeam` step can read `payment_id` from context without knowing anything about how payment was confirmed.
+
+## WorkflowContext: Shared State Without Shared Mutable State
+
+Context is an immutable bag of data that flows through all steps. Steps cannot write directly to it - they return updates via `StepResult::complete(['key' => 'value'])` and the engine merges those in before passing context to the next step.
+
+```php
+// src/Workflow/Domain/WorkflowContext.php
+
+final class WorkflowContext
+{
+    private function __construct(
+        public readonly string $workflowInstanceId,
+        public readonly string $aggregateId,
+        public readonly string $aggregateType,
+        private readonly array $data,
+    ) {}
+
+    public function get(string $key, mixed $default = null): mixed
+    {
+        return $this->data[$key] ?? $default;
+    }
+
+    public function with(array $additions): self
+    {
+        return new self(
+            $this->workflowInstanceId,
+            $this->aggregateId,
+            $this->aggregateType,
+            array_merge($this->data, $additions),
+        );
+    }
+}
+```
+
+This keeps steps honest. A step cannot accidentally clobber data set by a previous step except through the explicit return value. It also makes testing straightforward:
+
+```php
+it('awaits payment signal when order is approved', function () {
+    $context = WorkflowContext::make(
+        workflowInstanceId: 'wf_001',
+        aggregateId: 'ord_001',
+        aggregateType: 'order',
+        initialData: [],
+    );
+
+    $step = new AwaitPayment();
+    $result = $step->execute($context);
+
+    expect($result->outcome)->toBe('await');
+    expect($result->awaitSignal)->toBe('payment_succeeded');
+});
+```
+
+Each step is independently testable. You construct a context, run the step, assert the result. No Laravel bootstrapping required.
+
+## Branching Without a Tree Structure
+
+Not all workflows are linear. Some paths depend on conditions that are only known at runtime, and this is where a lot of workflow implementations go wrong. The temptation is to model branching as a tree: if condition A, follow path X; if condition B, follow path Y. That works fine until you have three conditions and four paths, at which point you have a directed graph masquerading as code, and nobody can read it without drawing a diagram first.
+
+My preference is context flags over nested step trees. The idea is simple: a routing step runs early in the workflow, evaluates the conditions, and writes its findings into context. Later steps read those findings and decide whether to skip themselves or do their work. The step list stays flat. You can read it from top to bottom and understand every possible path the workflow might take.
+
+Here is a concrete example. An order workflow might need manual review for high-value orders, a compliance check for orders from certain regions, and expedited processing for customers on a priority tier. Rather than splitting into separate workflow definitions (which duplicates a lot of shared steps) or nesting conditional blocks inside the engine, a single routing step evaluates all of this upfront:
+
+```php
+// app/Workflows/OrderApproval/Steps/RouteApproval.php
+
+final class RouteApproval implements WorkflowStepContract
+{
+    public function __construct(
+        private readonly CustomerRepositoryContract $customers,
+        private readonly ComplianceService $compliance,
+    ) {}
+
+    public function execute(WorkflowContext $context): StepResult
+    {
+        $customer = $this->customers->findById($context->get('customer_id'));
+
+        return StepResult::complete([
+            'requires_manual_review'  => $context->get('order_value') > 10000,
+            'requires_compliance_hold' => $this->compliance->requiresHold($customer->region),
+            'is_priority_customer'     => $customer->isPriority(),
+        ]);
+    }
+}
+```
+
+Later steps consume these flags independently. Each one is responsible for its own skip logic:
+
+```php
+// app/Workflows/OrderApproval/Steps/AwaitManualApproval.php
+
+final class AwaitManualApproval implements WorkflowStepContract
+{
+    public function execute(WorkflowContext $context): StepResult
+    {
+        if (! $context->get('requires_manual_review', false)) {
+            return StepResult::complete();
+        }
+
+        return StepResult::await('manager_decision');
+    }
+}
+```
+
+```php
+// app/Workflows/OrderApproval/Steps/AwaitComplianceClearance.php
+
+final class AwaitComplianceClearance implements WorkflowStepContract
+{
+    public function execute(WorkflowContext $context): StepResult
+    {
+        if (! $context->get('requires_compliance_hold', false)) {
+            return StepResult::complete();
+        }
+
+        return StepResult::await('compliance_cleared');
+    }
+}
+```
+
+```php
+// app/Workflows/OrderApproval/Steps/NotifyFulfillmentTeam.php
+
+final class NotifyFulfillmentTeam implements WorkflowStepContract
+{
+    public function __construct(
+        private readonly NotificationService $notifications,
+    ) {}
+
+    public function execute(WorkflowContext $context): StepResult
+    {
+        $priority = $context->get('is_priority_customer', false);
+
+        $this->notifications->notifyFulfillment(
+            orderId: $context->get('order_id'),
+            queue: $priority ? 'priority' : 'standard',
+        );
+
+        return StepResult::complete();
+    }
+}
+```
+
+And the workflow definition itself reads clearly, top to bottom:
+
+```php
+public function steps(): array
+{
+    return [
+        ValidateOrderItems::class,
+        RouteApproval::class,          // sets context flags
+        ReserveInventory::class,
+        AwaitComplianceClearance::class, // skips if not required
+        CreateInvoice::class,
+        AwaitPayment::class,
+        AwaitManualApproval::class,    // skips if not required
+        NotifyFulfillmentTeam::class,  // uses priority flag
+    ];
+}
+```
+
+Reading that list, you can already build a mental model of what happens. A standard order hits `RouteApproval`, skips both await steps, and lands at `NotifyFulfillmentTeam` on the standard queue. A high-value order from a restricted region pauses twice before it gets there. A priority customer skips the holds but gets the priority queue at the end.
+
+### When the Context Flag Approach Breaks Down
+
+It is worth being honest about the limits of this pattern. Context flags work well when branches share a significant chunk of their steps. If two paths genuinely have nothing in common beyond the trigger event, separate workflow definitions are probably the right call. Trying to force them into one definition just to keep things tidy results in a step list full of steps that almost always skip themselves, which is its own form of confusion.
+
+The other case where context flags get awkward is when a branch decision depends on the outcome of an earlier awaiting step. Suppose a manual approval step can produce one of three decisions: approved, approved with modifications, or sent back for renegotiation. The step waiting for that signal needs to write the decision into context so the next step can act on it:
+
+```php
+// app/Workflows/OrderApproval/Steps/AwaitManualApproval.php
+
+final class AwaitManualApproval implements WorkflowStepContract
+{
+    public function execute(WorkflowContext $context): StepResult
+    {
+        if (! $context->get('requires_manual_review', false)) {
+            return StepResult::complete(['approval_decision' => 'auto_approved']);
+        }
+
+        // Check if the signal has already been delivered (i.e. we are resuming)
+        $decision = $context->get('approval_decision');
+
+        if ($decision !== null) {
+            return StepResult::complete();
+        }
+
+        return StepResult::await('manager_decision');
+    }
+}
+```
+
+When the signal arrives, the engine calls `execute` again with the signal data merged into context. The step finds `approval_decision` already set, returns complete, and the next step can read the decision and act accordingly. This is slightly counterintuitive at first - the step runs twice - but it keeps signal handling inside the step that owns that state, rather than leaking it into the engine or a separate handler class.
+
+### Reading Signal Data in the Next Step
+
+Once the signal data is in context, consuming it downstream is straightforward:
+
+```php
+// app/Workflows/OrderApproval/Steps/ProcessApprovalDecision.php
+
+final class ProcessApprovalDecision implements WorkflowStepContract
+{
+    public function execute(WorkflowContext $context): StepResult
+    {
+        $decision = $context->get('approval_decision');
+
+        return match ($decision) {
+            'approved'              => StepResult::complete(['proceed' => true]),
+            'approved_with_changes' => StepResult::complete(['proceed' => true, 'notify_changes' => true]),
+            'sent_for_renegotiation' => StepResult::complete(['proceed' => false]),
+            default                 => StepResult::fail("Unknown approval decision: {$decision}"),
+        };
+    }
+}
+```
+
+Steps further down the chain check `proceed` and `notify_changes` as needed. The branching logic is distributed across the steps that care about it, rather than centralised in a router that has to know about everything.
+
+## Timeouts: When Waiting Is Not Infinite
+
+Every awaiting step raises a question the engine cannot answer on its own: what happens if the signal never arrives? A payment that is never completed. A manager who goes on holiday without approving the order. A compliance team that sits on a request for three weeks. Real workflows have to handle these cases, and "wait forever" is rarely the right answer.
+
+The timeout mechanism is built directly into the step contract. Every step declares how long it is willing to wait before something has to happen:
+
+```php
+interface WorkflowStepContract
+{
+    public function execute(WorkflowContext $context): StepResult;
+    public function timeoutSeconds(): ?int;  // null means no timeout
+    public function maxAttempts(): int;
+}
+```
+
+When the engine parks a workflow at an awaiting step that declares a timeout, it dispatches a delayed job alongside the parking:
+
+```php
+// Inside WorkflowEngine::handleAwait()
+
+if ($timeout = $step->timeoutSeconds()) {
+    TimeoutWorkflowStep::dispatch(
+        instanceId: $instance->id,
+        expectedSignal: $result->awaitSignal,
+    )->delay(now()->addSeconds($timeout));
+}
+```
+
+When the job fires, it checks whether the workflow is still waiting on the same signal. If the signal already arrived and the workflow advanced, the job finds a different state and does nothing. If the workflow is still parked, it delivers a synthetic `timeout` signal:
+
+```php
+// app/Jobs/TimeoutWorkflowStep.php
+
+final class TimeoutWorkflowStep implements ShouldQueue
+{
+    public function __construct(
+        private readonly string $instanceId,
+        private readonly string $expectedSignal,
+    ) {}
+
+    public function handle(WorkflowEngine $engine, WorkflowRepositoryContract $repository): void
+    {
+        $instance = $repository->findById($this->instanceId);
+
+        if (! $instance->canReceiveSignal($this->expectedSignal)) {
+            return;
+        }
+
+        $engine->signal(
+            instanceId: $this->instanceId,
+            signal: 'timeout',
+            signalData: ['timed_out_signal' => $this->expectedSignal],
+        );
+    }
+}
+```
+
+The step itself then decides what a timeout means for its context. This is the key design decision: the step owns the timeout behaviour, not the engine. The engine just delivers a signal. The step interprets it.
+
+### Timeout Behaviour Is Step-Specific
+
+Different awaiting steps need very different responses to a timeout. A payment step timing out probably means the order should be cancelled. A manual approval step timing out might mean the workflow should auto-approve, or escalate, or just fail loudly and wait for human intervention. Making the step responsible for this means each one can handle it appropriately.
+
+Here is a payment step that cancels the order on timeout:
+
+```php
+// app/Workflows/OrderApproval/Steps/AwaitPayment.php
+
+final class AwaitPayment implements WorkflowStepContract
+{
+    public function execute(WorkflowContext $context): StepResult
+    {
+        // Already resolved - either paid or timed out
+        if ($context->get('payment_status') !== null) {
+            $status = $context->get('payment_status');
+
+            if ($status === 'timed_out') {
+                return StepResult::fail('Payment window expired. Order will be cancelled.');
+            }
+
+            return StepResult::complete();
+        }
+
+        // Signal just arrived
+        $signal = $context->get('_signal');
+
+        if ($signal === 'timeout') {
+            return StepResult::complete(['payment_status' => 'timed_out']);
+        }
+
+        if ($signal === 'payment_succeeded') {
+            return StepResult::complete([
+                'payment_status' => 'paid',
+                'payment_id'     => $context->get('_signal_data.payment_id'),
+            ]);
+        }
+
+        // First time through - park and wait
+        return StepResult::await('payment_succeeded');
+    }
+
+    public function timeoutSeconds(): ?int
+    {
+        return 604800; // 7 days
+    }
+
+    public function maxAttempts(): int
+    {
+        return 1;
+    }
+}
+```
+
+Compare that to a manual approval step that auto-approves rather than failing when the window expires. The business rule here is that if a manager does not review within 48 hours, the workflow proceeds as though it were approved:
+
+```php
+// app/Workflows/OrderApproval/Steps/AwaitManualApproval.php
+
+final class AwaitManualApproval implements WorkflowStepContract
+{
+    public function execute(WorkflowContext $context): StepResult
+    {
+        if (! $context->get('requires_manual_review', false)) {
+            return StepResult::complete(['approval_decision' => 'auto_approved']);
+        }
+
+        $signal = $context->get('_signal');
+
+        if ($signal === 'timeout') {
+            // Business rule: no response in 48h = auto-approved
+            return StepResult::complete([
+                'approval_decision' => 'auto_approved',
+                'auto_approved_reason' => 'timeout',
+            ]);
+        }
+
+        if ($signal === 'manager_decision') {
+            return StepResult::complete([
+                'approval_decision' => $context->get('_signal_data.decision'),
+            ]);
+        }
+
+        return StepResult::await('manager_decision');
+    }
+
+    public function timeoutSeconds(): ?int
+    {
+        return 172800; // 48 hours
+    }
+
+    public function maxAttempts(): int
+    {
+        return 1;
+    }
+}
+```
+
+Two awaiting steps, two completely different timeout behaviours, zero timeout logic in the engine. The engine is just a postman. It delivers signals and persists state. It does not have opinions about what those signals mean.
+
+### Runtime-Configurable Timeouts
+
+Hard-coding timeout values as constants in step classes is fine during early development but tends to become a problem in production. Business rules about payment windows and approval deadlines have a habit of changing, and changing them should not require a deployment.
+
+The step contract is a PHP class, which means `timeoutSeconds()` can read from wherever it likes:
+
+```php
+// app/Workflows/OrderApproval/Steps/AwaitPayment.php
+
+final class AwaitPayment implements WorkflowStepContract
+{
+    public function __construct(
+        private readonly SystemSettingsRepositoryContract $settings,
+    ) {}
+
+    public function timeoutSeconds(): ?int
+    {
+        return $this->settings->get('payments.window_days') * 86400;
+    }
+}
+```
+
+The service container resolves the step, injects the repository, and the timeout is read from the database at the moment the step executes. Change the setting, and the next workflow instance that reaches this step picks up the new value. Existing parked instances are not affected - their timeout job was already dispatched when they parked - but that is usually the right behaviour. You do not want a settings change to retroactively alter the expectations for workflows already in flight.
+
+### What About Timeouts on Timeouts?
+
+One edge case worth thinking through: the `TimeoutWorkflowStep` job is itself a queued job, which means it can fail. If your queue worker crashes repeatedly and the job exhausts its retry attempts without ever firing, the workflow stays parked indefinitely. For most applications this is an acceptable risk - queue failures are rare and observable - but if you need a harder guarantee, a scheduled job that sweeps for instances whose `timeout_at` has passed and have not yet received a signal is a reasonable backstop. It trades immediacy for reliability: the sweep might fire 5 minutes late, but it will fire.
+
+```php
+// app/Console/Commands/ExpireStaleWorkflowSteps.php
+
+public function handle(WorkflowRepositoryContract $repository, WorkflowEngine $engine): void
+{
+    $stale = $repository->findTimedOutInstances(now());
+
+    foreach ($stale as $instance) {
+        $engine->signal(
+            instanceId: $instance->id,
+            signal: 'timeout',
+            signalData: ['source' => 'sweep', 'timed_out_signal' => $instance->getAwaitingSignal()],
+        );
+    }
+}
+```
+
+Running this as a scheduled command every few minutes means even a prolonged queue outage does not leave workflows stranded forever. The signal data includes a `source` flag so you can distinguish between a timeout that fired on time via the job and one that was caught by the sweep - useful for monitoring and alerting.
+
+## Connecting the Two Layers
+
+The state machine and the workflow engine are connected by a Laravel event listener. The state machine fires a domain event. The listener starts a workflow.
+
+```php
+// app/Providers/OrdersServiceProvider.php
+
+public function boot(): void
+{
+    Event::listen(
+        OrderApproved::class,
+        StartOrderApprovalWorkflow::class,
+    );
+}
+```
+
+```php
+// app/Listeners/StartOrderApprovalWorkflow.php
+
+final class StartOrderApprovalWorkflow
+{
+    public function __construct(
+        private readonly WorkflowEngine $engine,
+    ) {}
+
+    public function handle(OrderApproved $event): void
+    {
+        $instance = $this->engine->start(
+            workflowName: OrderApprovalWorkflow::name(),
+            aggregateId: $event->orderId,
+            aggregateType: 'order',
+            initialData: [
+                'order_value' => $event->orderValue,
+            ],
+        );
+
+        AdvanceWorkflow::dispatch($instance->id);
+    }
+}
+```
+
+The engine and the state machine have no direct dependency on each other. The listener is the only thing that knows about both.
+
+## What the Database Stores
+
+Two tables do the heavy lifting.
+
+`workflow_instances` tracks a running execution. The key columns are `status` (running, awaiting, completed, failed, cancelled), `current_step_index`, `awaiting_signal`, and `context` as a JSON blob. When the engine persists between steps, it writes the new index and any context updates.
+
+`workflow_signals` is an append-only log of every signal delivered to every instance. This gives you a complete record of what happened and when, including which user or system actor delivered each signal.
+
+Because the engine persists before moving to the next step, a failed job always resumes from a known good state rather than re-running work that already succeeded. The `AdvanceWorkflow` job is safe to retry because the engine checks the current status before doing anything.
+
+## What This Pattern Buys You
+
+After living with this for a while, a few things stand out.
+
+**The business logic becomes auditable.** The state machine defines every valid transition explicitly. The workflow definition defines every step in a process explicitly. Anyone can read both and understand what the system does, without chasing conditionals through layers of service classes.
+
+**Async work is a first-class concept.** The `await` mechanism makes it natural to model processes that span hours or days. Waiting for a payment, waiting for a human decision, waiting for an external API callback - these are all just signals. The workflow does not care whether they arrive in 50 milliseconds or 5 days.
+
+**Each piece is independently testable.** Domain entities with no infrastructure dependencies. Steps that take a context and return a result. The engine with an in-memory repository. You can test the full logic of a workflow without touching the database or the queue.
+
+**Adding steps does not require touching existing ones.** Inserting a new step into a workflow is a one-class change. The engine picks it up from the definition array. Existing steps are unaffected.
+
+The setup cost is real. You are building an engine, not just writing business logic. But for domains with complex entity lifecycles and multi-step processes that need to survive failures, the investment pays back quickly. The alternative - a growing tangle of service classes, status checks, and jobs that only make sense if you know the history - tends to get more expensive with every feature added.
+
+If you are working on something where entity status matters, where some transitions need to trigger chains of work, and where some of that work is async, this pattern is worth considering. The state machine gives you confidence that your data is always in a valid state. The workflow engine gives you confidence that the work that follows a transition always happens in the right order, even when things go wrong in the middle.
