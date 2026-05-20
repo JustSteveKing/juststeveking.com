@@ -9,6 +9,9 @@ import type {
 	NavLink,
 	PageMeta,
 	TuiResult,
+	DesignKitColor,
+	TypographyVariant,
+	VisualLanguageItem,
 } from '@/types';
 
 import homeRaw from './home.json';
@@ -19,6 +22,7 @@ import usesRaw from './uses.json';
 import servicesRaw from './services.json';
 import talksRaw from './talks.json';
 import podcastsRaw from './podcasts.json';
+import designKitRaw from './design-kit.json';
 
 // ======= Blog =======
 
@@ -68,6 +72,13 @@ export const homeFinalCta = homeRaw.finalCta;
 
 export const servicesOfferings = servicesRaw.offerings;
 export const servicesProcess = servicesRaw.process;
+
+// ======= Design Kit =======
+
+export const designKitMeta: PageMeta = designKitRaw.meta;
+export const designKitColors: DesignKitColor[] = designKitRaw.colors;
+export const designKitTypography: { primary: TypographyVariant; technical: TypographyVariant } = designKitRaw.typography as any;
+export const designKitVisualLanguage: VisualLanguageItem[] = designKitRaw.visualLanguage;
 
 // Re-export type so callers can import it from here if convenient
 export type { PageMeta };

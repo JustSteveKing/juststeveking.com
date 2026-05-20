@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "title": "Brand & Visual Assets",
+    "prompt": "Design Kit",
+    "subtitle": "Guidelines and assets for the juststeveking.com brand identity."
+  },
+  "colors": [
+    { "name": "Base", "variable": "--color-bg", "hex": "#eff1f5 / #1e1e2e", "description": "Main background" },
+    { "name": "Mantle", "variable": "--color-bg-weak", "hex": "#e6e9ef / #181825", "description": "Secondary background" },
+    { "name": "Crust", "variable": "--color-bg-weak-hover", "hex": "#dce0e8 / #11111b", "description": "Tertiary background" },
+    { "name": "Text", "variable": "--color-text", "hex": "#4c4f69 / #cdd6f4", "description": "Primary body text" },
+    { "name": "Subtext", "variable": "--color-text-weak", "hex": "#8c8fa1 / #7f849c", "description": "Secondary text" },
+    { "name": "Accent", "variable": "--color-accent", "hex": "#8839ef / #cba6f7", "description": "Primary brand accent" },
+    { "name": "Success", "variable": "--color-success", "hex": "#40a02b / #a6e3a1", "description": "Success states" },
+    { "name": "IC Track", "variable": "--color-track-ic", "hex": "#df8e1d / #f9e2af", "description": "IC career track" }
+  ],
+  "typography": {
+    "primary": {
+      "name": "Inter",
+      "category": "Sans-Serif",
+      "creator": "Rasmus Andersson",
+      "description": "A variable font family designed for user interfaces with a focus on high legibility of small-to-medium sized text.",
+      "weights": ["400 Regular", "500 Medium", "600 SemiBold", "700 Bold"]
+    },
+    "technical": {
+      "name": "IBM Plex Mono",
+      "category": "Monospace",
+      "creator": "Mike Abbink / IBM",
+      "description": "Designed to illustrate the unique relationship between mankind and machine. Used for code, data, and metadata.",
+      "weights": ["400 Regular", "500 Medium", "700 Bold"]
+    }
+  },
+  "visualLanguage": [
+    {
+      "label": "Radius",
+      "description": "Rounded corners (0.75rem / 12px) are used across containers to convey a modern, approachable feel."
+    },
+    {
+      "label": "Borders",
+      "description": "Subtle 1px borders using low-opacity variations of the text color define boundaries without visual noise."
+    },
+    {
+      "label": "Spacing",
+      "description": "A strict spacing scale based on 4px increments ensures consistent rhythm and hierarchy."
+    },
+    {
+      "label": "Transitions",
+      "description": "Smooth, 200ms transitions are applied to interactive elements for subtle feedback."
+    }
+  ]
+}

@@ -41,6 +41,7 @@ export const footerGroups: FooterGroup[] = [
 		links: [
 			{ label: 'About', href: '/about' },
 			{ label: 'Uses', href: '/uses' },
+			{ label: 'Design Kit', href: '/design-kit' },
 			{ label: 'GitHub', href: 'https://github.com/JustSteveKing', external: true },
 		],
 	},

@@ -80,6 +80,11 @@ export const careerFramework: Metadata = {
 	description: 'A practical engineering career framework with clear levels, expectations, and growth signals for both individual contributors and people managers.',
 };
 
+export const designKit: Metadata = {
+	title: 'Design Kit',
+	description: 'Brand assets, color palette, and typography guidelines for juststeveking.com.',
+};
+
 export const pages: Record<string, Metadata> = {
 	home,
 	blog,
@@ -91,4 +96,5 @@ export const pages: Record<string, Metadata> = {
 	reviews,
 	series,
 	careerFramework,
+	designKit,
 };

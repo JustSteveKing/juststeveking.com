@@ -240,6 +240,28 @@ export interface Resume {
 	meta?: ResumeMeta;
 }
 
+// ======= Design Kit =======
+
+export interface DesignKitColor {
+	name: string;
+	variable: string;
+	hex: string;
+	description: string;
+}
+
+export interface TypographyVariant {
+	name: string;
+	category: string;
+	creator: string;
+	description: string;
+	weights: string[];
+}
+
+export interface VisualLanguageItem {
+	label: string;
+	description: string;
+}
+
 // ======= Site =======
 
 export interface SiteMeta {
