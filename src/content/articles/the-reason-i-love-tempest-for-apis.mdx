@@ -1,0 +1,118 @@
+---
+title: "The Reason I Love Tempest for APIs"
+description: "Tempest makes API development feel lightweight by combining typed request objects, attribute-based validation, discovery-driven routing, and built-in mapping with minimal ceremony."
+category: Tempest
+shouldReport: true
+pubDate: 2026-05-25
+minRead: 12
+author:
+  name: Steve McDougall
+  avatar:
+    src: https://avatars.githubusercontent.com/u/6368379?v=4
+    alt: Steve McDougall
+tags: ["tempest", "php", "api-development", "request-validation", "attribute-routing"]
+---
+
+There is a version of API development where every decision compounds. You add a validation layer, which means you need a request class. The request class returns raw arrays, so you need a DTO. The DTO needs to be constructed from the request, so you need a factory method. By the time you have a typed object in hand, you've visited four files and written the same field name three times. None of it is wrong exactly - but it is a lot of motion for what should be a simple thing.
+
+Tempest takes a different position. The framework is built around the idea that you should write as little framework-related code as possible. Nowhere is that more apparent than in how it handles incoming request data.
+
+## Declare what you expect, get back exactly that
+
+In Tempest, a request class is a plain PHP class that implements the `Request` interface and uses the `IsRequest` trait. You declare your expected fields as public, typed properties. Validation rules go directly on those properties as PHP 8 attributes.
+
+```php
+use Tempest\Http\IsRequest;
+use Tempest\Http\Request;
+use Tempest\Validation\Rules\IsEmail;
+use Tempest\Validation\Rules\HasLength;
+use Tempest\Validation\Rules\IsNotEmptyString;
+
+final class CreateContactRequest implements Request
+{
+    use IsRequest;
+
+    #[IsNotEmptyString]
+    #[HasLength(min: 1, max: 100)]
+    public string $first_name;
+
+    #[IsNotEmptyString]
+    #[HasLength(min: 1, max: 100)]
+    public string $last_name;
+
+    #[IsNotEmptyString]
+    #[IsEmail]
+    public string $email;
+
+    public ?string $phone = null;
+}
+```
+
+That is the entire class. The property types are the contract. The attributes are the rules. There is nothing else to configure.
+
+When this class is injected into a controller action, Tempest has already validated the incoming data and hydrated a fully typed object. You get `$request->first_name` as a guaranteed `string`. Not `mixed`. Not `array`. A `string`, because you said it was a `string` and Tempest held that.
+
+The request class is also already a DTO. There is no separate step where you map raw validated data into a typed object - the object is right there, fully populated, ready to hand to whatever comes next.
+
+## Routes are where the code is
+
+The other part of Tempest that makes API development feel different is discovery-based routing. Routes are not declared in a separate file. They live as attributes on controller methods, right next to the code that handles them.
+
+```php
+use Tempest\Http\Response;
+use Tempest\Http\Responses\Created;
+use Tempest\Http\Responses\Json;
+use Tempest\Router\Post;
+use Tempest\Router\Get;
+
+final readonly class ContactController
+{
+    #[Get('/contacts')]
+    public function index(): Response
+    {
+        return new Json(Contact::all());
+    }
+
+    #[Post('/contacts')]
+    public function store(CreateContactRequest $request): Response
+    {
+        $contact = $this->createContact->handle($request);
+
+        return new Created($contact);
+    }
+}
+```
+
+Tempest discovers these attributes at boot and registers the routes automatically. There is no routes file to maintain, no registration step, no chance of a route definition drifting away from the controller it points to. The route and the handler are in the same place because they are the same thing.
+
+## Focused actions, no ceremony
+
+The controller hands the typed request to an action. The action does the work:
+
+```php
+use function Tempest\Mapper\map;
+
+final readonly class CreateContactAction
+{
+    public function handle(CreateContactRequest $request): Contact
+    {
+        return map($request)->to(Contact::class)->save();
+    }
+}
+```
+
+`map($request)->to(Contact::class)` is Tempest's built-in mapper hydrating a model from the request properties. Chain `->save()` and you're done. No array unpacking, no manual assignment, no constructor call with a dozen named arguments.
+
+The action has one job. It knows what shape the data is because the type system tells it. It doesn't need to validate, it doesn't need to cast, it doesn't need to check for missing keys.
+
+## What declarative actually means here
+
+The word gets overused, but it applies cleanly to what Tempest is doing. Every piece of information about a request - what fields it contains, what types they are, what rules they must satisfy - is declared on the class itself. You read the class and you know everything. You don't need to cross-reference a `rules()` method, a DTO constructor, and a mapping step to understand what data flows into your action.
+
+PHP 8 attributes were always well-suited to this kind of thing. Tempest is one of the first frameworks to treat them as a core design decision rather than a convenience wrapper, and the request handling is where that pays off most visibly. The validation rules are co-located with the properties they validate. The types are the documentation. The class is honest about what it is.
+
+## In practice
+
+I've been building a small CRM API with this pattern - contacts, companies, deals. Each resource has a focused request class per operation, a lean controller, and an action that does exactly one thing. The whole codebase has a low surface area. There are no files that exist purely to shuttle data between other files.
+
+That's the thing that Tempest gets right. Every class you write has a reason to exist beyond satisfying the framework's structure. When there is no boilerplate to juggle, you spend the time writing the code that actually matters.

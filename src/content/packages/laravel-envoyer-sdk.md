@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/laravel-envoyer-sdk"
 link: "https://github.com/JustSteveKing/laravel-envoyer-sdk"
 tech: ["PHP"]
 featured: false
-downloads: 59894
-monthlyDownloads: 675
+downloads: 59936
+monthlyDownloads: 609
 stars: 39
 version: "v2.0.0"
-updatedAt: "2026-05-20"
+updatedAt: "2026-05-25"
 ---
 
 # Laravel Envoyer SDK

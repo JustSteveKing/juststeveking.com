@@ -7,10 +7,10 @@ link: "https://github.com/JustSteveKing/laravel-data-object-tools"
 tech: ["PHP", "Laravel"]
 featured: false
 downloads: 14377
-monthlyDownloads: 87
+monthlyDownloads: 67
 stars: 67
 version: "dev-main"
-updatedAt: "2026-05-20"
+updatedAt: "2026-05-25"
 ---
 
 # Laravel Data Object Tools

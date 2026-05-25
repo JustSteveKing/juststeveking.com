@@ -7,10 +7,10 @@ link: "https://github.com/JustSteveKing/http-helpers"
 tech: ["PHP", "Laravel"]
 featured: false
 downloads: 9213
-monthlyDownloads: 3
+monthlyDownloads: 2
 stars: 6
 version: "dev-main"
-updatedAt: "2026-05-19"
+updatedAt: "2026-05-25"
 ---
 
 # HTTP Helpers

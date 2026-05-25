@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/http-auth-strategies"
 link: "https://github.com/JustSteveKing/http-auth-strategies"
 tech: ["PHP"]
 featured: false
-downloads: 71886
-monthlyDownloads: 703
+downloads: 71931
+monthlyDownloads: 641
 stars: 8
 version: "v1.2.0"
-updatedAt: "2026-05-20"
+updatedAt: "2026-05-25"
 ---
 
 # Http Auth Strategies

@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/laravel-bastion"
 link: "https://github.com/JustSteveKing/laravel-bastion"
 tech: ["PHP"]
 featured: false
-downloads: 91
-monthlyDownloads: 39
+downloads: 92
+monthlyDownloads: 40
 stars: 108
 version: "dev-main"
-updatedAt: "2026-05-19"
+updatedAt: "2026-05-25"
 ---
 
 <p align="center">

@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/ollama-php"
 link: "https://github.com/JustSteveKing/ollama-php"
 tech: ["PHP"]
 featured: false
-downloads: 84
-monthlyDownloads: 2
+downloads: 86
+monthlyDownloads: 3
 stars: 27
 version: "dev-main"
-updatedAt: "2026-04-30"
+updatedAt: "2026-05-25"
 ---
 
 # Ollama PHP SDK

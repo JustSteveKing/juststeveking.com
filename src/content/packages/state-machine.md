@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/state-machine"
 link: "https://github.com/JustSteveKing/state-machine"
 tech: ["PHP"]
 featured: false
-downloads: 35
-monthlyDownloads: 35
+downloads: 50
+monthlyDownloads: 50
 stars: 0
 version: "dev-main"
-updatedAt: "2026-05-20"
+updatedAt: "2026-05-25"
 ---
 
 # State Machine
