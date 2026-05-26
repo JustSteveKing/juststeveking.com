@@ -1,0 +1,505 @@
+---
+title: "Server-Side Rate Limiting in Laravel with Fingerprint.dev"
+description: "Learn how to build device-based rate limiting in Laravel with Fingerprint.dev, Redis caching, and custom middleware to avoid the limits of IP-based throttling."
+category: Laravel
+pubDate: 2026-05-26
+minRead: 12
+author:
+  name: Steve McDougall
+  avatar:
+    src: https://avatars.githubusercontent.com/u/6368379?v=4
+    alt: Steve McDougall
+tags: ["laravel", "rate-limiting", "security", "redis", "device-fingerprinting"]
+---
+
+Laravel's rate limiter keys on IP addresses by default. That breaks in three common scenarios. This tutorial builds a PHP-first alternative: a typed Fingerprint.dev service, a verification middleware with Redis caching, and a custom rate limiter that throttles by device - not by IP.
+
+## The Problem with IP-Based Rate Limiting
+
+If you've shipped a Laravel app with authentication, you've seen this line in your `AppServiceProvider`:
+
+```php
+RateLimiter::for('login', function (Request $request) {
+    return Limit::perMinute(5)->by($request->ip());
+});
+```
+
+Five login attempts per minute, keyed by IP address. Simple. And broken in at least three ways.
+
+**Shared IPs punish legitimate users.** An office of 200 employees behind a single NAT gateway shares one IP. One person fat-fingers their password a few times and the entire office gets locked out of login for a minute. The same applies to university campuses, co-working spaces, and corporate VPNs.
+
+**VPN rotation makes limits meaningless.** An attacker with a rotating proxy or residential VPN pool gets a fresh rate-limit bucket with every new IP. Five attempts per IP across a thousand IPs means five thousand guesses, completely unthrottled.
+
+**CGNAT collapses entire ISPs into one bucket.** Mobile carriers use carrier-grade NAT, meaning thousands of subscribers share the same public IP. Your rate limiter cannot tell them apart.
+
+The core issue is that IP addresses do not identify visitors. They identify network endpoints, and those endpoints are shared, rotated, and spoofed. You need a more stable identifier.
+
+Fingerprint.dev provides one. It is a hosted identification API that combines TLS fingerprints (JA4) with optional browser signals to produce a stable `visitor_id` and a confidence score. No cookies, no local storage, no client-side state to clear. The identifier survives VPN switches, incognito windows, and browser restarts.
+
+Your frontend calls Fingerprint.dev's JS SDK once and passes the resulting `visitor_id` to your backend. The rest - verification, caching, and rate limiting - is all PHP. That is what we are building.
+
+## Setup
+
+You will need Laravel 11+, a Redis instance for caching, and a Fingerprint.dev account. Create a dashboard key and you will get one starting with `fp_live_`.
+
+Add your key to `.env`:
+
+```bash
+FINGERPRINT_API_KEY=fp_live_...
+FINGERPRINT_BASE_URL=https://api.fingerprint.dev
+FINGERPRINT_CONFIDENCE_THRESHOLD=0.7
+```
+
+Create the config file:
+
+```php
+// config/fingerprint.php
+
+<?php
+
+return [
+    'api_key'              => env('FINGERPRINT_API_KEY'),
+    'base_url'             => env('FINGERPRINT_BASE_URL', 'https://api.fingerprint.dev'),
+    'confidence_threshold' => (float) env('FINGERPRINT_CONFIDENCE_THRESHOLD', 0.7),
+];
+```
+
+## The Frontend (Briefly)
+
+Your JavaScript - whether it is Vue, React, or a Blade snippet - calls the Fingerprint.dev SDK once and sends the visitor ID to your backend as a header. Here is the entire client-side integration:
+
+```js
+// Install: bun add fingerprint.dev
+import { identify } from 'fingerprint.dev';
+
+const result = await identify({ apiKey: 'fp_live_...' });
+
+// Attach to every request via an Axios interceptor
+axios.defaults.headers.common['X-Visitor-Id'] = result.visitor_id ?? '';
+```
+
+That is the last JavaScript you will see. Everything from here is PHP.
+
+## Building the Fingerprint Service
+
+Start with a clean service class that wraps the Fingerprint.dev REST API using Laravel's HTTP client. Two methods cover our rate-limiting use case: one to verify a visitor ID, and one to check a visitor's recent event history.
+
+```php
+// app/Services/FingerprintService.php
+
+<?php
+
+namespace App\Services;
+
+use App\DTOs\Visitor;
+use Illuminate\Support\Facades\Http;
+
+class FingerprintService
+{
+    public function __construct(
+        private string $apiKey,
+        private string $baseUrl,
+    ) {}
+
+    /**
+     * Verify a visitor ID exists and return its details.
+     * Returns null on any failure - callers should fall back to IP.
+     */
+    public function getVisitor(string $visitorId): ?Visitor
+    {
+        $response = Http::withHeaders([
+                'x-api-key' => $this->apiKey,
+            ])
+            ->timeout(5)
+            ->get("{$this->baseUrl}/v1/visitors/{$visitorId}");
+
+        if ($response->failed()) {
+            return null;
+        }
+
+        return Visitor::fromArray($response->json());
+    }
+
+    /**
+     * Fetch recent identify events for a visitor.
+     * Useful for velocity checks beyond rate limiting.
+     */
+    public function getEvents(string $visitorId, int $limit = 50): array
+    {
+        $response = Http::withHeaders([
+                'x-api-key' => $this->apiKey,
+            ])
+            ->timeout(5)
+            ->get("{$this->baseUrl}/v1/events", [
+                'visitor_id' => $visitorId,
+                'limit'      => $limit,
+            ]);
+
+        if ($response->failed()) {
+            return [];
+        }
+
+        return $response->json('data', []);
+    }
+}
+```
+
+The `Visitor` DTO keeps things typed and predictable:
+
+```php
+// app/DTOs/Visitor.php
+
+<?php
+
+namespace App\DTOs;
+
+readonly class Visitor
+{
+    public function __construct(
+        public string $id,
+        public float  $confidence,
+        public string $deviceClass,
+        public string $firstSeen,
+        public string $lastSeen,
+        public int    $requestCount,
+    ) {}
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            id:           $data['id'],
+            confidence:   (float) $data['confidence'],
+            deviceClass:  $data['device_class'] ?? 'unknown',
+            firstSeen:    $data['first_seen'],
+            lastSeen:     $data['last_seen'],
+            requestCount: $data['request_count'],
+        );
+    }
+
+    public function meetsConfidence(float $threshold): bool
+    {
+        return $this->confidence >= $threshold;
+    }
+}
+```
+
+Register the service as a singleton in your provider:
+
+```php
+// app/Providers/AppServiceProvider.php
+
+$this->app->singleton(FingerprintService::class, function ($app) {
+    return new FingerprintService(
+        apiKey:  config('fingerprint.api_key'),
+        baseUrl: config('fingerprint.base_url'),
+    );
+});
+```
+
+Two things worth noting about this design. Every API call has a 5-second timeout and returns `null` or an empty array on failure - it never throws. The caller decides what to do when the API is unavailable, and for rate limiting that decision is always "fall back to IP." The DTO's `meetsConfidence()` method keeps the threshold check close to the data, which cleans up the middleware considerably.
+
+## The Verification Middleware
+
+A client can send any string in the `X-Visitor-Id` header. Without server-side verification, an attacker sends a random UUID on each request and gets a fresh rate-limit bucket every time - the exact problem you are trying to solve.
+
+This middleware verifies the visitor ID against the Fingerprint.dev API and caches the result in Redis:
+
+```php
+// app/Http/Middleware/ResolveVisitorId.php
+
+<?php
+
+namespace App\Http\Middleware;
+
+use App\Services\FingerprintService;
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+
+class ResolveVisitorId
+{
+    public function __construct(
+        private FingerprintService $fingerprint,
+    ) {}
+
+    public function handle(Request $request, Closure $next)
+    {
+        $visitorId = $request->header('X-Visitor-Id');
+
+        if (! $visitorId) {
+            return $next($request);
+        }
+
+        // Check cache first - avoid calling the API on every request
+        $cacheKey = "visitor:verified:{$visitorId}";
+        $cached   = Cache::get($cacheKey);
+
+        if ($cached === true) {
+            $request->attributes->set('visitor_id', $visitorId);
+            return $next($request);
+        }
+
+        if ($cached === false) {
+            // Previously failed verification - don't retry until TTL expires
+            return $next($request);
+        }
+
+        // Cache miss - verify with the API
+        $visitor   = $this->fingerprint->getVisitor($visitorId);
+        $threshold = config('fingerprint.confidence_threshold');
+
+        if ($visitor && $visitor->meetsConfidence($threshold)) {
+            Cache::put($cacheKey, true, now()->addMinutes(5));
+            $request->attributes->set('visitor_id', $visitorId);
+        } else {
+            Cache::put($cacheKey, false, now()->addMinutes(2));
+
+            if ($visitor && ! $visitor->meetsConfidence($threshold)) {
+                Log::info('Fingerprint below confidence threshold', [
+                    'visitor_id' => $visitorId,
+                    'confidence' => $visitor->confidence,
+                ]);
+            }
+        }
+
+        return $next($request);
+    }
+}
+```
+
+Register it with a short alias in `bootstrap/app.php`:
+
+```php
+->withMiddleware(function (Middleware $middleware) {
+    $middleware->alias([
+        'resolve-visitor' => \App\Http\Middleware\ResolveVisitorId::class,
+    ]);
+})
+```
+
+Three design choices worth explaining here.
+
+**Cache both success and failure.** A valid visitor ID is cached for 5 minutes. An invalid one - fake ID or low confidence - is cached for 2 minutes. Without negative caching, an attacker can DOS your Fingerprint.dev API quota by sending thousands of bogus IDs.
+
+**No errors, no blocked requests.** If the header is missing, the ID is invalid, or the API is down, the middleware does nothing. No `visitor_id` attribute gets set, and the rate limiter falls back to IP. The fingerprint is an upgrade, not a gate.
+
+**Log on low confidence.** A visitor ID that exists but has a low confidence score could indicate a fingerprint collision or active tampering. Log it, do not block it. It is a signal worth watching.
+
+## Wiring Up the Rate Limiter
+
+Now connect the resolved visitor ID to Laravel's rate limiter. In your `AppServiceProvider`:
+
+```php
+// app/Providers/AppServiceProvider.php
+
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
+
+public function boot(): void
+{
+    RateLimiter::for('fingerprint', function (Request $request) {
+        $key = $request->attributes->get('visitor_id', $request->ip());
+
+        return Limit::perMinute(5)->by($key);
+    });
+}
+```
+
+That is it. The limiter reads the `visitor_id` attribute set by the middleware. If it is not there - because the header was missing, the API was down, or verification failed - it falls back to `$request->ip()`. Same behaviour as before, just smarter when fingerprinting is available.
+
+Apply it to routes:
+
+```php
+// routes/web.php
+
+Route::middleware(['resolve-visitor', 'throttle:fingerprint'])->group(function () {
+    Route::post('/login', [AuthController::class, 'store']);
+    Route::post('/forgot-password', [PasswordResetController::class, 'store']);
+});
+
+// Different limits for different routes
+RateLimiter::for('fingerprint-strict', function (Request $request) {
+    $key = $request->attributes->get('visitor_id', $request->ip());
+
+    return Limit::perMinute(3)->by($key);
+});
+
+Route::middleware(['resolve-visitor', 'throttle:fingerprint-strict'])
+    ->post('/password/update', [PasswordController::class, 'update']);
+```
+
+Order matters: `resolve-visitor` must run before `throttle` so the attribute is available when the limiter resolves its key.
+
+## Hybrid Keying
+
+For higher-risk routes, you can combine both identifiers. This prevents the edge case where two people on the same shared device get merged into one bucket:
+
+```php
+RateLimiter::for('fingerprint-hybrid', function (Request $request) {
+    $visitor = $request->attributes->get('visitor_id');
+    $ip      = $request->ip();
+
+    $key = $visitor ? "{$visitor}|{$ip}" : $ip;
+
+    return Limit::perMinute(5)->by($key);
+});
+```
+
+## Testing
+
+The PHP side is fully testable without hitting the real API. Laravel's `Http::fake()` and `Cache` facades make this straightforward - no test API keys, no network calls.
+
+### Testing the Service
+
+```php
+// tests/Unit/FingerprintServiceTest.php
+
+use App\Services\FingerprintService;
+use Illuminate\Support\Facades\Http;
+
+it('returns a visitor when the API responds', function () {
+    Http::fake([
+        '*/v1/visitors/*' => Http::response([
+            'id'            => '550e8400-e29b-41d4-a716-446655440000',
+            'confidence'    => 0.92,
+            'device_class'  => 'desktop',
+            'first_seen'    => '2026-04-30T12:00:00Z',
+            'last_seen'     => '2026-04-30T12:15:00Z',
+            'request_count' => 4,
+        ]),
+    ]);
+
+    $service = new FingerprintService('fake-key', 'https://api.fingerprint.dev');
+    $visitor = $service->getVisitor('550e8400-e29b-41d4-a716-446655440000');
+
+    expect($visitor)
+        ->not->toBeNull()
+        ->confidence->toBe(0.92)
+        ->meetsConfidence(0.7)->toBeTrue();
+});
+
+it('returns null when the API fails', function () {
+    Http::fake(['*' => Http::response(null, 500)]);
+
+    $service = new FingerprintService('fake-key', 'https://api.fingerprint.dev');
+
+    expect($service->getVisitor('any-id'))->toBeNull();
+});
+```
+
+### Testing the Middleware
+
+```php
+// tests/Feature/ResolveVisitorIdTest.php
+
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
+
+it('sets visitor_id when the API confirms the visitor', function () {
+    Http::fake([
+        '*/v1/visitors/*' => Http::response([
+            'id'            => '550e8400-e29b-41d4-a716-446655440000',
+            'confidence'    => 0.92,
+            'device_class'  => 'desktop',
+            'first_seen'    => '2026-04-30T12:00:00Z',
+            'last_seen'     => '2026-04-30T12:15:00Z',
+            'request_count' => 4,
+        ]),
+    ]);
+
+    $this->withHeaders([
+        'X-Visitor-Id' => '550e8400-e29b-41d4-a716-446655440000',
+    ])->post('/login', [
+        'email'    => 'test@example.com',
+        'password' => 'password',
+    ]);
+
+    expect(Cache::get('visitor:verified:550e8400-e29b-41d4-a716-446655440000'))
+        ->toBeTrue();
+});
+
+it('falls back to IP when no header is sent', function () {
+    Http::fake();
+
+    $this->post('/login', [
+        'email'    => 'test@example.com',
+        'password' => 'password',
+    ]);
+
+    Http::assertNothingSent();
+});
+
+it('skips the API call when the visitor is already cached', function () {
+    Cache::put('visitor:verified:some-id', true, 300);
+    Http::fake();
+
+    $this->withHeaders(['X-Visitor-Id' => 'some-id'])
+        ->post('/login');
+
+    Http::assertNothingSent();
+});
+```
+
+### Testing Rate Limiting
+
+```php
+// tests/Feature/RateLimitingTest.php
+
+it('throttles by visitor ID, not IP', function () {
+    Cache::put('visitor:verified:attacker-id', true, 300);
+
+    // 5 attempts should succeed
+    for ($i = 0; $i < 5; $i++) {
+        $this->withHeaders(['X-Visitor-Id' => 'attacker-id'])
+            ->post('/login', ['email' => 'test@example.com', 'password' => 'wrong'])
+            ->assertStatus(422);
+    }
+
+    // 6th attempt should be rate limited
+    $this->withHeaders(['X-Visitor-Id' => 'attacker-id'])
+        ->post('/login', ['email' => 'test@example.com', 'password' => 'wrong'])
+        ->assertStatus(429);
+
+    // Different visitor should still be allowed
+    Cache::put('visitor:verified:legit-id', true, 300);
+
+    $this->withHeaders(['X-Visitor-Id' => 'legit-id'])
+        ->post('/login', ['email' => 'test@example.com', 'password' => 'wrong'])
+        ->assertStatus(422);
+});
+```
+
+## Production Hardening
+
+Four things to address before shipping this.
+
+**Circuit breaking.** If the Fingerprint.dev API goes down, your middleware will spend 5 seconds on every request waiting for a timeout before falling back to IP. Add a circuit breaker: if the API fails three times in 60 seconds, skip it entirely until a check call succeeds. Laravel does not ship one, but the pattern is straightforward with a Redis counter:
+
+```php
+// In FingerprintService, before any API call:
+$failures = (int) Cache::get('fingerprint:failures', 0);
+
+if ($failures >= 3) {
+    return null; // Circuit open - skip API
+}
+
+// After a failed call:
+Cache::increment('fingerprint:failures');
+Cache::put('fingerprint:circuit_reset', true, now()->addSeconds(60));
+```
+
+**Cache tuning.** The 5-minute TTL for verified visitors is a starting point. For high-traffic apps, bump it to 10-15 minutes. At 100k unique visitors with a 5-minute TTL, you are storing roughly 100k x ~100 bytes, around 10 MB in Redis. Negligible.
+
+**Observability.** Log two things: when a visitor ID fails verification (possible header forgery) and when the circuit breaker opens (API issues). Both are actionable signals, not noise.
+
+**Privacy.** The `visitor_id` is an opaque identifier, not raw browser data. Fingerprint.dev hashes signals before they leave the browser. But you are still identifying devices without cookies, which users should know about. Add a line to your privacy policy describing the technology and its purpose.
+
+## What You Have Built
+
+A rate-limiting system that survives the three scenarios that break IP-based throttling: shared NATs, VPN rotation, and carrier-grade NAT. The moving parts:
+
+A `FingerprintService` that wraps the REST API with typed responses and graceful failure. A `ResolveVisitorId` middleware that verifies client-supplied IDs server-side and caches the result. A custom `RateLimiter` resolver that keys on `visitor_id` with an automatic IP fallback. Tests for all three layers using `Http::fake()` - no test API keys required.
+
+Every pattern here - the typed HTTP client, the cache-aside middleware, the custom rate-limiter key - is reusable beyond fingerprinting. The Fingerprint.dev API is the specific integration, but the architecture is how you would wrap any external identity or risk signal into Laravel's request lifecycle.
+
