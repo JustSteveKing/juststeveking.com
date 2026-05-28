@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/php-sdk"
 link: "https://github.com/JustSteveKing/php-sdk"
 tech: ["PHP"]
 featured: false
-downloads: 73415
-monthlyDownloads: 718
+downloads: 73459
+monthlyDownloads: 660
 stars: 217
 version: "v2.2.0"
-updatedAt: "2026-05-26"
+updatedAt: "2026-05-28"
 ---
 
 # PHP SDK

@@ -2,7 +2,7 @@
 title: Meet Sevalla; Cloud Hosting Without the Headache
 description: Sevalla simplifies cloud hosting by providing intuitive app deployment, object storage, and database hosting on Google Cloud and Cloudflare.
 category: DevOps
-pubDate: 2025-04-15
+pubDate: 2026-05-28
 image: "/images/articles/sevalla-cloud-hosting.png"
 minRead: 7
 sponsor:
@@ -17,31 +17,82 @@ author:
 tags: ["cloud-hosting", "developer-tools", "infrastructure", "devops"]
 ---
 
-Let's face it - cloud hosting can be a pain. Between wrestling with AWS dashboards and trying to remember which settings you toggled two weeks ago, it's easy to feel overwhelmed before you've even shipped your first line of code. That's where Sevalla comes in.
-
-Sevalla is a cloud hosting platform built on top of Google Cloud and Cloudflare, and the goal is simple: take away the complexity. Whether you're building a Laravel app, serving static content, or spinning up a database, Sevalla makes it all feel effortless.
-
-## Deploy Anything, Anywhere - And Forget the Rest
-
-Sevalla isn't trying to be everything to everyone. It's focused on giving you a solid set of tools that just work:
-
-- **Application Hosting** – Got a Laravel app you're excited to launch? Deploy it in minutes.
-- **Object Storage** – Need a place for your images and files that isn't your web server? Covered.
-- **Database Hosting** – Real apps need real data handling. Keep your database secure and separate.
-- **Static Site Hosting** – For those marketing pages we all neglect until the last minute. Push and done.
-
-Basically, you bring the code - Sevalla handles the rest.
-
-## A Dashboard That Doesn't Suck
-
-When you log into Sevalla, you're greeted with a clean, no-nonsense dashboard. No endless menus. No confusing UX. You get a clear view of what's running, how much you're spending, and what's linked to what.
-
-It even shows your GitHub integration at a glance-down to the repo and branch being deployed. So if something breaks, you know exactly where to look. And yes, you can toggle your Cloudflare settings right from the interface. No jumping between tabs or copy-pasting DNS records.
-
-## Real Developer Tools, Not Just Buzzwords
-
-Sevalla doesn't try to wow you with marketing fluff. The whole vibe is: “Here's what you need. Use it.” And honestly, that's refreshing. You can go from zero to deployed in minutes without touching a single YAML file. There's no hidden complexity, no weird setup rituals. Just solid, reliable infrastructure wrapped in a developer-friendly experience.
-
+Let's face it - if you're running a Laravel application in production on self-managed AWS, "without the headache" is probably not how you'd describe your current setup. Between the IAM policies, the deployment pipelines, the CloudWatch configuration, and the institutional knowledge that only lives in one engineer's head, what started as a reasonable infrastructure choice has quietly become a part-time operations job for a team that was hired to build a product. That's the problem Sevalla was built to solve.
+ 
+Sevalla is a cloud hosting platform built on Google Cloud and Cloudflare. The goal hasn't changed since it launched: take away the infrastructure complexity. But the platform has shipped significantly in recent months, and several of those additions change what's possible for production Laravel teams in ways worth understanding directly.
+ 
+## Deploy Anything, Without Owning the Stack
+ 
+The foundation of what Sevalla offers covers the full picture of a production web application. Application hosting handles Laravel applications with managed build pipelines, automatic SSL, built-in queue workers, and a scheduler that runs without you needing to maintain a separate cron instance. Database hosting gives you managed PostgreSQL, MySQL, MariaDB, and Redis without the patching, backup configuration, or connection tuning that comes with running your own. Object storage handles files and assets without the S3 bucket policy archaeology. Static site hosting puts your frontend builds and marketing properties on Cloudflare's edge network.
+ 
+You bring the code. Sevalla handles everything underneath it.
+ 
+What has expanded substantially is how programmable, observable, and controllable the platform has become. The additions below are what change the calculation for teams evaluating whether a managed platform can carry production workloads at their scale.
+ 
+## The Programmability Layer
+ 
+The most significant addition Sevalla has made is the REST API v3. Before this arrived, the platform was dashboard-driven, which works fine at a certain scale but creates a ceiling. Infrastructure you can only manage through a browser can't be automated, audited through code review, or integrated into the tooling your team already runs.
+ 
+The v3 API covers over 200 endpoints across every major resource: applications, databases, static sites, object storage, load balancers, environment variables, pipelines, and more. Every action available in the dashboard is now available programmatically. Your deployment pipeline can interact with the platform directly. Your internal tooling can provision or tear down environments without a human navigating a dashboard. The platform fits into how mature engineering teams already work rather than requiring them to adapt to it.
+ 
+If your current setup involves Terraform, the official Sevalla Terraform Provider means you don't have to change how you define infrastructure to change where it runs. Define your Sevalla resources in HCL, run it through the same code review process you use for everything else, and keep infrastructure-as-code as a practice without keeping AWS as the platform underneath it.
+ 
+The Sevalla CLI completes this layer by putting everything in the terminal:
+ 
+```bash
+# Install via Homebrew
+brew install sevalla-hosting/tap/sevalla
+ 
+# Or via npm
+npm install -g @sevalla/cli
+```
+ 
+Every command supports `--json` output for easy integration with existing scripts and CI/CD pipelines. Deploy applications, manage environment variables, restart services, monitor your infrastructure - without leaving the command line. For teams where switching to a browser dashboard feels like an interruption to actual work, the CLI removes that friction entirely.
+ 
+## Traffic Control Without the ALB Overhead
+ 
+Load balancer support is the addition that most clearly signals Sevalla is built for production workloads at genuine scale. Load balancers run at Cloudflare's edge and can route to applications, static sites, object storage, external URLs, or other load balancers, with up to 20 destinations per load balancer.
+ 
+Two routing modes are available. Weighted routing lets you control the proportion of traffic each destination receives, which is how you run canary deployments, A/B tests, and gradual migrations between services. Geographic routing sends users to the nearest destination based on location, reducing latency for globally distributed user bases.
+ 
+The reason this matters operationally is that load balancer configuration on AWS is expensive knowledge to carry. Getting ALB rules, target groups, and health check configuration right takes specific expertise, and getting it wrong during a high-traffic event has real consequences. On Sevalla, the infrastructure concern is handled. The traffic strategy remains yours.
+ 
+## Knowing What's Actually Happening in Production
+ 
+App health monitoring is something every production team needs and most have to cobble together from CloudWatch alarms, Lambda functions, and external uptime services. Sevalla now surfaces this directly in the dashboard.
+ 
+Real-time status is visible for every running instance across your process types: web servers, queue workers, cron jobs. When something goes wrong - whether it's an out-of-memory kill, a misconfigured start command, or an application error - you get an alert with a plain-language explanation and specific steps to resolve it. You don't have to know where to look. The platform tells you what happened and what to do about it.
+ 
+Access logs for applications and static sites add the request-level visibility. Every incoming HTTP request, its path, status code, and response time is captured and available directly in the logs section. When something breaks in production, the first tool an experienced engineer reaches for is logs. Having that data without configuring a separate logging service or building the infrastructure to retain it is the difference between a ten-minute diagnosis and a thirty-minute one.
+ 
+## Access Control That Doesn't Require IAM Policy Authoring
+ 
+RBAC-protected projects give teams fine-grained control over who can access what. You can group services into projects and scope developer access to specific ones only. A developer working on one client environment has no visibility into another. A new hire can be onboarded into a specific project without touching the rest of the company workspace.
+ 
+For agencies and multi-team engineering organisations, this replaces a category of IAM policy work with a project configuration.
+ 
+Granular API key permissions extend the same idea into your automation layer. Each API key can be scoped to a specific role, a specific resource type, or an individual resource. The deployment pipeline key that updates one application doesn't need access to your databases. The monitoring integration key doesn't need the ability to trigger deploys. That's the principle of least privilege, which on AWS requires careful IAM policy authoring and ongoing audits to maintain. On Sevalla, it's a configuration choice made at key creation time.
+ 
+## The AI-Native Workflow
+ 
+The Sevalla MCP server means AI coding agents that support the Model Context Protocol can interact with your infrastructure directly. Claude Code, Cursor, and other MCP-compatible tools can query deployment status, check application health, and trigger actions against your Sevalla environment. Authentication is handled through OAuth, so there's nothing to hardcode in your configuration files.
+ 
+If your team already uses AI-assisted development workflows, having Sevalla in that workflow at the platform level is a meaningfully different position than requiring a custom integration to get there. The agent that helps you write code can also confirm whether the deploy succeeded.
+ 
+## A Dashboard That Gets Out of the Way
+ 
+The dashboard itself has been updated alongside all of this. Navigation now keeps the main and context menus visible together rather than requiring you to move between them. The GitHub integration still shows your connected repository and branch at a glance, so when something breaks you know exactly where to start. Cloudflare settings that previously required jumping between tabs are manageable directly from the interface.
+ 
+The usage page gives you a full breakdown of spending across all your services: applications, databases, static sites, object storage, and load balancers. Daily cost tracking, period-over-period comparison, and filtering by project or service are all there. You can export as CSV or JSON, or print a report. This matters because AWS cost visibility requires either a detailed understanding of Cost Explorer or dedicated FinOps effort. Costs arrive with a delay, get aggregated in ways that obscure the driver, and create the uncomfortable experience of discovering an expensive month after it's already happened. Sevalla's usage data is immediate and plain.
+ 
+Usage alerts add the proactive layer. Set a spending limit per project and configure threshold notifications at whatever percentages matter to you. When usage crosses 80% of a project's budget, you find out before the billing period closes. Budget governance without a dedicated function to deliver it.
+ 
 ## Final Thoughts
-
-Sevalla hits that sweet spot between power and simplicity. It gives you enough flexibility to build and scale real apps, but without throwing you into a pit of DevOps despair. If you've ever felt like AWS was overkill for your Laravel side project - or if you've just wanted a platform that respects your time - Sevalla is 100% worth checking out.
+ 
+The original framing of this article was "cloud hosting without the headache." That still holds, but it understates what Sevalla has become for production Laravel teams.
+ 
+If you're running Laravel on AWS, the infrastructure you're maintaining isn't a competitive advantage. It's operational overhead that compounds quietly against your engineering capacity every quarter. The question is whether that overhead is earning its keep. When you do the honest accounting of engineering hours spent on IAM policies, deployment debugging, CloudWatch configuration, and incident response, most teams find the answer is that it isn't.
+ 
+Programmatic control through API v3, the Terraform Provider, and the CLI. Traffic management through load balancers. Production visibility through app health monitoring and access logs. Access governance through RBAC and granular API key permissions. AI workflow integration through the MCP server. Cost transparency through the usage page and usage alerts.
+ 
+[Sevalla](https://sevalla.com) is worth the time to work out what you'd actually be giving up.

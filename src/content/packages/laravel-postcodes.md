@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/LaravelPostcodes"
 link: "https://github.com/JustSteveKing/LaravelPostcodes"
 tech: ["PHP", "Laravel"]
 featured: false
-downloads: 128023
-monthlyDownloads: 6995
+downloads: 128536
+monthlyDownloads: 6945
 stars: 81
 version: "V1.5.0"
-updatedAt: "2026-05-26"
+updatedAt: "2026-05-28"
 ---
 
 <p align="center">

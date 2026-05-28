@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/laravel-transporter"
 link: "https://github.com/JustSteveKing/laravel-transporter"
 tech: ["PHP"]
 featured: false
-downloads: 202005
-monthlyDownloads: 2884
+downloads: 202265
+monthlyDownloads: 2828
 stars: 480
 version: "dev-main"
-updatedAt: "2026-05-26"
+updatedAt: "2026-05-28"
 ---
 
 # Transporter

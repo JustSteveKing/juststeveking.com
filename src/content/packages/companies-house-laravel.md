@@ -7,10 +7,10 @@ link: "https://github.com/JustSteveKing/companies-house-laravel"
 tech: ["PHP"]
 featured: false
 downloads: 4125
-monthlyDownloads: 9
+monthlyDownloads: 8
 stars: 22
 version: "v1.2.0"
-updatedAt: "2026-05-25"
+updatedAt: "2026-05-28"
 ---
 
 # Laravel Companies House

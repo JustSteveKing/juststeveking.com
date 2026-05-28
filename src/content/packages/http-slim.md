@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/http-slim"
 link: "https://github.com/JustSteveKing/http-slim"
 tech: ["PHP"]
 featured: false
-downloads: 72016
-monthlyDownloads: 654
+downloads: 72081
+monthlyDownloads: 638
 stars: 7
 version: "v2.1.0"
-updatedAt: "2026-05-26"
+updatedAt: "2026-05-28"
 ---
 
 # Http Slim

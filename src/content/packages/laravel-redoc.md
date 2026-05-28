@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/laravel-redoc"
 link: "https://github.com/JustSteveKing/laravel-redoc"
 tech: ["PHP", "Laravel"]
 featured: false
-downloads: 303037
-monthlyDownloads: 6251
+downloads: 303800
+monthlyDownloads: 6334
 stars: 92
 version: "dev-main"
-updatedAt: "2026-05-26"
+updatedAt: "2026-05-28"
 ---
 
 # Laravel Redoc

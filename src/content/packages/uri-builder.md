@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/uri-builder"
 link: "https://github.com/JustSteveKing/uri-builder"
 tech: ["PHP"]
 featured: false
-downloads: 294306
-monthlyDownloads: 3961
+downloads: 294731
+monthlyDownloads: 3959
 stars: 20
 version: "v1.1.0"
-updatedAt: "2026-05-26"
+updatedAt: "2026-05-28"
 ---
 
 <p align="center">
