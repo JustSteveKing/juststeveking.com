@@ -5,6 +5,7 @@ import mdx from '@astrojs/mdx';
 import svelte from '@astrojs/svelte';
 import astroExpressiveCode from 'astro-expressive-code'
 import sitemap from '@astrojs/sitemap';
+import algoliaIntegration from './src/lib/algolia-integration';
 
 
 // https://astro.build/config
@@ -17,7 +18,11 @@ export default defineConfig({
             },
         },
         themes: ['catppuccin-macchiato', 'catppuccin-latte'],
-    }), mdx(), sitemap()],
+    }), mdx(), sitemap(), algoliaIntegration()],
+
+    image: {
+        domains: ['avatars.githubusercontent.com'],
+    },
 
     site: 'https://www.juststeveking.com',
 

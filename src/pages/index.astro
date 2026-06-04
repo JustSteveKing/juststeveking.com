@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import Layout from '@/layouts/Layout.astro';
 import ApiDiagnostic from '@/components/ApiDiagnostic.svelte';
 import Card from '@/components/Card.astro';
@@ -51,11 +52,11 @@ const tuiLines = [
 
 <Layout {...pageMeta} jsonLd={homeSchema}>
 			<!-- Hero -->
-			<section class="px-section py-24 sm:py-32 flex flex-col items-center text-center max-w-[900px] mx-auto" aria-labelledby="hero-heading">
+			<section class="px-section py-24 sm:py-32 flex flex-col items-center text-center max-w-225 mx-auto" aria-labelledby="hero-heading">
 				<div class="flex flex-col w-full">
 					<div>
-						<h1 id="hero-heading" class="font-mono text-3xl sm:text-[38px] font-bold mb-2 leading-tight sm:leading-[1.5] text-text-strong">{heroContent.heading}</h1>
-						<p class="text-base text-text leading-[2] mb-8">{heroContent.subheading}</p>
+						<h1 id="hero-heading" class="font-mono text-3xl sm:text-[38px] font-bold mb-2 leading-tight sm:leading-normal text-text-strong">{heroContent.heading}</h1>
+						<p class="text-base text-text leading-loose mb-8">{heroContent.subheading}</p>
 					</div>
 				</div>
 			</section>
@@ -69,7 +70,7 @@ const tuiLines = [
 			<section class="px-section py-16 border-t border-edge" aria-labelledby="what-heading">
 				<div class="mb-8">
 					<h2 id="what-heading" class="text-xl font-medium mb-2 text-text-strong">{whatContent.heading}</h2>
-					<p class="text-text text-base leading-[1.5]">{whatContent.body}</p>
+					<p class="text-text text-base leading-normal">{whatContent.body}</p>
 				</div>
 
 				<div class="grid grid-cols-1 min-[981px]:grid-cols-2 gap-16 items-start">
@@ -92,7 +93,7 @@ const tuiLines = [
 						</ul>
 
 						<div class="mt-8">
-							<a href={heroContent.cta.href} class="inline-flex items-center gap-3 px-5 py-2 h-10 font-mono text-[15px] font-medium leading-[1.5] rounded bg-surface-strong text-text-inverted no-underline cursor-pointer transition-colors hover:bg-surface-strong-hover">
+							<a href={heroContent.cta.href} class="inline-flex items-center gap-3 px-5 py-2 h-10 font-mono text-[15px] font-medium leading-normal rounded bg-surface-strong text-text-inverted no-underline cursor-pointer transition-colors hover:bg-surface-strong-hover">
 								<span>{heroContent.cta.label}</span>
 								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 									<path d="M6.5 12L17 12M13 16.5L17.5 12L13 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"></path>
@@ -101,14 +102,14 @@ const tuiLines = [
 						</div>
 					</div>
 
-					<div class="sticky top-[120px] hidden min-[981px]:block" aria-hidden="true">
-						<div class="w-full border border-edge rounded-md overflow-hidden font-mono text-[13px] bg-surface-weak">
+					<div class="sticky top-30 hidden min-[981px]:block">
+						<div class="w-full border border-edge rounded-md overflow-hidden font-mono text-[13px] bg-surface-weak" aria-label="Live TUI simulation">
 							<div class="flex items-center gap-1.5 px-4 py-2.5 border-b border-edge bg-surface">
 								<span class="w-2.5 h-2.5 rounded-full bg-edge inline-block"></span>
 								<span class="w-2.5 h-2.5 rounded-full bg-edge inline-block"></span>
 								<span class="w-2.5 h-2.5 rounded-full bg-edge inline-block"></span>
 							</div>
-							<div class="tui-visual-body p-6 sm:p-7 text-text leading-[1.8] whitespace-pre overflow-x-auto text-[13px]" set:html={tuiLines}></div>
+							<div class="tui-visual-body p-6 sm:p-7 text-text leading-[1.8] whitespace-pre overflow-x-auto text-[13px]" aria-live="polite" aria-atomic="true" set:html={tuiLines}></div>
 						</div>
 					</div>
 				</div>
@@ -177,13 +178,12 @@ const tuiLines = [
 							</blockquote>
 							<figcaption class="flex items-center gap-3">
 								{t.data.author.avatar && (
-									<img
+									<Image
 										src={t.data.author.avatar.src}
-										alt=""
-										width="40"
-										height="40"
+										alt={t.data.author.name}
+										width={40}
+										height={40}
 										class="rounded-full w-10 h-10 object-cover shrink-0"
-										loading="lazy"
 									/>
 								)}
 								<div>
@@ -229,7 +229,7 @@ const tuiLines = [
 							href="https://juststeveking.link"
 							target="_blank"
 							rel="noopener noreferrer"
-							class="inline-flex items-center gap-3 px-5 py-2 h-10 font-mono text-[15px] font-medium leading-[1.5] rounded bg-surface-strong text-text-inverted no-underline cursor-pointer transition-colors hover:bg-surface-strong-hover"
+							class="inline-flex items-center gap-3 px-5 py-2 h-10 font-mono text-[15px] font-medium leading-normal rounded bg-surface-strong text-text-inverted no-underline cursor-pointer transition-colors hover:bg-surface-strong-hover"
 						>
 							Book a call
 							<span aria-hidden="true">→</span>

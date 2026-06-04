@@ -18,6 +18,11 @@ export class CheckLinksCommand extends BaseCommand {
     'api-guides',
     'packages',
     'series',
+    'talks',
+    'videos',
+    'podcasts',
+    'reviews',
+    'contributions',
   ];
 
   public async handle(ctx: CrustCommandContext<any, typeof this.flags>) {
@@ -87,12 +92,21 @@ export class CheckLinksCommand extends BaseCommand {
           }
         }
       } else if (url.startsWith('/')) {
-        // Internal link check (assuming standard patterns)
-        // This is a simplified check
-        const slug = url.split('/').pop()?.split('#')[0];
+        // Internal link check
+        const pathParts = url.split('#')[0].split('?')[0].split('/').filter(Boolean);
+        const slug = pathParts[pathParts.length - 1];
+        
         if (slug) {
-          const exists = this.findSlugInContent(slug);
-          if (!exists) {
+          // Check if it's a content slug
+          const existsAsContent = this.findSlugInContent(slug);
+          if (existsAsContent) continue;
+
+          // Check if it's a static file in public/
+          const publicPath = join(process.cwd(), 'public', ...pathParts);
+          const existsInPublic = existsSync(publicPath) || 
+                               existsInPublicDir(publicPath); // handles directories with index.html or just checking file existence
+
+          if (!existsInPublic && !this.isKnownRoute(url)) {
             console.error(`   ❌ Broken internal link: ${url}`);
             broken++;
           }
@@ -110,6 +124,17 @@ export class CheckLinksCommand extends BaseCommand {
     }
 
     return { count, broken };
+
+    function existsInPublicDir(p: string): boolean {
+       // Simple check for file or directory (Astro routes are harder to check statically without a build)
+       return existsSync(p) || existsSync(`${p}.png`) || existsSync(`${p}.jpg`) || existsSync(`${p}.pdf`);
+    }
+  }
+
+  private isKnownRoute(url: string): boolean {
+    const cleanUrl = url.split('#')[0].split('?')[0];
+    const knownRoutes = ['/', '/articles', '/about', '/uses', '/work', '/career-framework', '/design-kit', '/talks', '/videos', '/reviews', '/api-guides'];
+    return knownRoutes.includes(cleanUrl) || knownRoutes.some(r => cleanUrl.startsWith(`${r}/`));
   }
 
   private findSlugInContent(slug: string): boolean {

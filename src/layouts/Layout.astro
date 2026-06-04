@@ -3,6 +3,7 @@ import "@/styles/main.css";
 import ClientRouter from 'astro:components/ClientRouter.astro';
 import { SiteHeader, SiteFooter } from '@/components';
 import { site } from "@/config";
+import { getSeoMetadata, getPersonSchema, formatJsonLd } from "@/utils/seo";
 import type { SEOProps } from "@/types";
 
 
@@ -10,34 +11,24 @@ interface Props extends SEOProps {
 	jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
+const { jsonLd, ...seoProps } = Astro.props;
+
 const {
-	title,
-	description = site.description,
-	ogImage = '/ogpages/home.webp',
-	noIndex = false,
-	canonicalUrl,
-	jsonLd,
-} = Astro.props;
+	pageTitle,
+	description,
+	ogImage,
+	noIndex,
+	canonical,
+	author,
+	twitter,
+	locale,
+	siteName,
+} = getSeoMetadata(seoProps);
 
-const pageTitle = title ? `${title} — ${site.name}` : site.title;
-const canonical = canonicalUrl ?? new URL(Astro.url.pathname, site.url).href;
+const canonicalUrl = canonical || new URL(Astro.url.pathname, site.url).href;
 const ogImageUrl = new URL(ogImage, site.url).href;
-
-const personSchema: Record<string, unknown> = {
-	'@context': 'https://schema.org',
-	'@type': 'Person',
-	name: site.author,
-	url: site.url,
-	sameAs: [
-		`https://github.com/${site.github}`,
-		`https://twitter.com/${site.twitter.replace('@', '')}`,
-		'https://www.linkedin.com/in/steve-mcdougall/',
-	],
-};
-
-const pageSchemas = jsonLd
-	? (Array.isArray(jsonLd) ? jsonLd : [jsonLd])
-	: [];
+const personSchema = getPersonSchema();
+const pageSchemas = formatJsonLd(jsonLd);
 ---
 
 <!doctype html>
@@ -53,37 +44,30 @@ const pageSchemas = jsonLd
 		<link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
 		<link rel="shortcut icon" href="/favicon.ico" />
 		<link rel="manifest" href="/site.webmanifest" />
-		<link rel="canonical" href={canonical} />
+		<link rel="canonical" href={canonicalUrl} />
 
 		<title>{pageTitle}</title>
 		<meta name="description" content={description} />
-		<meta name="author" content={site.author} />
+		<meta name="author" content={author} />
 		<meta name="generator" content={Astro.generator} />
 		{noIndex && <meta name="robots" content="noindex, nofollow" />}
 
 		<meta property="og:type" content="website" />
-		<meta property="og:url" content={canonical} />
+		<meta property="og:url" content={canonicalUrl} />
 		<meta property="og:title" content={pageTitle} />
 		<meta property="og:description" content={description} />
 		<meta property="og:image" content={ogImageUrl} />
-		<meta property="og:locale" content={site.locale} />
-		<meta property="og:site_name" content={site.name} />
+		<meta property="og:locale" content={locale} />
+		<meta property="og:site_name" content={siteName} />
 
 		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:site" content={site.twitter} />
-		<meta name="twitter:creator" content={site.twitter} />
+		<meta name="twitter:site" content={twitter} />
+		<meta name="twitter:creator" content={twitter} />
 		<meta name="twitter:title" content={pageTitle} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={ogImageUrl} />
 
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
-			rel="stylesheet"
-		/>
-
-		<link rel="alternate" type="application/rss+xml" href="/rss.xml" title={`${site.author} — Articles`} />
+		<link rel="alternate" type="application/rss+xml" href="/rss.xml" title={`${author} — Articles`} />
 
 		<script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />
 		{pageSchemas.map(s => (
@@ -95,11 +79,23 @@ const pageSchemas = jsonLd
 	<body class="group">
 		<a href="#main-content" class="skip-link">Skip to main content</a>
 		<main id="main-content" class="flex flex-col items-center min-h-screen gap-16">
-			<div class="w-full max-w-[var(--container-max-width)] border-b max-[900px]:border-x-0 min-[901px]:border-x border-edge overflow-x-clip">
+			<div class="w-full max-w-(--container-max-width) border-b max-[900px]:border-x-0 min-[901px]:border-x border-edge overflow-x-clip">
 				<SiteHeader />
 				<slot />
 				<SiteFooter />
 			</div>
 		</main>
+
+		<script>
+			// Ensure skip link works correctly with ClientRouter
+			document.addEventListener('astro:after-navigation', () => {
+				const skipLink = document.querySelector<HTMLAnchorElement>('.skip-link');
+				if (skipLink) {
+					// We don't necessarily want to focus it automatically on every page load
+					// but we want to ensure it's first in tab order.
+					// Astro's ClientRouter usually handles focus reset.
+				}
+			});
+		</script>
 	</body>
 </html>

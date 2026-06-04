@@ -11,9 +11,17 @@ export function slugify(str: string): string {
 		.replace(/^-+|-+$/g, '');
 }
 
+let memoizedArticles: CollectionEntry<'articles'>[] | null = null;
+
 export async function getAllArticles(): Promise<CollectionEntry<'articles'>[]> {
+	if (memoizedArticles) {
+		return memoizedArticles;
+	}
+
 	const all = await getCollection('articles', ({ data }) => !data.draft);
-	return all.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+	memoizedArticles = all.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+	return memoizedArticles;
 }
 
 export async function getAllCategories(): Promise<string[]> {
