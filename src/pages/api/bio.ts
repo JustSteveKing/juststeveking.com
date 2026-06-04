@@ -12,7 +12,6 @@ export const GET = async () => {
     testimonials,
     links,
     profiles: basics.profiles,
-    location: basics.location,
   };
 
   return new Response(JSON.stringify(data, null, 2), {
