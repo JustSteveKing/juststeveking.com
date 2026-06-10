@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/laravel-business-process"
 link: "https://github.com/JustSteveKing/laravel-business-process"
 tech: ["PHP"]
 featured: false
-downloads: 3660
-monthlyDownloads: 92
+downloads: 3670
+monthlyDownloads: 56
 stars: 66
 version: "dev-main"
-updatedAt: "2026-05-28"
+updatedAt: "2026-06-10"
 ---
 
 # Laravel Business Process

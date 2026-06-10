@@ -1,0 +1,216 @@
+---
+title: "Testing Actions, Not Mocks"
+description: "Mocking your own Actions tests the wiring, not the behaviour. How I test Laravel Action classes for real with Pest, and where fakes still belong."
+category: Testing
+pubDate: 2026-06-10
+minRead: 12
+author:
+  name: Steve McDougall
+  avatar:
+    src: https://avatars.githubusercontent.com/u/6368379?v=4
+    alt: Steve McDougall
+tags: ["laravel", "testing", "software-architecture", "pest"]
+---
+
+There is a particular kind of test that feels productive while you write it and tells you nothing once it runs. You reach for a mock, you set up the expectation, you assert that a method was called, the suite goes green, and you close the laptop feeling covered. Then something real changes, the behaviour breaks where it counts, and the suite is still green. That gap between "my tests pass" and "my code works" is almost always paved with mocks.
+
+I want to walk through how I test the part of a Laravel API that actually matters, the Action classes, and why I almost never reach for a mock when I do it. This is not a purity argument. Mocks have a place. It is just a much smaller place than most test suites give them.
+
+## What an Action is meant to do
+
+If you have read anything I have written about API structure, you will know I push business logic out of controllers and into single-purpose Action classes. The controller wires HTTP to the action. The Form Request validates input and hands back a typed payload. The action does the work. Here is a lead capture action, the sort of thing that sits at the front door of a CRM or a marketing pipeline.
+
+```php
+final readonly class CreateLead
+{
+    public function handle(StoreLeadPayload $payload): Lead
+    {
+        $lead = Lead::query()->create($payload->toArray());
+
+        event(new LeadCaptured($lead));
+
+        return $lead;
+    }
+}
+```
+
+There is not much to it, and that is the point. It takes a payload, persists a lead, announces that something happened, and returns the result. Every decision your API makes about what a lead is and what capturing one means lives here. So this is the thing I most want to be sure about. If my tests cover anything, they should cover this.
+
+## The test that lies to you
+
+Here is the test a lot of people write for the controller that calls this action. It mocks `CreateLead`, swaps the mock into the container, and checks the response.
+
+```php
+it('creates a lead', function () {
+    $action = Mockery::mock(CreateLead::class);
+
+    $action->shouldReceive('handle')
+        ->once()
+        ->andReturn(new Lead(['email' => 'jane@example.com']));
+
+    $this->app->instance(CreateLead::class, $action);
+
+    $this->postJson('/api/v1/leads', [
+        'email' => 'jane@example.com',
+        'name' => 'Jane Doe',
+        'source' => 'website',
+    ])->assertCreated();
+});
+```
+
+Read what this actually verifies. It verifies that the controller resolves `CreateLead` from the container and calls `handle` once. That is the whole assertion. The real `CreateLead` never runs. The database is never touched. The event is never dispatched.
+
+Now ask the uncomfortable question. If I delete the body of `CreateLead` and leave the method empty, does this test fail? It does not. If I break the column mapping in the payload, does it fail? It does not. If the lead is never saved, does it fail? It does not. The test is green and the feature is broken, because the test is asserting the wiring, not the behaviour. You have written a very confident statement about a method call and learned nothing about whether your application works.
+
+This is the trap with mocking your own code. A mock replaces the thing you care about with a thing you have told it how to behave. You then assert that it behaved the way you told it to. The test can only ever confirm your assumptions back to you.
+
+## Test the action against a real database
+
+The action has one job, so test that job. Run it for real, hit a real test database, and assert on the outcome.
+
+```php
+use App\Actions\Leads\CreateLead;
+use App\Http\Payloads\Leads\StoreLeadPayload;
+use App\Models\Lead;
+
+it('stores a lead from the payload', function () {
+    $payload = new StoreLeadPayload(
+        email: 'jane@example.com',
+        name: 'Jane Doe',
+        source: 'website',
+    );
+
+    $lead = app(CreateLead::class)->handle($payload);
+
+    expect($lead)
+        ->toBeInstanceOf(Lead::class)
+        ->email->toBe('jane@example.com')
+        ->source->toBe('website');
+
+    $this->assertDatabaseHas('leads', [
+        'email' => 'jane@example.com',
+        'source' => 'website',
+    ]);
+});
+```
+
+With `RefreshDatabase` applied to your test suite, this runs the genuine action against a genuine schema. If the payload mapping is wrong, the assertion on the model fails. If the lead is never persisted, `assertDatabaseHas` fails. If someone renames a column in a migration and forgets the fillable array, this test goes red and tells you exactly why.
+
+People worry that hitting a real database makes tests slow. On a Pest suite running against SQLite in memory, or PostgreSQL with transactions wrapping each test, the cost is negligible for the confidence you get back. You are testing the actual contract your code has with your data, which is the contract that breaks in production.
+
+Notice what I am asserting on. Not "the create method was called." I am asserting that a lead now exists with the right shape. That is behaviour. The action could be rewritten to use a repository, a query builder, or a raw insert, and as long as a correct lead ends up in the table, the test keeps passing. The test describes what the action is for, not how it is built, so it survives refactoring instead of punishing it.
+
+## The controller does not need a mock either
+
+If the action is well tested, the controller test becomes a thin feature test that exercises the whole path through HTTP. No mock, no container swap, just a request and the truth.
+
+```php
+it('captures a lead through the API', function () {
+    $response = $this->postJson('/api/v1/leads', [
+        'email' => 'jane@example.com',
+        'name' => 'Jane Doe',
+        'source' => 'website',
+    ]);
+
+    $response
+        ->assertCreated()
+        ->assertJsonPath('data.email', 'jane@example.com');
+
+    $this->assertDatabaseHas('leads', [
+        'email' => 'jane@example.com',
+    ]);
+});
+```
+
+This covers routing, the Form Request validation, the payload construction, the action, and the response shape, all in one pass. It is the test most likely to catch a real regression because it travels the same road a client does. The earlier mocked version tested a fraction of that and pretended to test all of it.
+
+I am not saying never write a focused controller test. Sometimes you want to assert a specific status code on a specific failure. The point is that the default should be the real path, and the mock should be the exception you can justify, rather than the reflex you reach for first.
+
+## Where mocks actually earn their keep
+
+So when do I fake something? When the thing in question is a boundary I do not own and do not want my test suite to depend on. The network. A third-party API. Mail. The clock, sometimes. These are the genuine seams, the edges where your application meets a system you have no control over.
+
+Say capturing a lead also enriches it from an external provider that looks up a company from an email address. That call goes over the wire to someone else's service.
+
+```php
+final readonly class EnrichLead
+{
+    public function __construct(
+        private readonly PendingRequest $client,
+    ) {}
+
+    public function handle(Lead $lead): Lead
+    {
+        $response = $this->client->get('/enrich', [
+            'email' => $lead->email,
+        ]);
+
+        $lead->update([
+            'company' => $response->json('company'),
+            'title' => $response->json('title'),
+        ]);
+
+        return $lead;
+    }
+}
+```
+
+I do not want my tests hitting that provider. It is slow, it costs money, it has rate limits, and it might be down on the morning I am trying to ship. This is a real reason to fake. So I fake the response, not the action.
+
+```php
+it('enriches a lead from the provider response', function () {
+    Http::fake([
+        'enrich.example.com/*' => Http::response([
+            'company' => 'Acme Ltd',
+            'title' => 'Head of Engineering',
+        ]),
+    ]);
+
+    $lead = Lead::factory()->create([
+        'email' => 'jane@example.com',
+    ]);
+
+    app(EnrichLead::class)->handle($lead);
+
+    expect($lead->fresh())
+        ->company->toBe('Acme Ltd')
+        ->title->toBe('Head of Engineering');
+});
+```
+
+Look at what changed and what did not. I faked the HTTP response, the part I genuinely cannot run in a test, and I still ran the real `EnrichLead` action and asserted on the real outcome. The lead got updated with the right fields. If I break the JSON paths, or update the wrong columns, this test fails. The fake covers the boundary I do not own. The behaviour I do own runs for real.
+
+The same logic applies to the event we dispatch in `CreateLead`. I do not want to assert "you called event()." I want to assert that the right thing was announced, without coupling to every listener that happens to be registered.
+
+```php
+it('announces that a lead was captured', function () {
+    Event::fake([LeadCaptured::class]);
+
+    $payload = new StoreLeadPayload(
+        email: 'jane@example.com',
+        name: 'Jane Doe',
+        source: 'website',
+    );
+
+    $lead = app(CreateLead::class)->handle($payload);
+
+    Event::assertDispatched(
+        LeadCaptured::class,
+        fn (LeadCaptured $event) => $event->lead->is($lead),
+    );
+});
+```
+
+`Event::fake` is a framework seam, not a mock of my logic. The action still runs, the lead still gets the correct identity, and I assert that the captured event carries that exact lead. I am verifying behaviour at a boundary the framework gives me a proper tool for. `Queue::fake`, `Mail::fake`, `Bus::fake`, and `Notification::fake` all sit in the same category. They let you assert that the right message left the building without testing the postal service.
+
+## The line I draw
+
+Here is the rule I keep in my head. Fake the things you do not own. Run the things you do.
+
+A third-party API, an outbound email, a queued job's eventual delivery, the current time, these belong to systems outside your code, and faking them is honest isolation. Your Action classes, your models, your payloads, these are the thing under test, and replacing them with a mock means you have stopped testing your application and started testing your assumptions about it.
+
+The deeper idea, the one worth carrying into every test you write, is that a mock asserts an interaction and a real test asserts an outcome. "This method was called with these arguments" is a statement about how your code is wired together today. "A lead with this email now exists" is a statement about what your code is for. The first breaks the moment you refactor and tells you nothing about correctness. The second survives the refactor and fails only when the behaviour is genuinely wrong, which is the only time you want a test to fail.
+
+When your suite goes green, you want that to mean your application works. Mock your own actions and it means your wiring matched your mocks. Test your actions for real and it means something you can actually deploy on.
+
+*Next time I will take the same knife to validation testing, because asserting that a Form Request has a rule is its own quiet little lie.*

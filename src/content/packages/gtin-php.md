@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/gtin-php"
 link: "https://github.com/JustSteveKing/gtin-php"
 tech: ["PHP"]
 featured: false
-downloads: 132733
-monthlyDownloads: 464
+downloads: 133011
+monthlyDownloads: 559
 stars: 5
 version: "v1.0.1"
-updatedAt: "2026-05-28"
+updatedAt: "2026-06-10"
 ---
 
 # A PHP Validator for the GTIN standard
