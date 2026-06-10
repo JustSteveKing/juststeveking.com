@@ -41,6 +41,7 @@
     { "label": "GitHub", "href": "https://github.com/JustSteveKing", "external": true },
     { "label": "Twitter / X", "href": "https://twitter.com/JustSteveKing", "external": true },
     { "label": "Bluesky", "href": "https://bsky.app/profile/juststeveking.com", "external": true },
+    { "label": "Mastodon", "href": "https://phpc.social/@juststeveking", "external": true },
     { "label": "LinkedIn", "href": "https://www.linkedin.com/in/steve-mcdougall", "external": true }
   ]
 }
