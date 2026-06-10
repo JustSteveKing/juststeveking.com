@@ -1,0 +1,143 @@
+---
+title: "The Tips Behind API Artisan: Building Laravel APIs Developers Actually Want to Use"
+description: "Practical tips for building Laravel APIs developers trust: contract-first design, versioning, RFC 9457 errors, idempotency and more. Free book inside."
+category: API Design
+pubDate: 2026-06-10
+minRead: 12
+author:
+  name: Steve McDougall
+  avatar:
+    src: https://avatars.githubusercontent.com/u/6368379?v=4
+    alt: Steve McDougall
+tags: ["laravel", "api-design", "rest-apis", "php"]
+---
+
+I have just finished writing *API Artisan: A Guide to Building APIs with Laravel*, and I am giving it away for free. Before you commit to 300-odd pages, let me give you the short version: the tips, patterns, and small decisions that separate an API that technically works from one that developers are genuinely happy to depend on.
+
+None of this needs more hardware, a different framework, or a bigger team. It needs you to point your attention at the right things. These are the ones I keep coming back to.
+
+## Start by measuring the right thing
+
+Ask most teams how they know their API is good and you get a single question back: does it work? Can I hit this endpoint and get a response? That question is necessary, and it is nowhere near enough.
+
+The question I want you to ask instead is whether your API is liveable with. Can a developer read your docs, understand your auth model, make a successful request, and handle an error without contacting support, trawling a forum, or guessing what a status code is trying to tell them? The gap between "works" and "liveable with" never shows up in a sprint retro, but it shows up everywhere else: in support volume, in integration timelines that overrun, and in the quiet moment a developer decides to build around your API rather than with it.
+
+Everything else in the book hangs off one mindset shift: an API is a product. It has users. Treat it as an implementation detail and it will behave like one. It will change without warning when your internals change, and it will be inconsistent because different people wrote different parts on different days with different conventions.
+
+## Write the contract before the code
+
+The natural way to build an endpoint is to write the handler, return some data, and document it afterwards if there is time. It feels efficient, and in the short term it is. The problem is what it produces: a contract that was never designed, only discovered.
+
+Let me show you the trap, because I have watched it catch good developers. You have a `keys` table with a `revoked_at` column, the Eloquent model is right there, so you reach for `$key->toArray()`. The response ships with `revoked_at` as a field name, because that is what the column is called. A few weeks later you realise the name is ambiguous and rename it. To every integration built against you, that rename is a breaking change, and nothing warned anyone.
+
+Designing the response shape before you write the query closes that gap at the source. You cannot leak your schema if you worked out what the caller needs before you touched the database. The question changes from "how do I expose this data?" to "what does the developer calling this actually need?", and the answers genuinely differ.
+
+Here is the asymmetry that makes the discipline worth it. Your implementation can be refactored whenever you like. A published field name lives in codebases you cannot see, running in production systems that will not be updated the day you push a change. So front-load the contract decisions. The cost of getting them wrong is real, and it is paid by other people, later, at the worst possible time.
+
+## Know what a breaking change actually is
+
+Most of us can name the obvious ones: remove an endpoint, rename a field. The real list is longer and far more surprising, and every item on it breaks an integration even when the change looks like an improvement.
+
+Changing a field's type, say `expires_at` from a date string to a Unix timestamp. Changing a field from nullable to non-nullable. Adding a required field to a request. Changing the meaning of a field without touching its name, which is the one that keeps me up at night. Changing error codes or error shapes, because clients build handling logic around them. Switching offset pagination for cursor pagination. Wrapping a collection in a `meta` object that clients were destructuring directly.
+
+The pattern is always the same. A change that looks internal turns out to be a commitment you made to everyone who integrated with the old behaviour. The answer is not to stop changing things. It is to know what you are committing to before you commit, and to have a mechanism for changing it safely.
+
+## Version from day one
+
+Here is a fact that surprises people: adding a `/v1` prefix to an API that is already in production is itself a breaking change. Every consumer hitting `/keys` now has to hit `/v1/keys`. That is exactly why versioning from day one is not premature optimisation. It is the cheapest moment you will ever get to add it, because no integrations exist yet. The cost is one URL segment, and the payoff is a stable, versioned contract from the first endpoint you ship.
+
+Make the version explicit at every level, not just in the URL. Namespace your controllers under `App\Http\Controllers\Keys\V1`. When v2 arrives it lives in `Keys\V2`, the v1 controllers stay exactly as they are, and you physically cannot put v2 logic in a v1 controller because the boundary is visible in the code.
+
+When you do retire a version, reach for the Sunset pattern from RFC 8594. Send a `Sunset` header carrying the retirement date and a `Deprecation` header carrying the date it was deprecated. The part almost everyone skips is the `Link` header pointing at the migration guide, and it is the part that earns its keep. A consumer whose monitoring picks up the Sunset header can follow that link straight to the docs. The header becomes actionable instead of just informational. My rule, and the one I would encourage you to adopt, is that no version retires without at least six months of notice.
+
+## Treat REST as conventions, not religion
+
+Let me save you some pull request arguments. Almost nobody implements true hypermedia controls, and almost every "REST API" you have ever used is really HTTP with JSON and some conventions about URLs. That is fine. The conventions are useful. The pretence that we are all implementing a rigorous architectural style is not.
+
+So skip HATEOAS, unless you happen to be building a generic hypermedia browser, which you are almost certainly not. Stop treating the Richardson Maturity Model as a quality score. A level 3 API with inconsistent errors and no docs is a worse API than a level 1 one with a thoughtful, stable contract.
+
+Spend that energy on your status codes instead, because they are part of your contract and clients build retry logic directly on them.
+
+```
+201 not 200 for a creation, so clients can read the Location header
+422 not 400 for validation, because 400 means malformed and 422 means well-formed but invalid
+403 not 401 when the caller is authenticated but not authorised
+```
+
+Confuse 401 and 403 and you create genuine bugs. A client that gets a 401 may try to re-authenticate. If it should have been a 403, re-authentication will not help, and now your client is sitting in a retry loop wondering what it did wrong.
+
+For the operations that refuse to map to CRUD, like revoking or rotating a key, use sub-path actions: `POST /v1/keys/{id}/revoke`. Is it pure REST? No. Is it immediately understandable to anyone who reads it? Yes, and that is the trade I will take every time. On nesting, the rule I use is simple: nest one level when it clarifies ownership, and flatten when the nested resource has its own identity.
+
+## Make the controller boring
+
+Every controller in the book is a single-action invokable class. One class, one `__invoke` method, one responsibility. `IssueController` tells you exactly what it does. `KeyController` tells you almost nothing.
+
+A handful of small decisions compound here. Reference your controllers as a class, never a closure, because closures cannot be route-cached and a class reference is testable and navigable in your editor. Put `declare(strict_types=1)` at the top of every file. Mark controllers `final`. Keep validation in Form Requests and out of the handler, so the framework's automatic failure handling applies cleanly and you never end up with validation logic smeared between `rules()` and the top of a controller method.
+
+The single best trick in the Laravel section is the `payload()` pattern. A Form Request's job is not only to validate input, it is to turn that validated input into a typed, immutable value object the rest of your application can trust.
+
+```php
+public function payload(): IssueKeyPayload
+{
+    return new IssueKeyPayload(
+        name:      $this->string('name')->toString(),
+        scopes:    $this->collect('scopes')->map(KeyScope::from(...)),
+        expiresAt: filled($this->input('expires_at'))
+            ? CarbonImmutable::parse($this->string('expires_at')->toString())
+            : null,
+    );
+}
+```
+
+Because `payload()` runs only after validation has passed, it can cast with confidence. `KeyScope::from(...)` will not throw, because the rules already confirmed every value is a valid enum case. Your controller receives a typed payload, hands it to an action, and returns a resource. The action works in domain types and never touches the request layer, which means it behaves identically whether you call it from a controller, a console command, a queue job, or a test. The payload is the handshake between HTTP and your domain, and it seals a boundary that otherwise quietly leaks.
+
+## Give every error the same shape
+
+Out of the box, Laravel hands you a different response shape for a validation error, an unauthenticated request, and a missing model. Four situations, four shapes, and a client that wants consistent error handling has to special-case every one of them.
+
+Pick RFC 9457 Problem+JSON and use it for every error on every endpoint, with no exceptions. One shape, carrying `type`, `title`, `status`, and `detail`, plus an `errors` extension when you need per-field validation. Two details are worth stealing outright. Set the `Content-Type` to `application/problem+json` so clients can detect it programmatically. And in your fallback `Throwable` handler, return `null` outside production, so Laravel keeps showing you full stack traces in development while production returns a clean, generic 500 that never leaks your internals.
+
+## Make invalid states impossible
+
+When a resource has a lifecycle, model it as an enum-backed state machine with an explicit transition map. Invalid transitions throw a domain exception. The calling layer does not check the state before it acts; the entity enforces its own rules. That is the whole difference between a system that guarantees its own invariants and one that relies on developers remembering to check a field first.
+
+Treat your domain exceptions, things like `InvalidKeyTransitionException`, as first-class citizens. They are not unexpected failures, they are known and named outcomes, and they deserve an informative 422 rather than a 500. Register them in your exception handler right alongside the framework ones.
+
+## Respect transaction boundaries
+
+A database transaction protects you when a group of operations must all succeed or all fail together. It cannot protect you from everything, and two rules will save you real production pain.
+
+Never make external HTTP calls inside a transaction. If the call fires and the transaction then rolls back, you have caused a side effect the database has no memory of. Push your jobs and webhooks with `DB::afterCommit()` so they only fire once the data is genuinely committed.
+
+Transactions also cannot help when the network drops after you return a 201 but before the client receives it. The client retries, and you happily process the same operation twice. That is what idempotency keys are for. Accept a client-generated `Idempotency-Key` header on state-changing endpoints, store the original response, and replay it on any retry that carries the same key.
+
+## Build the audit log first, literally
+
+An audit log is not a log file. It is an append-only database table of meaningful domain events: a key was issued, a key was revoked, a member was invited. Append-only is not a polite convention either, it is enforced by the schema. No `updated_at`, no soft deletes, no update operations anywhere in the code that touches it. A record you can update is not an audit record, it is a mutable row with a timestamp, and those are very different things.
+
+Two design notes I would not skip. Store the event-specific context as JSONB rather than forcing every event type into a fixed set of nullable columns, because the relevant metadata is genuinely different for each one. And capture `actor_type` as well as `actor_id`, because an action taken by a human, by an API key, and by the system itself are three different stories in a security review.
+
+The sequence inside every action that records an event is worth memorising: begin the transaction, perform the operation, write the audit record, commit, then dispatch side effects via `afterCommit`. The audit record is written before anything that could fail independently, which is what makes it the most durable thing in the whole system.
+
+## Make the system answer questions under pressure
+
+Attach a request ID to every log line with a tiny piece of middleware.
+
+```php
+$requestId = $request->header('X-Request-ID') ?? Str::uuid()->toString();
+Log::withContext(['request_id' => $requestId]);
+$response = $next($request);
+$response->headers->set('X-Request-ID', $requestId);
+```
+
+Now every log entry within a request shares one ID, tracing a request becomes a single filter, and because you echo the ID back in the response header, a consumer reporting a problem can hand you the exact value to search for. One field, every relevant entry.
+
+The rest of operability runs on the same instinct. Go spec-first with OpenAPI so your documentation cannot drift away from your implementation. Run contract tests in CI so an accidental breaking change fails the build instead of a consumer. Treat onboarding as part of the API, with runnable collections rather than a wall of prose. Give the API a clear owner, a deprecation cadence you actually review twice a year, and post-mortems that produce a test or a doc rather than blame.
+
+## The thread that ties it together
+
+The patterns are not really the point. The reasoning is. Consumer empathy as an engineering discipline, stability as a feature you ship, observability as an architectural guarantee. Frameworks and conventions will change underneath all of us. That reasoning is durable, and it is what lets you make these same calls on your next project because the system needed them, not because a book told you to.
+
+Every tip here is drawn from a single project I build end to end across the book: Portkey, a production-quality API key management platform with versioning, separate JWT and HMAC layers, an enforced key lifecycle, async rotation, signed webhooks, idempotency, rate limiting at three levels, and a Pest suite with contract tests in CI. Every pattern shows up because the project genuinely needed it, never to show off a technique.
+
+*If these notes were useful to you, the full book takes each one apart properly, with the code, the trade-offs, and the reasoning behind every decision. It is free. [Download API Artisan](https://bucket.juststeveking.com/api-artisan-a-guide-to-building-apis-with-laravel-light.pdf) and go build the API your consumers deserve.*
