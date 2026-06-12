@@ -1,7 +1,7 @@
 {
-  "meta": {
-    "title": "Articles",
-    "prompt": "$ gh gist list",
-    "subtitle": "Writing on PHP, Laravel, APIs, and engineering leadership."
-  }
+	"meta": {
+		"title": "Articles",
+		"prompt": "$ gh gist list",
+		"subtitle": "Writing on PHP, Laravel, APIs, and engineering leadership."
+	}
 }

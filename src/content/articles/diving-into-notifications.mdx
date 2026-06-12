@@ -3,14 +3,14 @@ title: Diving into Notifications
 description: Learn to send multi-channel notifications in Laravel with email, Slack, and in-app alerts.
 category: Laravel
 pubDate: 2025-02-10
-image: "/images/articles/diving-into-notifications.png"
+image: '/images/articles/diving-into-notifications.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "notifications", "email", "testing"]
+tags: ['laravel', 'notifications', 'email', 'testing']
 ---
 
 In most applications, we need to send notifications, whether in-app, email or slack - these are typically transactional notifications to alert users of some action or event in your application. Let's take a dive.
@@ -128,7 +128,7 @@ final class UserMeetingBookedNotification extends Notification implements Should
 }
 ```
 
-That is it; this will send a nice simple email to the user alerting them how they can get in touch and the fact that they received a booking. 
+That is it; this will send a nice simple email to the user alerting them how they can get in touch and the fact that they received a booking.
 
 Let us say that we now need to add this to a slack channel, perhaps for tracking reasons. We still want to send the email notification but add a channel.
 
@@ -168,7 +168,7 @@ it('can send an email notification when a booking is made', function () {
 
 We are faking the notification driver in Laravel so that the notification isn't routed to anyone. We then create a user we want to notify and resolve our logic from the container - abstracting this logic makes testing easier. We want to make sure that when we make a booking, it is saved, but then we want to ensure that the notification was sent as expected, just never delivered.
 
-We can add another check in our test here to make sure that our test is sending to the correct channel: 
+We can add another check in our test here to make sure that our test is sending to the correct channel:
 
 ```php
 it('sends the notification to the correct channels', function () {
@@ -239,7 +239,7 @@ final class UserMeetingBookedNotification extends Notification implements Should
 }
 ```
 
-For this to work correctly, however, we need to make sure we install a first-party notification package by the laravel team: 
+For this to work correctly, however, we need to make sure we install a first-party notification package by the laravel team:
 
 ```bash
 composer require laravel/slack-notification-channel
@@ -281,7 +281,7 @@ One thing to remember is that Notifications do not have to be queued. These can 
 
 So now we know how to create and test a notification; let's look at sending them.
 
-In the default Laravel application, your User Model implements the `Notifiable` trait,  which allows you to do something like the following:
+In the default Laravel application, your User Model implements the `Notifiable` trait, which allows you to do something like the following:
 
 ```php
 auth()->user()->notify(new UserMeetingBookedNotification(
@@ -308,4 +308,3 @@ Notification::route('slack', 'slack-webhook-url')
 The Notification facade is very powerful and flexible, allowing you to send notifications on demand and test them quickly.
 
 How do you use Notifications in your Laravel applications? What is your favorite channel? Let us know on Twitter!
-

@@ -10,9 +10,9 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
 	const tags = await getAllTags();
 	const allArticles = await getAllArticles();
 
-	return tags.map(tag => {
+	return tags.map((tag) => {
 		const slug = slugify(tag);
-		const articles = allArticles.filter(a => a.data.tags.some(t => slugify(t) === slug));
+		const articles = allArticles.filter((a) => a.data.tags.some((t) => slugify(t) === slug));
 		const totalPages = Math.ceil(articles.length / PAGE_SIZE);
 		return {
 			params: { tag: slug },
@@ -60,10 +60,10 @@ const tagSchema = {
 		subtitle={`${total} article${total === 1 ? '' : 's'} with this tag`}
 	/>
 
-	<Breadcrumb variant="filter" items={[
-		{ label: 'All articles', href: '/articles' },
-		{ label: `#${tagName}` },
-	]} />
+	<Breadcrumb
+		variant="filter"
+		items={[{ label: 'All articles', href: '/articles' }, { label: `#${tagName}` }]}
+	/>
 
 	<section aria-label={`Articles tagged ${tagName}`}>
 		<ArticleList articles={articles} />

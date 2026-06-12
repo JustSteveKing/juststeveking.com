@@ -29,9 +29,7 @@ interface ContentEntry {
 
 function readCollection(dir: string): ContentEntry[] {
 	const base = join(CONTENT_DIR, dir);
-	const files = readdirSync(base).filter(
-		(f) => f.endsWith('.md') || f.endsWith('.mdx')
-	);
+	const files = readdirSync(base).filter((f) => f.endsWith('.md') || f.endsWith('.mdx'));
 	return files.map((file) => {
 		const raw = readFileSync(join(base, file), 'utf-8');
 		const { data, content } = matter(raw);
@@ -45,13 +43,13 @@ function readCollection(dir: string): ContentEntry[] {
 
 function excerpt(body: string, maxLen = 250): string {
 	return body
-		.replace(/^import\s.+$/gm, '')           // strip MDX imports
-		.replace(/<[^>]+>/g, ' ')                 // strip JSX/HTML tags
-		.replace(/```[\s\S]*?```/g, '')            // strip code blocks
+		.replace(/^import\s.+$/gm, '') // strip MDX imports
+		.replace(/<[^>]+>/g, ' ') // strip JSX/HTML tags
+		.replace(/```[\s\S]*?```/g, '') // strip code blocks
 		.replace(/`[^`\n]+`/g, (m) => m.slice(1, -1)) // inline code → plain
-		.replace(/#{1,6}\s+/g, '')                 // strip headings
+		.replace(/#{1,6}\s+/g, '') // strip headings
 		.replace(/\*{1,2}([^*\n]+)\*{1,2}/g, '$1') // bold/italic → plain
-		.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')  // links → label
+		.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // links → label
 		.replace(/\s+/g, ' ')
 		.trim()
 		.slice(0, maxLen);

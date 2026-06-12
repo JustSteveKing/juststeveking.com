@@ -3,14 +3,14 @@ title: My First Go Module - go api problem
 description: Explore the journey of building the first Go Module for error handling in APIs. Simplify error handling in GoLang with this module.
 category: API Development
 pubDate: 2020-07-09
-image: "/images/articles/go-api-problem.png"
+image: '/images/articles/go-api-problem.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["go", "api-development", "error-handling", "go-modules"]
+tags: ['go', 'api-development', 'error-handling', 'go-modules']
 ---
 
 I have been playing with GoLang on and off now for around 3 years, but never
@@ -24,11 +24,11 @@ While getting my initial Go service up and running I had a google around to try 
 
 The basis of the module was quite simple, unlike PHP - there are no classes or objects, so all I really needed was a way to build an API problem message and return this as a response from the API. The things that were going to be useful here were:
 
-* Title: A short human readable error to explain what went wrong
-* Detail: A longer form explanation of the error
-* Status: The HTTP Status Code for the error
-* Code: An internal reference Code that we could document and track through API logs to understand failure points.
-* Meta: A simple key value map that could help further explain the problems going on.
+- Title: A short human readable error to explain what went wrong
+- Detail: A longer form explanation of the error
+- Status: The HTTP Status Code for the error
+- Code: An internal reference Code that we could document and track through API logs to understand failure points.
+- Meta: A simple key value map that could help further explain the problems going on.
 
 So this didn't need to be complicated, but I needed to build something as all of my services would need this functionality if they were public facing APIs.
 

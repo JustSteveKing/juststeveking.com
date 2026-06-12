@@ -3,14 +3,14 @@ title: Working with OS Process in PHP
 description: Learn how to manage and interact with OS processes in PHP for advanced scripting and automation.
 category: PHP
 pubDate: 2022-08-30
-image: "/images/social/articles/os-process.png"
+image: '/images/social/articles/os-process.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["php", "os-process", "symfony-process", "developer-experience"]
+tags: ['php', 'os-process', 'symfony-process', 'developer-experience']
 ---
 
 Sometimes you need to work with OS-level commands from your PHP application. Let's look at how we can do this and see if we can make the Developer Experience nicer.
@@ -57,9 +57,9 @@ We are saying here that each process must be able to be built, and the result of
 
 ```php
 declare(strict_types=1);
-	 
+
 namespace JustSteveKing\OS\Contracts;
-	 
+
 interface CommandContract
 {
 	public function toArgs(): array;

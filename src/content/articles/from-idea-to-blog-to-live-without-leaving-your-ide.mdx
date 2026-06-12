@@ -3,14 +3,14 @@ title: From idea, to blog, to live without leaving your IDE
 description: Build a live blog with Statamic in Laravel and deploy to Digital Ocean from your IDE.
 category: Laravel
 pubDate: 2022-09-02
-image: "/images/social/articles/from-idea-to-blog-to-live.png"
+image: '/images/social/articles/from-idea-to-blog-to-live.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["statamic", "laravel", "digital-ocean", "infrastructure-as-code"]
+tags: ['statamic', 'laravel', 'digital-ocean', 'infrastructure-as-code']
 ---
 
 Content management is a very opinionated topic, and everyone has their favorite platform they like to use. Statamic is a fantastic content management package you can add to your Laravel applications.
@@ -55,7 +55,7 @@ composer require statamic/ssg
 
 This will install the package and publish the configuration file. You can customize the building of the static site a little within this config file. However, the default will work for this project. Our website will now be able to be built as a static site, meaning we can look into deployments.
 
-Not that we have a "website" that we want to deploy, we can start thinking about how we would like to get this onto Digital Ocean. The best choice for hosting a static site like this on Digital Ocean would be to use their [App Platform](https://www.digitalocean.com/products/app-platform). It will allow you to connect a repo, provide any environment variables you might need, and describe the build steps required to create the static site. 
+Not that we have a "website" that we want to deploy, we can start thinking about how we would like to get this onto Digital Ocean. The best choice for hosting a static site like this on Digital Ocean would be to use their [App Platform](https://www.digitalocean.com/products/app-platform). It will allow you to connect a repo, provide any environment variables you might need, and describe the build steps required to create the static site.
 
 Think of this as a helpful way of automating your CI/CD pipeline. We will have automatic deployments because we are using App Platform. But at the same time, we will also be building our infrastructure using code. So if we ever get to a point where we want to switch to a database driver for our content, we change the configuration - rerun the setup process, and deploy again. We don't have to log in to our cloud provider. All we have to do is reconfigure and run.
 
@@ -86,7 +86,7 @@ Once this has run, it will install the required dependencies, and you are all se
 Let us open the `index.ts` that Pulumi created for us:
 
 ```typescript
-import * as pulumi from "@pulumi/pulumi";
+import * as pulumi from '@pulumi/pulumi';
 ```
 
 A great starting point for us to start designing our infrastructure, so let us get started.
@@ -100,23 +100,26 @@ npm install @pulumi/digitalocean
 Now we can get back to looking at our infrastructure.
 
 ```typescript
-import * as pulumi from "@pulumi/pulumi";
-import * as digitalocean from "@pulumi/digitalocean";
+import * as pulumi from '@pulumi/pulumi';
+import * as digitalocean from '@pulumi/digitalocean';
 
-const statamic = new digitalocean.App("statamic-website", {
-    spec: {
-        name: "statamic-website",
-        region: "lon1",
-        staticSites: [{
-            buildCommand: "composer install --prefer-dist --optimize-autoloader && php please cach:clear && npm ci && npm run production && php please ssg:generate",
-            git: {
-                branch: "main",
-                repoCloneUrl: "https://github.com/juststeveking/website.git",
-            },
-            name: "statamic-website",
-            outputDir: "storage/app/static",
-        }],
-    }
+const statamic = new digitalocean.App('statamic-website', {
+	spec: {
+		name: 'statamic-website',
+		region: 'lon1',
+		staticSites: [
+			{
+				buildCommand:
+					'composer install --prefer-dist --optimize-autoloader && php please cach:clear && npm ci && npm run production && php please ssg:generate',
+				git: {
+					branch: 'main',
+					repoCloneUrl: 'https://github.com/juststeveking/website.git',
+				},
+				name: 'statamic-website',
+				outputDir: 'storage/app/static',
+			},
+		],
+	},
 });
 ```
 
@@ -135,10 +138,10 @@ Previewing update (do-static)
 
 View Live: https://app.pulumi.com/JustSteveKing/devops/do-static/previews/5a4fc21d-ac2c-484a-9e35-bbaf527a9975
 
-     Type                       Name              Plan       
- +   pulumi:pulumi:Stack        devops-do-static  create     
- +   └─ digitalocean:index:App  statamic-website  create     
- 
+     Type                       Name              Plan
+ +   pulumi:pulumi:Stack        devops-do-static  create
+ +   └─ digitalocean:index:App  statamic-website  create
+
 Resources:
     + 2 to create
 ```

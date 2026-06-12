@@ -3,14 +3,14 @@ title: Zero Hassle CLI Application with Laravel Zero
 description: How can I put this? CLI apps are cool. The ability to open a terminal anywhere and just run a command to do a job that might have taken you much longer.
 category: Laravel
 pubDate: 2022-08-12
-image: "/images/articles/laravel-zero.png"
+image: '/images/articles/laravel-zero.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel-zero", "cli-development", "php", "api-integration"]
+tags: ['laravel-zero', 'cli-development', 'php', 'api-integration']
 ---
 
 How can I put this? CLI apps are cool. The ability to open a terminal anywhere and just run a command to do a job that might have taken you much longer. Opening the browser going to the right page, logging in and finding what it is you need to do, and waiting for the page to load .... You get the picture.
@@ -155,7 +155,7 @@ final class AppServiceProvider extends ServiceProvider
     public array $bindings = [
         ConfigurationContract::class => LocalConfiguration::class,
     ];
-    
+
     public function register(): void
     {
         $this->app->singleton(
@@ -164,10 +164,10 @@ final class AppServiceProvider extends ServiceProvider
                 $path = isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'testing'
                     ? base_path(path: 'tests')
                     : ($_SERVER['HOME'] ?? $_SERVER['USERPROFILE']);
-            
+
                 return new LocalConfiguration(
                     path: "$path/.todo/config.json",
-                );    
+                );
             },
         );
     }
@@ -490,7 +490,7 @@ final class ListCommand extends Command
 
             return ListCommand::FAILURE;
         }
-        
+
         $this->table(
             headers: ['ID', 'Project Name', 'Comments Count', 'Shared', 'URL'],
             rows: $projects->map(fn (Project $project): array => $project->toArray())->toArray(),

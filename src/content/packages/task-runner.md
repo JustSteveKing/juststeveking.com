@@ -1,8 +1,8 @@
 ---
 name: juststeveking/task-runner
 description: A simple PHP task runner for PHP 8
-packagist: "https://packagist.org/packages/juststeveking/task-runner"
-github: "https://github.com/JustSteveKing/task-runner"
+packagist: 'https://packagist.org/packages/juststeveking/task-runner'
+github: 'https://github.com/JustSteveKing/task-runner'
 downloads: 0
 monthlyDownloads: 0
 stars: 2

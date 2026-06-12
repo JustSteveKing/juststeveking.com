@@ -1,7 +1,7 @@
 {
-  "meta": {
-    "title": "Podcasts",
-    "prompt": "$ podcast --guest juststeveking",
-    "subtitle": "Guest appearances covering API design, Laravel, engineering leadership, and developer relations."
-  }
+	"meta": {
+		"title": "Podcasts",
+		"prompt": "$ podcast --guest juststeveking",
+		"subtitle": "Guest appearances covering API design, Laravel, engineering leadership, and developer relations."
+	}
 }

@@ -3,19 +3,19 @@ title: Laravel subdomains in Docker
 description: Learn how to set up subdomain support for your Laravel app using Docker. Configure Nginx, Redis, MySQL, and Traefik for seamless subdomain management.
 category: Laravel
 pubDate: 2022-06-07
-image: "/images/articles/laravel-subdomains-in-docker.png"
+image: '/images/articles/laravel-subdomains-in-docker.png'
 minRead: 14
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "docker", "subdomains", "traefik"]
+tags: ['laravel', 'docker', 'subdomains', 'traefik']
 ---
 
 There are many ways you can add Docker to your Laravel application, but how do you add docker to your Laravel application when you need sub domain support? In this article I will walk through how I have done it in the past, this isn't the only way to achieve this - but it is a way that I found works well for me.
 
-It all starts with a docker-compose file, like most docker builds - I prefer to use docker-compose as it allows me to be pretty specific on behaviour and environment variables etc. Create a `docker-compose.yaml` in the root of your Laravel application. We are going to want to add 5 services to this: *nginx*, *app*, *redis*, *mysql* and *traefik*.
+It all starts with a docker-compose file, like most docker builds - I prefer to use docker-compose as it allows me to be pretty specific on behaviour and environment variables etc. Create a `docker-compose.yaml` in the root of your Laravel application. We are going to want to add 5 services to this: _nginx_, _app_, _redis_, _mysql_ and _traefik_.
 
 You do not need to keep redis if you do not wish to use it, however it is something I include in every laravel build as it provides great support for both Cache and Queue workers. Let's walk through the compose file now:
 
@@ -23,27 +23,27 @@ You do not need to keep redis if you do not wish to use it, however it is someth
 
 ```yaml
 nginx:
-    container_name: "${PROJECT_NAME}_nginx"
-    build:
-        context: ./docker/nginx
-        dockerfile: Dockerfile
-    depends_on:
-        - app
-    volumes:
-        - ./:/var/www/vhost/crm:cached
-        - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
-        - ./docker/nginx/conf.d:/etc/nginx/conf.d
-        - ./docker/nginx/ssl:/etc/nginx/ssl
-    working_dir: /var/www/vhost/
-    ports:
-        - '443:443'
-        - '9008:9008'
-    networks:
-        - crm
-    labels:
-        - 'traefik.http.routers.${PROJECT_NAME}_nginx.rule=HostRegexp(`${APP_DOMAIN}`, `{subdomain:[a-z]+.${APP_DOMAIN}}`)'
-        - 'traefik.http.routers.${PROJECT_NAME}_nginx.priority=1'
-        - 'traefik.docker.network=proxy'
+  container_name: '${PROJECT_NAME}_nginx'
+  build:
+    context: ./docker/nginx
+    dockerfile: Dockerfile
+  depends_on:
+    - app
+  volumes:
+    - ./:/var/www/vhost/crm:cached
+    - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+    - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    - ./docker/nginx/ssl:/etc/nginx/ssl
+  working_dir: /var/www/vhost/
+  ports:
+    - '443:443'
+    - '9008:9008'
+  networks:
+    - crm
+  labels:
+    - 'traefik.http.routers.${PROJECT_NAME}_nginx.rule=HostRegexp(`${APP_DOMAIN}`, `{subdomain:[a-z]+.${APP_DOMAIN}}`)'
+    - 'traefik.http.routers.${PROJECT_NAME}_nginx.priority=1'
+    - 'traefik.docker.network=proxy'
 ```
 
 In my `.env` file I add a new variable called `PROJECT_NAME` which could be different to my app name, something that is more system friendly and identifiable. Your docker-compose file can pick up this environment variable, and use it as part of it's build process. We want the name of our nginx container to be specific for our project, so we use the env variable and add `_nginx` on the end. We then want to specify the build portion of our service, we want to pull in a specific `Dockerfile` for nginx to allow us to configure the container in our own way. This container will depend on the `app` service being available, otherwise we will not be able to serve anything useful. We also want to mount a few volumes:
@@ -57,6 +57,7 @@ We then set our working directory, ports, and which network we want to run on. F
 ```ini
 traefik.http.routers.${PROJECT_NAME}_nginx.rule=HostRegexp(`${APP_DOMAIN}`, `{subdomain:[a-z]+.${APP_DOMAIN}}`)
 ```
+
 what this does is tell our trefik service that we want a router for this project and the nginx rule should match a specific regular expression. As you can see we have another `.env` variable called `APP_DOMAIN` which is what we want our container to respond as, I usually set this as `project-name.localhost` - it is important to use `.localhost` so that traefik will work correctly here. But all the regex does is match any subdomain with the app domain part and route it to nginx to pass to your Laravel application. Our docker network is set to proxy, so that requests proxy through traefik to our nginx service, and we want the priority to be 1.
 
 Let's also have a look at the other parts we need aside from the docker-compose definition.
@@ -227,31 +228,30 @@ Make sure you swap `crm.localhost` above to whatever your app domain is set to!
 
 We then want to rename `_wildcard.crm.localhost+1.pem` to `app-cert.pem`, and `_wildcard.crm.localhost_1-key.pem` to `app-key.pem` so that our application responds over SSL. Again your file names may differ.
 
-
 ## Our App Service
 
 Our App Service is a little more typical and has no requirements for it on traefik as nginx handles loading this:
 
 ```yaml
 app:
-    container_name: "${PROJECT_NAME}_php"
-    build:
-        context: ./docker/php
-        dockerfile: Dockerfile
-    environment:
-        PHP_MEMORY_LIMIT: '512M'
-        COMPOSER_MEMORY_LIMIT: '-1'
-    user: 501:501
-    volumes:
-        - ./:/var/www/vhost/crm:cached
-    working_dir: /var/www/vhost/crm
-    ports:
-        - '9003:9003'
-    networks:
-        - crm
+  container_name: '${PROJECT_NAME}_php'
+  build:
+    context: ./docker/php
+    dockerfile: Dockerfile
+  environment:
+    PHP_MEMORY_LIMIT: '512M'
+    COMPOSER_MEMORY_LIMIT: '-1'
+  user: 501:501
+  volumes:
+    - ./:/var/www/vhost/crm:cached
+  working_dir: /var/www/vhost/crm
+  ports:
+    - '9003:9003'
+  networks:
+    - crm
 ```
 
-Again, like our nginx service, we use the Project Name env variable to set the containers name, ensuring it is easy to spot and manage. We then load in a Dockerfile so we can be specific on our build, and set some environment variables. We can control the PHP memory limit here easily, and we set the composer memory limit to `-1` - which as of composer 2.* is not as important. This is something I used to use when composer would run out of memory sometimes in fetching dependencies in large projects, I keep this in still more as a safety net than anything else. We set our user to our current user, on a mac if you open your terminal and run `id` you will get an output - find the ID that correlates to your user account and replace this in the service.
+Again, like our nginx service, we use the Project Name env variable to set the containers name, ensuring it is easy to spot and manage. We then load in a Dockerfile so we can be specific on our build, and set some environment variables. We can control the PHP memory limit here easily, and we set the composer memory limit to `-1` - which as of composer 2.\* is not as important. This is something I used to use when composer would run out of memory sometimes in fetching dependencies in large projects, I keep this in still more as a safety net than anything else. We set our user to our current user, on a mac if you open your terminal and run `id` you will get an output - find the ID that correlates to your user account and replace this in the service.
 
 We have a few additional configuration files to add to our app service, so inside `docker/php` we will need to create a `Dockerfile` and add the following to it:
 
@@ -327,14 +327,14 @@ Much like other services, we use the project name env variable to prefix the con
 
 ```yaml
 redis:
-    image: redis:latest
-    container_name: "${PROJECT_NAME}_redis"
-    ports:
-      - '6379:6379'
-    volumes:
-      - 'crm_redis:/data'
-    networks:
-      - crm
+  image: redis:latest
+  container_name: '${PROJECT_NAME}_redis'
+  ports:
+    - '6379:6379'
+  volumes:
+    - 'crm_redis:/data'
+  networks:
+    - crm
 ```
 
 As you can see, this is a super simple docker service with very little customisation needed.
@@ -345,23 +345,23 @@ Again, we prefix the MySQL service with the project name env variable, and then 
 
 ```yaml
 mysql:
-    image: mariadb:latest
-    container_name: "${PROJECT_NAME}_mysql"
-    environment:
-      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-      MYSQL_DATABASE: '${DB_DATABASE}'
-      MYSQL_USER: '${DB_USERNAME}'
-      MYSQL_PASSWORD: '${DB_PASSWORD}'
-      MYSQL_ROOT_HOST: '%'
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-      command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-    restart: always
-    volumes:
-      - 'crm_mysql:/data'
-    ports:
-      - '${FORWARD_DB_PORT:-4406}:3306'
-    networks:
-      - crm
+  image: mariadb:latest
+  container_name: '${PROJECT_NAME}_mysql'
+  environment:
+    MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+    MYSQL_DATABASE: '${DB_DATABASE}'
+    MYSQL_USER: '${DB_USERNAME}'
+    MYSQL_PASSWORD: '${DB_PASSWORD}'
+    MYSQL_ROOT_HOST: '%'
+    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+  restart: always
+  volumes:
+    - 'crm_mysql:/data'
+  ports:
+    - '${FORWARD_DB_PORT:-4406}:3306'
+  networks:
+    - crm
 ```
 
 These env variables will be pulled from your `.env` file, so make sure you adjust these as required before running any docker commands.
@@ -372,21 +372,21 @@ This is one of our most important services for our sub-domain set up, traefik ba
 
 ```yaml
 traefik:
-    image: traefik:v2.0
-    container_name: "${PROJECT_NAME}_traefik"
-    restart: always
-    command:
-      - --entrypoints.web.address=:80
-      - --providers.docker=true
-      - --api.insecure=true
-      - --log.level=debug
-    volumes:
-      - '/var/run/docker.sock:/var/run/docker.sock'
-    ports:
-      - '80:80'
-      - '8080:8080'
-    networks:
-      - crm
+  image: traefik:v2.0
+  container_name: '${PROJECT_NAME}_traefik'
+  restart: always
+  command:
+    - --entrypoints.web.address=:80
+    - --providers.docker=true
+    - --api.insecure=true
+    - --log.level=debug
+  volumes:
+    - '/var/run/docker.sock:/var/run/docker.sock'
+  ports:
+    - '80:80'
+    - '8080:8080'
+  networks:
+    - crm
 ```
 
 We have a few options for our command, where we want to specify the web address to see entrypoints to port 80 (we aren't using port 80 for nginx so this is fine). We then want to set the provider to be docker and the api to be insecure. I am not 100% sure on what all of these commands do, as I do not pretend to be an expert with docker. Finally we want to mount the docker socket we have to the one in the container to allow it to all connect and allow us to smile. This may be different for yourself, so if you have issues make sure you check this volume if you do encounter issues.
@@ -398,7 +398,7 @@ version: '3'
 
 services:
   nginx:
-    container_name: "${PROJECT_NAME}_nginx"
+    container_name: '${PROJECT_NAME}_nginx'
     build:
       context: ./docker/nginx
       dockerfile: Dockerfile
@@ -421,7 +421,7 @@ services:
       - 'traefik.docker.network=proxy'
 
   app:
-    container_name: "${PROJECT_NAME}_php"
+    container_name: '${PROJECT_NAME}_php'
     build:
       context: ./docker/php
       dockerfile: Dockerfile
@@ -439,7 +439,7 @@ services:
 
   redis:
     image: redis:latest
-    container_name: "${PROJECT_NAME}_redis"
+    container_name: '${PROJECT_NAME}_redis'
     ports:
       - '6379:6379'
     volumes:
@@ -449,7 +449,7 @@ services:
 
   mysql:
     image: mariadb:latest
-    container_name: "${PROJECT_NAME}_mysql"
+    container_name: '${PROJECT_NAME}_mysql'
     environment:
       MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
       MYSQL_DATABASE: '${DB_DATABASE}'
@@ -468,7 +468,7 @@ services:
 
   traefik:
     image: traefik:v2.0
-    container_name: "${PROJECT_NAME}_traefik"
+    container_name: '${PROJECT_NAME}_traefik'
     restart: always
     command:
       - --entrypoints.web.address=:80
@@ -549,4 +549,11 @@ If you have any questions, or think this could be simplified in anyway please fe
 
 If you want to see me walking through this set up, I have a video on youtube where I add this to a project myself:
 
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/5o33NtI4DyM" title="Building a Laravel CRM API - Episode 1 | JustSteveKing YouTube" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe
+	width="560"
+	height="315"
+	src="https://www.youtube-nocookie.com/embed/5o33NtI4DyM"
+	title="Building a Laravel CRM API - Episode 1 | JustSteveKing YouTube"
+	allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+	allowfullscreen
+></iframe>

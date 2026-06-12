@@ -11,9 +11,20 @@ const { title, meta, summary, href } = Astro.props;
 
 <li class="flex flex-col gap-0.5 py-5 px-section border-b border-edge-weak last:border-b-0">
 	<span class="text-sm font-medium fg-strong">
-		{href
-			? <a href={href} target="_blank" rel="noopener noreferrer" class="fg-strong no-underline transition-colors hover:[color:var(--color-accent)]">{title}</a>
-			: title}
+		{
+			href ? (
+				<a
+					href={href}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="fg-strong no-underline transition-colors hover:[color:var(--color-accent)]"
+				>
+					{title}
+				</a>
+			) : (
+				title
+			)
+		}
 	</span>
 	<span class="font-mono text-[12px] fg-weak">{meta}</span>
 	{summary && <p class="text-[13px] leading-relaxed fg mt-1">{summary}</p>}

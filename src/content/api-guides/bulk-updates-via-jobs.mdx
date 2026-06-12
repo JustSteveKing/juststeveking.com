@@ -1,23 +1,23 @@
 ---
-title: "Bulk updates via async jobs"
-slug: "bulk-updates-via-async-jobs"
-description: "Move heavy bulk operations out of the request/response cycle with job resources. Enqueue work, return quickly, let clients poll for status."
-category: "async-operations"
-complexity: "intermediate"
-apiStyles: ["rest"]
-useWhen: "You need to perform large batches of writes without blocking clients or hammering your database."
-avoidWhen: "You only ever update a handful of resources at once, or latency must be sub-second and bounded."
-tags: ["bulk", "jobs", "idempotency", "long-running"]
-related: ["idempotency-keys-for-safe-retries", "cursor-based-pagination-for-stable-lists"]
+title: 'Bulk updates via async jobs'
+slug: 'bulk-updates-via-async-jobs'
+description: 'Move heavy bulk operations out of the request/response cycle with job resources. Enqueue work, return quickly, let clients poll for status.'
+category: 'async-operations'
+complexity: 'intermediate'
+apiStyles: ['rest']
+useWhen: 'You need to perform large batches of writes without blocking clients or hammering your database.'
+avoidWhen: 'You only ever update a handful of resources at once, or latency must be sub-second and bounded.'
+tags: ['bulk', 'jobs', 'idempotency', 'long-running']
+related: ['idempotency-keys-for-safe-retries', 'cursor-based-pagination-for-stable-lists']
 ---
 
 This pattern moves heavy bulk operations out of the request/response cycle by introducing a **job resource**. Instead of sending a giant payload to a synchronous endpoint and waiting, the client creates a job, then polls (or subscribes) for its status.
 
 At a high level:
 
-1. Client submits a bulk operation request.  
-2. API validates it quickly, enqueues work, returns `202 Accepted` and a `Location` header to a job resource.  
-3. Client polls the job URL or receives a webhook when it completes.  
+1. Client submits a bulk operation request.
+2. API validates it quickly, enqueues work, returns `202 Accepted` and a `Location` header to a job resource.
+3. Client polls the job URL or receives a webhook when it completes.
 4. Job resource tracks progress, failures, and allows inspecting results.
 
 Example: create a bulk job.

@@ -1,7 +1,7 @@
 ---
-import { navLinks } from "@/config";
+import { navLinks } from '@/config';
 import Search from './Search.svelte';
-import Logo from "./Logo.astro";
+import Logo from './Logo.astro';
 
 const pathname = Astro.url.pathname;
 
@@ -12,40 +12,61 @@ function isCurrent(href: string): boolean {
 }
 ---
 
-<header class="sticky top-0 z-100 bg-surface flex items-center justify-between px-section py-4 sm:py-6 border-b border-edge" role="banner">
-	<a href="/" class="flex items-center gap-1.5 font-bold text-base text-text-strong no-underline hover:no-underline" aria-label="juststeveking — home">
+<header
+	class="sticky top-0 z-100 bg-surface flex items-center justify-between px-section py-4 sm:py-6 border-b border-edge"
+	role="banner"
+>
+	<a
+		href="/"
+		class="flex items-center gap-1.5 font-bold text-base text-text-strong no-underline hover:no-underline"
+		aria-label="juststeveking — home"
+	>
 		<Logo class="size-8 text-text-strong" />
 	</a>
 
 	<button
-			class="flex min-[901px]:hidden items-center justify-center w-10 h-10 p-0 bg-transparent border-none text-text-strong cursor-pointer order-1 ml-auto mobile-menu-btn"
-			aria-label="Open navigation menu"
-			aria-expanded="false"
-			aria-controls="landing-mobile-nav"
-			aria-haspopup="true"
+		class="flex min-[901px]:hidden items-center justify-center w-10 h-10 p-0 bg-transparent border-none text-text-strong cursor-pointer order-1 ml-auto mobile-menu-btn"
+		aria-label="Open navigation menu"
+		aria-expanded="false"
+		aria-controls="landing-mobile-nav"
+		aria-haspopup="true"
+	>
+		<svg
+			class="menu-icon block w-5 h-5"
+			viewBox="0 0 24 24"
+			fill="currentColor"
+			aria-hidden="true"
+			focusable="false"
 		>
-		<svg class="menu-icon block w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
 			<rect x="5" y="8" width="14" height="2"></rect>
 			<rect x="5" y="14" width="14" height="2"></rect>
 		</svg>
-		<svg class="close-icon hidden w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+		<svg
+			class="close-icon hidden w-5 h-5"
+			viewBox="0 0 24 24"
+			fill="currentColor"
+			aria-hidden="true"
+			focusable="false"
+		>
 			<rect x="5" y="11" width="14" height="2" transform="rotate(45 12 12)"></rect>
 			<rect x="5" y="11" width="14" height="2" transform="rotate(-45 12 12)"></rect>
 		</svg>
 	</button>
 
 	<nav class="hidden min-[901px]:flex items-center gap-(--nav-gap)" aria-label="Main navigation">
-		{navLinks.map(link => (
-			<a
-				href={link.href}
-				class="text-text-strong text-sm border-b border-transparent hover:no-underline hover:border-current aria-[current=page]:border-current"
-				{...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-				{...(isCurrent(link.href) ? { 'aria-current': 'page' } : {})}
-			>
-				{link.label}
-				{link.external && <span class="visually-hidden">(opens in new tab)</span>}
-			</a>
-		))}
+		{
+			navLinks.map((link) => (
+				<a
+					href={link.href}
+					class="text-text-strong text-sm border-b border-transparent hover:no-underline hover:border-current aria-[current=page]:border-current"
+					{...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+					{...(isCurrent(link.href) ? { 'aria-current': 'page' } : {})}
+				>
+					{link.label}
+					{link.external && <span class="visually-hidden">(opens in new tab)</span>}
+				</a>
+			))
+		}
 		<Search client:load />
 	</nav>
 </header>
@@ -57,22 +78,28 @@ function isCurrent(href: string): boolean {
 	aria-hidden="true"
 	inert
 >
-	{navLinks.map(link => (
-		<a
-			href={link.href}
-			class="text-text-strong text-base py-2 no-underline"
-			{...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-			{...(isCurrent(link.href) ? { 'aria-current': 'page' } : {})}
-		>
-			{link.label}
-			{link.external && <span class="visually-hidden">(opens in new tab)</span>}
-		</a>
-	))}
+	{
+		navLinks.map((link) => (
+			<a
+				href={link.href}
+				class="text-text-strong text-base py-2 no-underline"
+				{...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+				{...(isCurrent(link.href) ? { 'aria-current': 'page' } : {})}
+			>
+				{link.label}
+				{link.external && <span class="visually-hidden">(opens in new tab)</span>}
+			</a>
+		))
+	}
 </nav>
 
 <style>
-	:global(.mobile-nav-open) .menu-icon { display: none; }
-	:global(.mobile-nav-open) .close-icon { display: block !important; }
+	:global(.mobile-nav-open) .menu-icon {
+		display: none;
+	}
+	:global(.mobile-nav-open) .close-icon {
+		display: block !important;
+	}
 	:global(.mobile-nav-open) .mobile-nav {
 		opacity: 1 !important;
 		visibility: visible !important;
@@ -82,7 +109,8 @@ function isCurrent(href: string): boolean {
 <script>
 	const menuBtn = document.querySelector<HTMLButtonElement>('.mobile-menu-btn');
 	const mobileNav = document.querySelector<HTMLElement>('.mobile-nav');
-	const focusableElementsSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+	const focusableElementsSelector =
+		'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 	function openMenu(): void {
 		document.body.classList.add('mobile-nav-open');
@@ -90,7 +118,7 @@ function isCurrent(href: string): boolean {
 		menuBtn?.setAttribute('aria-label', 'Close navigation menu');
 		mobileNav?.removeAttribute('aria-hidden');
 		mobileNav?.removeAttribute('inert');
-		
+
 		// Focus the first link in the mobile nav when opened
 		const firstLink = mobileNav?.querySelector('a');
 		firstLink?.focus();
@@ -102,7 +130,7 @@ function isCurrent(href: string): boolean {
 		menuBtn?.setAttribute('aria-label', 'Open navigation menu');
 		mobileNav?.setAttribute('aria-hidden', 'true');
 		mobileNav?.setAttribute('inert', '');
-		
+
 		// Return focus to the menu button when closed
 		menuBtn?.focus();
 	}
@@ -117,16 +145,21 @@ function isCurrent(href: string): boolean {
 		}
 
 		if (e.key === 'Tab' && document.body.classList.contains('mobile-nav-open')) {
-			const focusableElements = [menuBtn, ...Array.from(mobileNav?.querySelectorAll(focusableElementsSelector) || [])].filter(Boolean) as HTMLElement[];
+			const focusableElements = [
+				menuBtn,
+				...Array.from(mobileNav?.querySelectorAll(focusableElementsSelector) || []),
+			].filter(Boolean) as HTMLElement[];
 			const firstElement = focusableElements[0];
 			const lastElement = focusableElements[focusableElements.length - 1];
 
-			if (e.shiftKey) { // Shift + Tab
+			if (e.shiftKey) {
+				// Shift + Tab
 				if (document.activeElement === firstElement) {
 					lastElement.focus();
 					e.preventDefault();
 				}
-			} else { // Tab
+			} else {
+				// Tab
 				if (document.activeElement === lastElement) {
 					firstElement.focus();
 					e.preventDefault();
@@ -135,5 +168,5 @@ function isCurrent(href: string): boolean {
 		}
 	});
 
-	mobileNav?.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+	mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
 </script>

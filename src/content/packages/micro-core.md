@@ -1,8 +1,8 @@
 ---
 name: juststeveking/micro-core
 description: A collection of core components to be used within the micro boilerplate for slim framework.
-packagist: "https://packagist.org/packages/juststeveking/micro-core"
-github: "https://github.com/JustSteveKing/micro-core"
+packagist: 'https://packagist.org/packages/juststeveking/micro-core'
+github: 'https://github.com/JustSteveKing/micro-core'
 downloads: 19
 monthlyDownloads: 0
 stars: 4
@@ -36,4 +36,5 @@ return [
     },
 ];
 ```
+
 In the example above we are adding an entry into our container for the Kernel, using the default provided kernel and passing in the base options. You can easily override this `Kernel` class yourself - just ensure it implements the same Interface.

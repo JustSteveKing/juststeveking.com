@@ -1,1562 +1,1563 @@
 import type { ReviewExperienceProps } from '@/components/reviews/types';
 
 export const docsalotReview: ReviewExperienceProps = {
-  scores: [
-    {
-      id: 'api',
-      label: 'API',
-      score: 58,
-      verdict: 'Promising',
-      tone: 'amber',
-      sectionId: 'section-api',
-    },
-    {
-      id: 'documentation',
-      label: 'Documentation',
-      score: 71,
-      verdict: 'Solid',
-      tone: 'green',
-      sectionId: 'section-docs',
-    },
-    {
-      id: 'community',
-      label: 'Community',
-      score: 34,
-      verdict: 'Early',
-      tone: 'red',
-      sectionId: 'section-community',
-    },
-    {
-      id: 'education',
-      label: 'Education',
-      score: 63,
-      verdict: 'Growing',
-      tone: 'amber',
-      sectionId: 'section-education',
-    },
-  ],
-  sections: [
-    {
-      id: 'section-api',
-      number: '01',
-      title: 'API Design & Usability',
-      subtitle: 'Design, developer experience, and programmatic surface area',
-      findings: [
-        `DocsAlot has two API surfaces: the <strong>API Playground feature</strong> customers embed in their docs, and DocsAlot's <strong>own backend API</strong> for the assistant and agent. The Playground is polished: six-language code generation, OpenAPI auto-import, and interactive try-it mode. But DocsAlot's own API is barely documented publicly.`,
-        `The CLI (<code>docsalot auth login</code>, <code>docs pull</code>, <code>docs push</code>, <code>docs publish</code>) shipped in March 2026 and adds a third API surface. It includes a browser-based auth flow and a skill system for coding agents. The MCP server is a fourth surface, where each docs site exposes search, list, and read tools via Model Context Protocol.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Multi-language playground with OpenAPI auto-generation',
-          body: [
-            `The API Playground supports cURL, Python, JavaScript, Go, Java, and Rust code snippets out of the box. Drop an OpenAPI spec into your docs folder and endpoint parameters, descriptions, and response schemas are auto-generated. Authentication models are configurable per page or globally via <code>layout.json</code>.`,
-            `This is a real differentiator over raw Docusaurus or GitBook setups where you would need to wire this up yourself.`,
-          ],
-          sourceUrl: 'https://docsalot-docs.docsalot.dev/api-playground/demo',
-          sourceLabel: 'docsalot-docs.docsalot.dev/api-playground/demo',
-        },
-        {
-          kind: 'gap',
-          title: "DocsAlot's own API is referenced but not documented",
-          body: [
-            `The AI-native docs page references endpoints like <code>/api-reference/assistant/create-assistant-message</code> and <code>/api-reference/agent/create-agent-job</code>, but there is no public API reference with the same playground treatment they give customers. No documented auth flows, rate limits, error shapes, or pagination for DocsAlot's own API.`,
-            `A docs platform that does not dog-food its own API docs feature on its own API is a missed opportunity.`,
-          ],
-          sourceUrl: 'https://docsalot-docs.docsalot.dev/ai-native',
-          sourceLabel: 'docsalot-docs.docsalot.dev/ai-native',
-        },
-        {
-          kind: 'opportunity',
-          title: 'Four API surfaces, no unified developer portal',
-          body: [
-            `Playground feature, backend REST API, CLI, and MCP server are four distinct ways developers interact with DocsAlot programmatically. Each lives in a different docs section with no shared developer portal entry point.`,
-            `A developer landing page that maps all four surfaces with their auth models and use cases would materially improve discoverability.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across API sub-dimensions:',
-      breakdown: [
-        { label: 'Playground DX', value: 78, tone: 'green' },
-        { label: 'Own API docs', value: 25, tone: 'red' },
-        { label: 'CLI experience', value: 68, tone: 'amber' },
-        { label: 'MCP surface', value: 60, tone: 'amber' },
-        { label: 'Auth model', value: 55, tone: 'amber' },
-      ],
-      recommendations: [
-        'Create a unified Developer Portal page mapping all four API surfaces',
-        "Dog-food the API Playground on DocsAlot's own REST API endpoints",
-        'Document rate limits, error shapes, and versioning policy',
-        'Publish MCP server schema with example tool calls and responses',
-      ],
-    },
-    {
-      id: 'section-docs',
-      number: '02',
-      title: 'Documentation Quality',
-      subtitle: 'Structure, clarity, completeness, and self-referential integrity',
-      findings: [
-        `The docs site at <code>docs.docsalot.dev</code> covers eight major sections with more than forty pages. The AI-native documentation page is standout work, with a clear Read, Write, Discover taxonomy that makes the product's value proposition concrete. Every page includes an AI chat assistant, content negotiation by appending <code>.md</code>, and auto-generated <code>llms.txt</code>.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Eating their own cooking with AI features on every page',
-          body: [
-            `Every docs page has an embedded AI chat assistant, MCP server connectivity, content negotiation, <code>llms.txt</code>, and <code>skill.md</code> files. These are not just features they sell; they run on their own docs and on customer examples like MasonHub.`,
-          ],
-        },
-        {
-          kind: 'gap',
-          title: 'Sidebar typo: Creating Documenation',
-          body: [
-            `The sidebar heading reads <code>Creating Documenation</code>, missing the second t. For a platform whose promise is documentation quality, this is the kind of small detail that chips away at credibility because it is visible on every page.`,
-          ],
-        },
-        {
-          kind: 'gap',
-          title: 'llms.txt reads like marketing copy, not a machine reference',
-          body: [
-            `The <code>llms.txt</code> file at <code>docsalot.dev/llms.txt</code> opens with marketing language and includes sections like Why DocsAlot is the Best Choice. That cuts against the standard's purpose: it should be a factual reference for AI agents, not an SEO landing page in plain text.`,
-          ],
-          sourceUrl: 'https://docsalot.dev/llms.txt',
-          sourceLabel: 'docsalot.dev/llms.txt',
-        },
-        {
-          kind: 'opportunity',
-          title: 'No concepts or architecture page explaining the data model',
-          body: [
-            `The docs jump from quickstart into settings without spelling out fundamentals like what a documentation project is, how versions work, or how the editor relates to GitHub sync. A concepts page would reduce cognitive load for new users before they start configuring details.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across documentation sub-dimensions:',
-      breakdown: [
-        { label: 'Coverage', value: 82, tone: 'green' },
-        { label: 'AI features', value: 88, tone: 'green' },
-        { label: 'Accuracy', value: 62, tone: 'amber' },
-        { label: 'IA / Navigation', value: 65, tone: 'amber' },
-        { label: 'Onboarding depth', value: 45, tone: 'red' },
-      ],
-      recommendations: [
-        'Fix the Creating Documenation typo and audit for others',
-        'Rewrite llms.txt as a factual reference instead of marketing copy',
-        'Add a concepts or architecture page before the settings section',
-        'Run their own Broken Link Checker and DocsAgent Score on the docs',
-      ],
-    },
-    {
-      id: 'section-community',
-      number: '03',
-      title: 'Developer Community',
-      subtitle: 'Channels, presence, and engagement infrastructure',
-      findings: [
-        `Community is the weakest of the four pillars. The product has a Discord, a GitHub org, and social presence on X, but all three have structural issues that limit their effectiveness.`,
-      ],
-      evidence: [
-        {
-          kind: 'gap',
-          title: 'Two conflicting Discord invite links across the site',
-          body: [
-            `The main site links to <code>discord.gg/Dp6EpTv4BU</code> while the docs footer links to <code>discord.gg/MPNgtSZkgK</code>. That fragments community and confuses new users because it is not clear whether these are separate servers or duplicate invites.`,
-          ],
-        },
-        {
-          kind: 'gap',
-          title: 'GitHub org is SlashML with 98 repos, mostly forks',
-          body: [
-            `The GitHub org at <code>github.com/slashml</code> has ninety-eight repositories and seventeen followers. Most visible repos are forks or older ML projects, with no public DocsAlot source code. The org is verified for <code>slashml.com</code>, not <code>docsalot.dev</code>, which creates brand confusion.`,
-          ],
-        },
-        {
-          kind: 'gap',
-          title: 'No product social account and no visible community programs',
-          body: [
-            `Twitter and X links point to the founder's personal account instead of a product account. There is no public roadmap, contributor recognition, or community champion program, and feedback channels mostly collapse to email or Discord.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across community sub-dimensions:',
-      breakdown: [
-        { label: 'Discord presence', value: 40, tone: 'red' },
-        { label: 'GitHub presence', value: 28, tone: 'red' },
-        { label: 'Social media', value: 22, tone: 'red' },
-        { label: 'Feedback loops', value: 35, tone: 'red' },
-        { label: 'Programs', value: 20, tone: 'red' },
-      ],
-      recommendations: [
-        'Consolidate Discord to a single invite link across all properties',
-        'Create a dedicated DocsAlot GitHub org or rename and rebrand SlashML',
-        'Launch a DocsAlot product account on X and ship a public roadmap',
-        'Open-source at least one component: the CLI, MCP server, or a template',
-      ],
-    },
-    {
-      id: 'section-education',
-      number: '04',
-      title: 'Developer Education',
-      subtitle: 'Tutorials, guides, onboarding resources, and learning paths',
-      findings: [
-        `Education is a mixed picture. The blog is genuinely strong: opinionated, technically substantive, and published consistently. The free tools are a smart lead-generation play. But the actual onboarding experience and tutorial depth have room to grow.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Blog content is opinionated and technically substantive',
-          body: [
-            `There are fourteen posts since January 2026 covering MCP servers, <code>llms.txt</code> limitations, agent-friendly CLIs, <code>skill.md</code> as an open standard, and firsthand documentation experiments. These are not generic explainers; they take positions and back them up.`,
-          ],
-          sourceUrl: 'https://docsalot.dev/blog',
-          sourceLabel: 'docsalot.dev/blog',
-        },
-        {
-          kind: 'strength',
-          title: 'Free tools work as educational entry points without signup',
-          body: [
-            `DocsAgent Score, Docs SEO Checker, GTM Readiness Audit, Human Readability Audit, and Broken Link Checker all give developers immediate value with no signup wall. That makes them effective education and demand-generation assets at the same time.`,
-          ],
-          sourceUrl: 'https://docsalot.dev/tools',
-          sourceLabel: 'docsalot.dev/tools',
-        },
-        {
-          kind: 'gap',
-          title: 'Quickstart ends after editing one frontmatter field',
-          body: [
-            `The quickstart is four steps: create a project, view the site, edit <code>index.mdx</code>, and publish. There is no build-something-real follow-up, no progressive path into advanced features, and the GitHub integration is buried in an optional block. A developer can finish without understanding the product.`,
-          ],
-          sourceUrl: 'https://docsalot-docs.docsalot.dev/quickstart',
-          sourceLabel: 'docsalot-docs.docsalot.dev/quickstart',
-        },
-        {
-          kind: 'gap',
-          title: 'Comparison pages exist, but migration guides do not',
-          body: [
-            `DocsAlot has a healthy set of competitor comparison pages, but zero migration guides. If someone reads DocsAlot vs GitBook and decides to switch, there is no next-step guide that shows how to move content, structure, and workflows over.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across education sub-dimensions:',
-      breakdown: [
-        { label: 'Blog quality', value: 85, tone: 'green' },
-        { label: 'Free tools', value: 78, tone: 'green' },
-        { label: 'Onboarding', value: 38, tone: 'red' },
-        { label: 'Tutorials', value: 32, tone: 'red' },
-        { label: 'Migration paths', value: 10, tone: 'red' },
-      ],
-      recommendations: [
-        'Expand quickstart into a build real docs in 15 minutes tutorial',
-        'Create migration guides for GitBook, Mintlify, and Docusaurus',
-        'Build a learning path page that sequences quickstart, concepts, and advanced topics',
-        'Add video walkthroughs or short demo recordings for key workflows',
-      ],
-    },
-  ],
-  footerNote:
-    'Preliminary assessment based on publicly available sources. Full review requires account creation, hands-on testing, and community participation. Scores are directional estimates pending deeper investigation.',
+	scores: [
+		{
+			id: 'api',
+			label: 'API',
+			score: 58,
+			verdict: 'Promising',
+			tone: 'amber',
+			sectionId: 'section-api',
+		},
+		{
+			id: 'documentation',
+			label: 'Documentation',
+			score: 71,
+			verdict: 'Solid',
+			tone: 'green',
+			sectionId: 'section-docs',
+		},
+		{
+			id: 'community',
+			label: 'Community',
+			score: 34,
+			verdict: 'Early',
+			tone: 'red',
+			sectionId: 'section-community',
+		},
+		{
+			id: 'education',
+			label: 'Education',
+			score: 63,
+			verdict: 'Growing',
+			tone: 'amber',
+			sectionId: 'section-education',
+		},
+	],
+	sections: [
+		{
+			id: 'section-api',
+			number: '01',
+			title: 'API Design & Usability',
+			subtitle: 'Design, developer experience, and programmatic surface area',
+			findings: [
+				`DocsAlot has two API surfaces: the <strong>API Playground feature</strong> customers embed in their docs, and DocsAlot's <strong>own backend API</strong> for the assistant and agent. The Playground is polished: six-language code generation, OpenAPI auto-import, and interactive try-it mode. But DocsAlot's own API is barely documented publicly.`,
+				`The CLI (<code>docsalot auth login</code>, <code>docs pull</code>, <code>docs push</code>, <code>docs publish</code>) shipped in March 2026 and adds a third API surface. It includes a browser-based auth flow and a skill system for coding agents. The MCP server is a fourth surface, where each docs site exposes search, list, and read tools via Model Context Protocol.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Multi-language playground with OpenAPI auto-generation',
+					body: [
+						`The API Playground supports cURL, Python, JavaScript, Go, Java, and Rust code snippets out of the box. Drop an OpenAPI spec into your docs folder and endpoint parameters, descriptions, and response schemas are auto-generated. Authentication models are configurable per page or globally via <code>layout.json</code>.`,
+						`This is a real differentiator over raw Docusaurus or GitBook setups where you would need to wire this up yourself.`,
+					],
+					sourceUrl: 'https://docsalot-docs.docsalot.dev/api-playground/demo',
+					sourceLabel: 'docsalot-docs.docsalot.dev/api-playground/demo',
+				},
+				{
+					kind: 'gap',
+					title: "DocsAlot's own API is referenced but not documented",
+					body: [
+						`The AI-native docs page references endpoints like <code>/api-reference/assistant/create-assistant-message</code> and <code>/api-reference/agent/create-agent-job</code>, but there is no public API reference with the same playground treatment they give customers. No documented auth flows, rate limits, error shapes, or pagination for DocsAlot's own API.`,
+						`A docs platform that does not dog-food its own API docs feature on its own API is a missed opportunity.`,
+					],
+					sourceUrl: 'https://docsalot-docs.docsalot.dev/ai-native',
+					sourceLabel: 'docsalot-docs.docsalot.dev/ai-native',
+				},
+				{
+					kind: 'opportunity',
+					title: 'Four API surfaces, no unified developer portal',
+					body: [
+						`Playground feature, backend REST API, CLI, and MCP server are four distinct ways developers interact with DocsAlot programmatically. Each lives in a different docs section with no shared developer portal entry point.`,
+						`A developer landing page that maps all four surfaces with their auth models and use cases would materially improve discoverability.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across API sub-dimensions:',
+			breakdown: [
+				{ label: 'Playground DX', value: 78, tone: 'green' },
+				{ label: 'Own API docs', value: 25, tone: 'red' },
+				{ label: 'CLI experience', value: 68, tone: 'amber' },
+				{ label: 'MCP surface', value: 60, tone: 'amber' },
+				{ label: 'Auth model', value: 55, tone: 'amber' },
+			],
+			recommendations: [
+				'Create a unified Developer Portal page mapping all four API surfaces',
+				"Dog-food the API Playground on DocsAlot's own REST API endpoints",
+				'Document rate limits, error shapes, and versioning policy',
+				'Publish MCP server schema with example tool calls and responses',
+			],
+		},
+		{
+			id: 'section-docs',
+			number: '02',
+			title: 'Documentation Quality',
+			subtitle: 'Structure, clarity, completeness, and self-referential integrity',
+			findings: [
+				`The docs site at <code>docs.docsalot.dev</code> covers eight major sections with more than forty pages. The AI-native documentation page is standout work, with a clear Read, Write, Discover taxonomy that makes the product's value proposition concrete. Every page includes an AI chat assistant, content negotiation by appending <code>.md</code>, and auto-generated <code>llms.txt</code>.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Eating their own cooking with AI features on every page',
+					body: [
+						`Every docs page has an embedded AI chat assistant, MCP server connectivity, content negotiation, <code>llms.txt</code>, and <code>skill.md</code> files. These are not just features they sell; they run on their own docs and on customer examples like MasonHub.`,
+					],
+				},
+				{
+					kind: 'gap',
+					title: 'Sidebar typo: Creating Documenation',
+					body: [
+						`The sidebar heading reads <code>Creating Documenation</code>, missing the second t. For a platform whose promise is documentation quality, this is the kind of small detail that chips away at credibility because it is visible on every page.`,
+					],
+				},
+				{
+					kind: 'gap',
+					title: 'llms.txt reads like marketing copy, not a machine reference',
+					body: [
+						`The <code>llms.txt</code> file at <code>docsalot.dev/llms.txt</code> opens with marketing language and includes sections like Why DocsAlot is the Best Choice. That cuts against the standard's purpose: it should be a factual reference for AI agents, not an SEO landing page in plain text.`,
+					],
+					sourceUrl: 'https://docsalot.dev/llms.txt',
+					sourceLabel: 'docsalot.dev/llms.txt',
+				},
+				{
+					kind: 'opportunity',
+					title: 'No concepts or architecture page explaining the data model',
+					body: [
+						`The docs jump from quickstart into settings without spelling out fundamentals like what a documentation project is, how versions work, or how the editor relates to GitHub sync. A concepts page would reduce cognitive load for new users before they start configuring details.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across documentation sub-dimensions:',
+			breakdown: [
+				{ label: 'Coverage', value: 82, tone: 'green' },
+				{ label: 'AI features', value: 88, tone: 'green' },
+				{ label: 'Accuracy', value: 62, tone: 'amber' },
+				{ label: 'IA / Navigation', value: 65, tone: 'amber' },
+				{ label: 'Onboarding depth', value: 45, tone: 'red' },
+			],
+			recommendations: [
+				'Fix the Creating Documenation typo and audit for others',
+				'Rewrite llms.txt as a factual reference instead of marketing copy',
+				'Add a concepts or architecture page before the settings section',
+				'Run their own Broken Link Checker and DocsAgent Score on the docs',
+			],
+		},
+		{
+			id: 'section-community',
+			number: '03',
+			title: 'Developer Community',
+			subtitle: 'Channels, presence, and engagement infrastructure',
+			findings: [
+				`Community is the weakest of the four pillars. The product has a Discord, a GitHub org, and social presence on X, but all three have structural issues that limit their effectiveness.`,
+			],
+			evidence: [
+				{
+					kind: 'gap',
+					title: 'Two conflicting Discord invite links across the site',
+					body: [
+						`The main site links to <code>discord.gg/Dp6EpTv4BU</code> while the docs footer links to <code>discord.gg/MPNgtSZkgK</code>. That fragments community and confuses new users because it is not clear whether these are separate servers or duplicate invites.`,
+					],
+				},
+				{
+					kind: 'gap',
+					title: 'GitHub org is SlashML with 98 repos, mostly forks',
+					body: [
+						`The GitHub org at <code>github.com/slashml</code> has ninety-eight repositories and seventeen followers. Most visible repos are forks or older ML projects, with no public DocsAlot source code. The org is verified for <code>slashml.com</code>, not <code>docsalot.dev</code>, which creates brand confusion.`,
+					],
+				},
+				{
+					kind: 'gap',
+					title: 'No product social account and no visible community programs',
+					body: [
+						`Twitter and X links point to the founder's personal account instead of a product account. There is no public roadmap, contributor recognition, or community champion program, and feedback channels mostly collapse to email or Discord.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across community sub-dimensions:',
+			breakdown: [
+				{ label: 'Discord presence', value: 40, tone: 'red' },
+				{ label: 'GitHub presence', value: 28, tone: 'red' },
+				{ label: 'Social media', value: 22, tone: 'red' },
+				{ label: 'Feedback loops', value: 35, tone: 'red' },
+				{ label: 'Programs', value: 20, tone: 'red' },
+			],
+			recommendations: [
+				'Consolidate Discord to a single invite link across all properties',
+				'Create a dedicated DocsAlot GitHub org or rename and rebrand SlashML',
+				'Launch a DocsAlot product account on X and ship a public roadmap',
+				'Open-source at least one component: the CLI, MCP server, or a template',
+			],
+		},
+		{
+			id: 'section-education',
+			number: '04',
+			title: 'Developer Education',
+			subtitle: 'Tutorials, guides, onboarding resources, and learning paths',
+			findings: [
+				`Education is a mixed picture. The blog is genuinely strong: opinionated, technically substantive, and published consistently. The free tools are a smart lead-generation play. But the actual onboarding experience and tutorial depth have room to grow.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Blog content is opinionated and technically substantive',
+					body: [
+						`There are fourteen posts since January 2026 covering MCP servers, <code>llms.txt</code> limitations, agent-friendly CLIs, <code>skill.md</code> as an open standard, and firsthand documentation experiments. These are not generic explainers; they take positions and back them up.`,
+					],
+					sourceUrl: 'https://docsalot.dev/blog',
+					sourceLabel: 'docsalot.dev/blog',
+				},
+				{
+					kind: 'strength',
+					title: 'Free tools work as educational entry points without signup',
+					body: [
+						`DocsAgent Score, Docs SEO Checker, GTM Readiness Audit, Human Readability Audit, and Broken Link Checker all give developers immediate value with no signup wall. That makes them effective education and demand-generation assets at the same time.`,
+					],
+					sourceUrl: 'https://docsalot.dev/tools',
+					sourceLabel: 'docsalot.dev/tools',
+				},
+				{
+					kind: 'gap',
+					title: 'Quickstart ends after editing one frontmatter field',
+					body: [
+						`The quickstart is four steps: create a project, view the site, edit <code>index.mdx</code>, and publish. There is no build-something-real follow-up, no progressive path into advanced features, and the GitHub integration is buried in an optional block. A developer can finish without understanding the product.`,
+					],
+					sourceUrl: 'https://docsalot-docs.docsalot.dev/quickstart',
+					sourceLabel: 'docsalot-docs.docsalot.dev/quickstart',
+				},
+				{
+					kind: 'gap',
+					title: 'Comparison pages exist, but migration guides do not',
+					body: [
+						`DocsAlot has a healthy set of competitor comparison pages, but zero migration guides. If someone reads DocsAlot vs GitBook and decides to switch, there is no next-step guide that shows how to move content, structure, and workflows over.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across education sub-dimensions:',
+			breakdown: [
+				{ label: 'Blog quality', value: 85, tone: 'green' },
+				{ label: 'Free tools', value: 78, tone: 'green' },
+				{ label: 'Onboarding', value: 38, tone: 'red' },
+				{ label: 'Tutorials', value: 32, tone: 'red' },
+				{ label: 'Migration paths', value: 10, tone: 'red' },
+			],
+			recommendations: [
+				'Expand quickstart into a build real docs in 15 minutes tutorial',
+				'Create migration guides for GitBook, Mintlify, and Docusaurus',
+				'Build a learning path page that sequences quickstart, concepts, and advanced topics',
+				'Add video walkthroughs or short demo recordings for key workflows',
+			],
+		},
+	],
+	footerNote:
+		'Preliminary assessment based on publicly available sources. Full review requires account creation, hands-on testing, and community participation. Scores are directional estimates pending deeper investigation.',
 };
 
 export const scalekitReview: ReviewExperienceProps = {
-  scores: [
-    {
-      id: 'api',
-      label: 'API',
-      score: 82,
-      verdict: 'Strong',
-      tone: 'green',
-      sectionId: 'section-api',
-    },
-    {
-      id: 'documentation',
-      label: 'Documentation',
-      score: 85,
-      verdict: 'Excellent',
-      tone: 'green',
-      sectionId: 'section-docs',
-    },
-    {
-      id: 'community',
-      label: 'Community',
-      score: 68,
-      verdict: 'Growing',
-      tone: 'amber',
-      sectionId: 'section-community',
-    },
-    {
-      id: 'education',
-      label: 'Education',
-      score: 80,
-      verdict: 'Solid',
-      tone: 'green',
-      sectionId: 'section-education',
-    },
-  ],
-  sections: [
-    {
-      id: 'section-api',
-      number: '01',
-      title: 'API Design & Usability',
-      subtitle: 'SDKs, REST API, OpenAPI spec, webhooks, and interceptors',
-      findings: [
-        `Scalekit's API surface is mature and well-organized. There are five official SDKs, a full REST API with OpenAPI spec, Postman collections, webhooks, and interceptors. The API follows standard OAuth 2.1 patterns, and the SDK method names map cleanly to the REST endpoints.`,
-        `The modular architecture is the standout design decision: MCP Auth, Agent Auth, SSO, SCIM, and Full-Stack Auth can each be adopted independently. The overall surface area is large, but each module stays self-contained enough to be learnable.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Five SDKs with framework-specific compatibility spelled out',
-          body: [
-            `Node.js, Python, Go, Java, and Expo each have dedicated SDK pages with versions, framework compatibility, install instructions, and direct getting-started links. The docs also make it clear that the repos are open source and MIT licensed.`,
-            `That level of compatibility detail removes guesswork before an integration starts, especially for teams deciding which language stack to standardize on.`,
-          ],
-          sourceUrl: 'https://docs.scalekit.com/sdks/',
-          sourceLabel: 'docs.scalekit.com/sdks',
-        },
-        {
-          kind: 'strength',
-          title: 'OpenAPI spec, Postman collection, and markdown API reference all exist',
-          body: [
-            `The API is published in multiple formats: the main reference at <code>/apis/</code>, an OpenAPI JSON spec, a Postman collection, and a markdown-rendered version for LLM and IDE workflows. Every page also includes direct actions like Open in Claude and Open in Cursor.`,
-            `That multi-format delivery is a strong sign the API program is designed for both humans and tooling.`,
-          ],
-          sourceUrl: 'https://docs.scalekit.com/apis/',
-          sourceLabel: 'docs.scalekit.com/apis',
-        },
-        {
-          kind: 'strength',
-          title: 'Webhooks and interceptors are treated as first-class extensibility points',
-          body: [
-            `Scalekit documents not just post-event webhooks, but also interceptors that run during authentication flows. That gives teams a place to attach policy checks, custom validation, or flow-specific routing logic before the flow completes.`,
-            `It is an unusual capability in auth products and a real differentiator when integrations need custom control points.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'The API reference appears more reference-oriented than playground-oriented',
-          body: [
-            `The Scalar-based reference is strong, but it is not obvious whether there is a built-in authenticated try-it experience for live calls. Postman partially fills that gap, but switching tools still adds friction compared with products that support interactive testing in the docs itself.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across API sub-dimensions:',
-      breakdown: [
-        { label: 'SDK coverage', value: 92, tone: 'green' },
-        { label: 'API reference', value: 85, tone: 'green' },
-        { label: 'Extensibility', value: 88, tone: 'green' },
-        { label: 'Interactive testing', value: 60, tone: 'amber' },
-        { label: 'Auth model clarity', value: 80, tone: 'green' },
-      ],
-      recommendations: [
-        'Add an interactive API explorer with live try-it support for authenticated endpoints',
-        'Show an SDK version compatibility matrix that maps SDK releases to API features',
-        'Add rate limit and error shape documentation directly into the API reference',
-      ],
-    },
-    {
-      id: 'section-docs',
-      number: '02',
-      title: 'Documentation Quality',
-      subtitle: 'Structure, clarity, AI-readiness, and developer affordances',
-      findings: [
-        `Scalekit's documentation is one of the strongest parts of the product. The information architecture mirrors the modular product design, and every page includes markdown-first and AI-assistant-friendly affordances like Copy Markdown, View in Markdown, Open in Claude, and Open in Cursor.`,
-        `The docs source is open on GitHub and includes edit links on every page, which helps credibility and makes the docs feel like a maintained developer surface instead of a static marketing asset.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'The llms.txt implementation is unusually well executed',
-          body: [
-            `The <code>llms.txt</code> file does more than list pages. It provides routing guidance by product area and splits the docs into targeted sets like full-stack-auth, agent-authentication, and mcp-authentication. There are also compact and full variants for different loading strategies.`,
-            `This is one of the better examples of llms.txt as a practical machine-facing document rather than a token gesture.`,
-          ],
-          sourceUrl: 'https://docs.scalekit.com/llms.txt',
-          sourceLabel: 'docs.scalekit.com/llms.txt',
-        },
-        {
-          kind: 'strength',
-          title: 'Open in Claude and Cursor links reduce context-loading friction',
-          body: [
-            `Every page ships with assistant-friendly actions, including preloaded Claude prompts and Cursor deep links. Combined with markdown views and copy-to-markdown, that makes the docs highly usable inside modern AI-assisted workflows.`,
-          ],
-        },
-        {
-          kind: 'strength',
-          title: 'Quickstarts include real code, demos, and sequence diagrams',
-          body: [
-            `The FSA quickstart covers install, redirect, callback, session, and logout with working examples in multiple languages. It also includes embedded videos, flow diagrams, and inline notes for common integration mistakes.`,
-            `That is materially better than quickstarts that stop at a toy authentication redirect without showing session handling or error cases.`,
-          ],
-          sourceUrl: 'https://docs.scalekit.com/authenticate/fsa/quickstart/',
-          sourceLabel: 'docs.scalekit.com/authenticate/fsa/quickstart',
-        },
-        {
-          kind: 'opportunity',
-          title: 'The navigation is powerful, but high-choice for first-time visitors',
-          body: [
-            `The mega-menu exposes a lot of product surface area immediately. That is useful once someone understands the product map, but it may be overwhelming for a newcomer who still needs help deciding between modular auth and full-stack auth.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across documentation sub-dimensions:',
-      breakdown: [
-        { label: 'IA / Navigation', value: 75, tone: 'green' },
-        { label: 'AI readiness', value: 95, tone: 'green' },
-        { label: 'Code quality', value: 90, tone: 'green' },
-        { label: 'Quickstart depth', value: 88, tone: 'green' },
-        { label: 'Discoverability', value: 72, tone: 'amber' },
-      ],
-      recommendations: [
-        'Add a which Scalekit product do I need decision tree for first-time visitors',
-        'Simplify the top-level navigation so the first scan has fewer competing choices',
-        'Add estimated integration time to each quickstart header',
-      ],
-    },
-    {
-      id: 'section-community',
-      number: '03',
-      title: 'Developer Community',
-      subtitle: 'Channels, open source, social presence, and programs',
-      findings: [
-        `Community infrastructure is in place and more professional than many early developer tools, but engagement depth still looks early. Scalekit has Slack, a clean GitHub organization, a product X account, YouTube, LinkedIn, and a Creator Program.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'The GitHub organization is clean and purpose-built',
-          body: [
-            `The <code>scalekit-inc</code> org is verified for scalekit.com and avoids the common problem of a cluttered repo list full of unrelated forks. The naming is consistent, the repos are clearly product-linked, and the org README routes developers to the right starting points.`,
-          ],
-          sourceUrl: 'https://github.com/scalekit-inc',
-          sourceLabel: 'github.com/scalekit-inc',
-        },
-        {
-          kind: 'strength',
-          title: 'Product identity is separate from founder identity',
-          body: [
-            `Scalekit has dedicated product accounts and an explicit Creator Program. That is the right baseline for building a real developer community rather than relying on ad hoc founder-led communication alone.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'Slack is present, but the actual community energy is hard to evaluate from outside',
-          body: [
-            `Slack can work well for support and community, but it is less legible from the outside than Discord or public forums. Without joining, it is difficult to tell how active it is, how quickly questions get answered, or how the channels are structured.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'The open-source footprint looks under-promoted relative to its quality',
-          body: [
-            `The repos appear well structured, but star counts are still modest. That suggests the code may be better than the current visibility around it, which is often a distribution problem rather than a product problem.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across community sub-dimensions:',
-      breakdown: [
-        { label: 'GitHub presence', value: 82, tone: 'green' },
-        { label: 'Social identity', value: 75, tone: 'green' },
-        { label: 'Community hub', value: 55, tone: 'amber' },
-        { label: 'OSS engagement', value: 42, tone: 'red' },
-        { label: 'Programs', value: 65, tone: 'amber' },
-      ],
-      recommendations: [
-        'Promote the open-source repos through targeted developer community launches',
-        'Add a public community preview or FAQ before the Slack join gate',
-        'Ship a public roadmap or changelog with a visible community feedback loop',
-        'Show the Creator Program in action with guest posts, tutorials, and community output',
-      ],
-    },
-    {
-      id: 'section-education',
-      number: '04',
-      title: 'Developer Education',
-      subtitle: 'Tutorials, cookbooks, testing tools, and AI-assisted integration',
-      findings: [
-        `Education is Scalekit's second-strongest pillar after documentation. The team has invested heavily in meeting developers where they work: AI coding agents, IDE integrations, testing tools, practical cookbooks, and product-specific implementation prompts.`,
-        `The Build with AI section is the standout differentiator here because it treats agent workflows as a first-class integration path instead of a side note.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Build with AI supports multiple coding agents and editor flows',
-          body: [
-            `Scalekit offers installable plugins and prompts for Claude Code, Codex, GitHub Copilot CLI, Cursor, and broader skills-based agent flows. Different auth modules also have dedicated prompts so the guidance stays product-specific rather than generic.`,
-            `This is one of the most complete AI-agent developer experiences currently visible in the auth category.`,
-          ],
-          sourceUrl: 'https://docs.scalekit.com/dev-kit/build-with-ai/',
-          sourceLabel: 'docs.scalekit.com/dev-kit/build-with-ai',
-        },
-        {
-          kind: 'strength',
-          title: 'Dryrun and the SSO Simulator shorten time-to-understanding',
-          body: [
-            `The dryrun flow lets developers exercise a local auth path before writing a full integration, and the SSO Simulator removes the need to set up a real IdP on day one. These are exactly the sorts of tools that turn an auth product from conceptually clear into practically approachable.`,
-          ],
-          sourceUrl: 'https://docs.scalekit.com/dev-kit/tools/scalekit-dryrun/',
-          sourceLabel: 'docs.scalekit.com/dev-kit/tools/scalekit-dryrun',
-        },
-        {
-          kind: 'strength',
-          title: 'Cookbooks focus on practical integration patterns, not toy examples',
-          body: [
-            `The cookbook content covers real product usage like enterprise SSO with Next.js, agent workflows, and application-level auth patterns. The pieces are authored, scoped, and tagged clearly enough that they feel like practical implementation guides rather than blog filler.`,
-          ],
-          sourceUrl: 'https://docs.scalekit.com/cookbooks/',
-          sourceLabel: 'docs.scalekit.com/cookbooks',
-        },
-        {
-          kind: 'opportunity',
-          title: 'There is no clear guided academy-style learning path yet',
-          body: [
-            `The docs include demos and embedded videos, but there is not yet a structured tutorial sequence that takes a developer from first auth flow to production enterprise rollout in a staged way. For a product with this many modules, that missing learning path is noticeable.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across education sub-dimensions:',
-      breakdown: [
-        { label: 'AI-assisted dev', value: 95, tone: 'green' },
-        { label: 'Testing tools', value: 88, tone: 'green' },
-        { label: 'Cookbooks', value: 82, tone: 'green' },
-        { label: 'Code samples', value: 78, tone: 'green' },
-        { label: 'Video / guided', value: 40, tone: 'red' },
-      ],
-      recommendations: [
-        'Create a structured video series that goes from zero to production auth quickly',
-        'Build a guided learning path that sequences FSA, SSO, and SCIM adoption',
-        'Expand cookbooks to cover migration from Auth0, Clerk, and WorkOS',
-      ],
-    },
-  ],
-  footerNote:
-    'Preliminary assessment based on publicly available sources including docs.scalekit.com, scalekit.com, and github.com/scalekit-inc. Scores are directional estimates. Full review would still require account creation, SDK testing, Slack participation, and end-to-end auth flow implementation.',
+	scores: [
+		{
+			id: 'api',
+			label: 'API',
+			score: 82,
+			verdict: 'Strong',
+			tone: 'green',
+			sectionId: 'section-api',
+		},
+		{
+			id: 'documentation',
+			label: 'Documentation',
+			score: 85,
+			verdict: 'Excellent',
+			tone: 'green',
+			sectionId: 'section-docs',
+		},
+		{
+			id: 'community',
+			label: 'Community',
+			score: 68,
+			verdict: 'Growing',
+			tone: 'amber',
+			sectionId: 'section-community',
+		},
+		{
+			id: 'education',
+			label: 'Education',
+			score: 80,
+			verdict: 'Solid',
+			tone: 'green',
+			sectionId: 'section-education',
+		},
+	],
+	sections: [
+		{
+			id: 'section-api',
+			number: '01',
+			title: 'API Design & Usability',
+			subtitle: 'SDKs, REST API, OpenAPI spec, webhooks, and interceptors',
+			findings: [
+				`Scalekit's API surface is mature and well-organized. There are five official SDKs, a full REST API with OpenAPI spec, Postman collections, webhooks, and interceptors. The API follows standard OAuth 2.1 patterns, and the SDK method names map cleanly to the REST endpoints.`,
+				`The modular architecture is the standout design decision: MCP Auth, Agent Auth, SSO, SCIM, and Full-Stack Auth can each be adopted independently. The overall surface area is large, but each module stays self-contained enough to be learnable.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Five SDKs with framework-specific compatibility spelled out',
+					body: [
+						`Node.js, Python, Go, Java, and Expo each have dedicated SDK pages with versions, framework compatibility, install instructions, and direct getting-started links. The docs also make it clear that the repos are open source and MIT licensed.`,
+						`That level of compatibility detail removes guesswork before an integration starts, especially for teams deciding which language stack to standardize on.`,
+					],
+					sourceUrl: 'https://docs.scalekit.com/sdks/',
+					sourceLabel: 'docs.scalekit.com/sdks',
+				},
+				{
+					kind: 'strength',
+					title: 'OpenAPI spec, Postman collection, and markdown API reference all exist',
+					body: [
+						`The API is published in multiple formats: the main reference at <code>/apis/</code>, an OpenAPI JSON spec, a Postman collection, and a markdown-rendered version for LLM and IDE workflows. Every page also includes direct actions like Open in Claude and Open in Cursor.`,
+						`That multi-format delivery is a strong sign the API program is designed for both humans and tooling.`,
+					],
+					sourceUrl: 'https://docs.scalekit.com/apis/',
+					sourceLabel: 'docs.scalekit.com/apis',
+				},
+				{
+					kind: 'strength',
+					title: 'Webhooks and interceptors are treated as first-class extensibility points',
+					body: [
+						`Scalekit documents not just post-event webhooks, but also interceptors that run during authentication flows. That gives teams a place to attach policy checks, custom validation, or flow-specific routing logic before the flow completes.`,
+						`It is an unusual capability in auth products and a real differentiator when integrations need custom control points.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'The API reference appears more reference-oriented than playground-oriented',
+					body: [
+						`The Scalar-based reference is strong, but it is not obvious whether there is a built-in authenticated try-it experience for live calls. Postman partially fills that gap, but switching tools still adds friction compared with products that support interactive testing in the docs itself.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across API sub-dimensions:',
+			breakdown: [
+				{ label: 'SDK coverage', value: 92, tone: 'green' },
+				{ label: 'API reference', value: 85, tone: 'green' },
+				{ label: 'Extensibility', value: 88, tone: 'green' },
+				{ label: 'Interactive testing', value: 60, tone: 'amber' },
+				{ label: 'Auth model clarity', value: 80, tone: 'green' },
+			],
+			recommendations: [
+				'Add an interactive API explorer with live try-it support for authenticated endpoints',
+				'Show an SDK version compatibility matrix that maps SDK releases to API features',
+				'Add rate limit and error shape documentation directly into the API reference',
+			],
+		},
+		{
+			id: 'section-docs',
+			number: '02',
+			title: 'Documentation Quality',
+			subtitle: 'Structure, clarity, AI-readiness, and developer affordances',
+			findings: [
+				`Scalekit's documentation is one of the strongest parts of the product. The information architecture mirrors the modular product design, and every page includes markdown-first and AI-assistant-friendly affordances like Copy Markdown, View in Markdown, Open in Claude, and Open in Cursor.`,
+				`The docs source is open on GitHub and includes edit links on every page, which helps credibility and makes the docs feel like a maintained developer surface instead of a static marketing asset.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'The llms.txt implementation is unusually well executed',
+					body: [
+						`The <code>llms.txt</code> file does more than list pages. It provides routing guidance by product area and splits the docs into targeted sets like full-stack-auth, agent-authentication, and mcp-authentication. There are also compact and full variants for different loading strategies.`,
+						`This is one of the better examples of llms.txt as a practical machine-facing document rather than a token gesture.`,
+					],
+					sourceUrl: 'https://docs.scalekit.com/llms.txt',
+					sourceLabel: 'docs.scalekit.com/llms.txt',
+				},
+				{
+					kind: 'strength',
+					title: 'Open in Claude and Cursor links reduce context-loading friction',
+					body: [
+						`Every page ships with assistant-friendly actions, including preloaded Claude prompts and Cursor deep links. Combined with markdown views and copy-to-markdown, that makes the docs highly usable inside modern AI-assisted workflows.`,
+					],
+				},
+				{
+					kind: 'strength',
+					title: 'Quickstarts include real code, demos, and sequence diagrams',
+					body: [
+						`The FSA quickstart covers install, redirect, callback, session, and logout with working examples in multiple languages. It also includes embedded videos, flow diagrams, and inline notes for common integration mistakes.`,
+						`That is materially better than quickstarts that stop at a toy authentication redirect without showing session handling or error cases.`,
+					],
+					sourceUrl: 'https://docs.scalekit.com/authenticate/fsa/quickstart/',
+					sourceLabel: 'docs.scalekit.com/authenticate/fsa/quickstart',
+				},
+				{
+					kind: 'opportunity',
+					title: 'The navigation is powerful, but high-choice for first-time visitors',
+					body: [
+						`The mega-menu exposes a lot of product surface area immediately. That is useful once someone understands the product map, but it may be overwhelming for a newcomer who still needs help deciding between modular auth and full-stack auth.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across documentation sub-dimensions:',
+			breakdown: [
+				{ label: 'IA / Navigation', value: 75, tone: 'green' },
+				{ label: 'AI readiness', value: 95, tone: 'green' },
+				{ label: 'Code quality', value: 90, tone: 'green' },
+				{ label: 'Quickstart depth', value: 88, tone: 'green' },
+				{ label: 'Discoverability', value: 72, tone: 'amber' },
+			],
+			recommendations: [
+				'Add a which Scalekit product do I need decision tree for first-time visitors',
+				'Simplify the top-level navigation so the first scan has fewer competing choices',
+				'Add estimated integration time to each quickstart header',
+			],
+		},
+		{
+			id: 'section-community',
+			number: '03',
+			title: 'Developer Community',
+			subtitle: 'Channels, open source, social presence, and programs',
+			findings: [
+				`Community infrastructure is in place and more professional than many early developer tools, but engagement depth still looks early. Scalekit has Slack, a clean GitHub organization, a product X account, YouTube, LinkedIn, and a Creator Program.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'The GitHub organization is clean and purpose-built',
+					body: [
+						`The <code>scalekit-inc</code> org is verified for scalekit.com and avoids the common problem of a cluttered repo list full of unrelated forks. The naming is consistent, the repos are clearly product-linked, and the org README routes developers to the right starting points.`,
+					],
+					sourceUrl: 'https://github.com/scalekit-inc',
+					sourceLabel: 'github.com/scalekit-inc',
+				},
+				{
+					kind: 'strength',
+					title: 'Product identity is separate from founder identity',
+					body: [
+						`Scalekit has dedicated product accounts and an explicit Creator Program. That is the right baseline for building a real developer community rather than relying on ad hoc founder-led communication alone.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title:
+						'Slack is present, but the actual community energy is hard to evaluate from outside',
+					body: [
+						`Slack can work well for support and community, but it is less legible from the outside than Discord or public forums. Without joining, it is difficult to tell how active it is, how quickly questions get answered, or how the channels are structured.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'The open-source footprint looks under-promoted relative to its quality',
+					body: [
+						`The repos appear well structured, but star counts are still modest. That suggests the code may be better than the current visibility around it, which is often a distribution problem rather than a product problem.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across community sub-dimensions:',
+			breakdown: [
+				{ label: 'GitHub presence', value: 82, tone: 'green' },
+				{ label: 'Social identity', value: 75, tone: 'green' },
+				{ label: 'Community hub', value: 55, tone: 'amber' },
+				{ label: 'OSS engagement', value: 42, tone: 'red' },
+				{ label: 'Programs', value: 65, tone: 'amber' },
+			],
+			recommendations: [
+				'Promote the open-source repos through targeted developer community launches',
+				'Add a public community preview or FAQ before the Slack join gate',
+				'Ship a public roadmap or changelog with a visible community feedback loop',
+				'Show the Creator Program in action with guest posts, tutorials, and community output',
+			],
+		},
+		{
+			id: 'section-education',
+			number: '04',
+			title: 'Developer Education',
+			subtitle: 'Tutorials, cookbooks, testing tools, and AI-assisted integration',
+			findings: [
+				`Education is Scalekit's second-strongest pillar after documentation. The team has invested heavily in meeting developers where they work: AI coding agents, IDE integrations, testing tools, practical cookbooks, and product-specific implementation prompts.`,
+				`The Build with AI section is the standout differentiator here because it treats agent workflows as a first-class integration path instead of a side note.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Build with AI supports multiple coding agents and editor flows',
+					body: [
+						`Scalekit offers installable plugins and prompts for Claude Code, Codex, GitHub Copilot CLI, Cursor, and broader skills-based agent flows. Different auth modules also have dedicated prompts so the guidance stays product-specific rather than generic.`,
+						`This is one of the most complete AI-agent developer experiences currently visible in the auth category.`,
+					],
+					sourceUrl: 'https://docs.scalekit.com/dev-kit/build-with-ai/',
+					sourceLabel: 'docs.scalekit.com/dev-kit/build-with-ai',
+				},
+				{
+					kind: 'strength',
+					title: 'Dryrun and the SSO Simulator shorten time-to-understanding',
+					body: [
+						`The dryrun flow lets developers exercise a local auth path before writing a full integration, and the SSO Simulator removes the need to set up a real IdP on day one. These are exactly the sorts of tools that turn an auth product from conceptually clear into practically approachable.`,
+					],
+					sourceUrl: 'https://docs.scalekit.com/dev-kit/tools/scalekit-dryrun/',
+					sourceLabel: 'docs.scalekit.com/dev-kit/tools/scalekit-dryrun',
+				},
+				{
+					kind: 'strength',
+					title: 'Cookbooks focus on practical integration patterns, not toy examples',
+					body: [
+						`The cookbook content covers real product usage like enterprise SSO with Next.js, agent workflows, and application-level auth patterns. The pieces are authored, scoped, and tagged clearly enough that they feel like practical implementation guides rather than blog filler.`,
+					],
+					sourceUrl: 'https://docs.scalekit.com/cookbooks/',
+					sourceLabel: 'docs.scalekit.com/cookbooks',
+				},
+				{
+					kind: 'opportunity',
+					title: 'There is no clear guided academy-style learning path yet',
+					body: [
+						`The docs include demos and embedded videos, but there is not yet a structured tutorial sequence that takes a developer from first auth flow to production enterprise rollout in a staged way. For a product with this many modules, that missing learning path is noticeable.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across education sub-dimensions:',
+			breakdown: [
+				{ label: 'AI-assisted dev', value: 95, tone: 'green' },
+				{ label: 'Testing tools', value: 88, tone: 'green' },
+				{ label: 'Cookbooks', value: 82, tone: 'green' },
+				{ label: 'Code samples', value: 78, tone: 'green' },
+				{ label: 'Video / guided', value: 40, tone: 'red' },
+			],
+			recommendations: [
+				'Create a structured video series that goes from zero to production auth quickly',
+				'Build a guided learning path that sequences FSA, SSO, and SCIM adoption',
+				'Expand cookbooks to cover migration from Auth0, Clerk, and WorkOS',
+			],
+		},
+	],
+	footerNote:
+		'Preliminary assessment based on publicly available sources including docs.scalekit.com, scalekit.com, and github.com/scalekit-inc. Scores are directional estimates. Full review would still require account creation, SDK testing, Slack participation, and end-to-end auth flow implementation.',
 };
 
 export const confidentAiReview: ReviewExperienceProps = {
-  scores: [
-    {
-      id: 'messaging',
-      label: 'Messaging',
-      score: 82,
-      verdict: 'Strong',
-      tone: 'green',
-      sectionId: 'section-messaging',
-    },
-    {
-      id: 'structure',
-      label: 'Structure',
-      score: 76,
-      verdict: 'Solid',
-      tone: 'green',
-      sectionId: 'section-structure',
-    },
-    {
-      id: 'trust',
-      label: 'Trust',
-      score: 70,
-      verdict: 'Growing',
-      tone: 'amber',
-      sectionId: 'section-trust',
-    },
-    {
-      id: 'developer-exp',
-      label: 'Dev UX',
-      score: 88,
-      verdict: 'Excellent',
-      tone: 'green',
-      sectionId: 'section-devx',
-    },
-  ],
-  sections: [
-    {
-      id: 'section-messaging',
-      number: '01',
-      title: 'Messaging & Positioning',
-      subtitle: 'Value proposition clarity and audience fit',
-      findings: [
-        `The core headline is strong and specific: Confident AI positions itself as an AI quality platform with lower engineering overhead, which is a clear contrast against competitors that speak almost exclusively to platform engineers.`,
-        `The traces to datasets to evals to experiments narrative communicates a full workflow in very little space. The weakness is audience spread: the homepage speaks to engineers, PMs, and QA at once, but PM and QA paths are less concrete than the engineering path.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'The primary value loop is compressed and memorable',
-          body: [
-            `The homepage subhead communicates an end-to-end evaluation workflow rather than a single feature. That creates a stronger product story than tooling pages that lead with isolated capabilities.`,
-          ],
-          sourceUrl: 'https://www.confident-ai.com',
-          sourceLabel: 'confident-ai.com',
-        },
-        {
-          kind: 'opportunity',
-          title: 'PM and QA messaging needs concrete visual proof',
-          body: [
-            `The who-we-serve segmentation is directionally right, but the supporting visuals and examples remain engineering-heavy. Showing explicit PM and QA workflows on-page would improve multi-persona clarity.`,
-          ],
-        },
-        {
-          kind: 'strength',
-          title: 'Jargon is lower than category average',
-          body: [
-            `The copy stays more outcome-oriented than many LLMOps alternatives, which helps technical buyers bring in non-engineering stakeholders earlier in the evaluation process.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across messaging sub-dimensions:',
-      breakdown: [
-        { label: 'Headline clarity', value: 88, tone: 'green' },
-        { label: 'Value prop depth', value: 84, tone: 'green' },
-        { label: 'Audience fit', value: 72, tone: 'amber' },
-        { label: 'Differentiation', value: 82, tone: 'green' },
-        { label: 'Jargon control', value: 80, tone: 'green' },
-      ],
-      recommendations: [
-        'Add PM and QA specific screenshots directly in the who-we-serve block',
-        'Preserve the traces to datasets to evals messaging as the primary story',
-        'Add one quick copy line under each persona describing the first action they should take',
-      ],
-    },
-    {
-      id: 'section-structure',
-      number: '02',
-      title: 'Page Structure & Information Architecture',
-      subtitle: 'Hierarchy, depth, and conversion flow',
-      findings: [
-        `The homepage has strong material, but there is too much of it before the best conversion-relevant sections. The overall information density creates long-scroll fatigue for first-time evaluators.`,
-        `The how-it-works setup narrative appears later than expected even though it is one of the most reassuring blocks for technical teams assessing setup friction.`,
-      ],
-      evidence: [
-        {
-          kind: 'gap',
-          title: 'Too many feature slices appear before setup clarity',
-          body: [
-            `Multiple feature cards and support sections appear before practical onboarding flow details. This can dilute attention and delay the point where a visitor understands how quickly they can test the product.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'How-it-works should move closer to the hero',
-          body: [
-            `Moving the setup sequence immediately after the hero and logo trust band would reduce uncertainty and likely improve mid-page conversion behavior.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'Feature card count can be reduced without losing depth',
-          body: [
-            `Keeping three high-priority cards on the homepage and linking to deeper product pages for the rest would tighten narrative flow while preserving discoverability.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across structure sub-dimensions:',
-      breakdown: [
-        { label: 'Content hierarchy', value: 70, tone: 'amber' },
-        { label: 'Scroll depth risk', value: 65, tone: 'amber' },
-        { label: 'Section uniqueness', value: 72, tone: 'amber' },
-        { label: 'CTA placement', value: 82, tone: 'green' },
-        { label: 'Navigation clarity', value: 85, tone: 'green' },
-      ],
-      recommendations: [
-        'Move how-it-works immediately after the hero and trust logos',
-        'Reduce homepage feature cards to top three capabilities',
-        'Add a mid-page CTA so the middle of the page has a clear next action',
-      ],
-    },
-    {
-      id: 'section-trust',
-      number: '03',
-      title: 'Trust & Social Proof',
-      subtitle: 'Validation, outcomes, and credibility signals',
-      findings: [
-        `Brand logos and compliance positioning are strong, and the DeepEval ecosystem footprint is an asset many competitors cannot match. Trust breadth is there, but trust depth is thinner than it could be.`,
-        `The biggest gap is narrative proof. One testimonial and broad claims are helpful, but they leave measurable customer outcomes underrepresented on the homepage.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Enterprise logos and compliance badges establish baseline credibility quickly',
-          body: [
-            `Recognizable brand logos plus SOC 2 and HIPAA messaging create immediate confidence for enterprise-minded evaluators.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'DeepEval traction should be surfaced more prominently on homepage',
-          body: [
-            `GitHub stars and monthly usage are high-signal proof points for developer-first products. They should be treated as first-class trust metrics in the hero or logo region.`,
-          ],
-          sourceUrl: 'https://github.com/confident-ai/deepeval',
-          sourceLabel: 'github.com/confident-ai/deepeval',
-        },
-        {
-          kind: 'gap',
-          title: 'Testimonial volume and specificity are below what logos imply',
-          body: [
-            `A larger testimonial set with concrete outcomes would better support the scale claims and bridge the gap between recognition logos and practical buyer confidence.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across trust sub-dimensions:',
-      breakdown: [
-        { label: 'Logo credibility', value: 90, tone: 'green' },
-        { label: 'Testimonial depth', value: 45, tone: 'red' },
-        { label: 'Case study access', value: 60, tone: 'amber' },
-        { label: 'Community signals', value: 72, tone: 'amber' },
-        { label: 'Compliance badges', value: 92, tone: 'green' },
-      ],
-      recommendations: [
-        'Add two to three customer stories with explicit before and after metrics',
-        'Highlight DeepEval usage and star metrics on the homepage hero or trust band',
-        'Keep social counters synchronized so visible proof does not look stale',
-      ],
-    },
-    {
-      id: 'section-devx',
-      number: '04',
-      title: 'Developer Experience & Docs',
-      subtitle: 'Documentation quality, SDK breadth, and integration readiness',
-      findings: [
-        `Developer experience is a top-tier strength. The docs are clear, workflow-oriented, and practical. SDK and framework coverage is broad, and quickstart friction appears low.`,
-        `Integration breadth across agent and orchestration ecosystems is substantial, and the homepage code examples show realistic usage rather than toy snippets.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Documentation architecture is coherent and execution quality is high',
-          body: [
-            `The docs map cleanly to evaluation and observability workflows, which helps teams move from exploration to implementation without hunting for conceptual gaps.`,
-          ],
-          sourceUrl: 'https://docs.confident-ai.com',
-          sourceLabel: 'docs.confident-ai.com',
-        },
-        {
-          kind: 'strength',
-          title: 'Integration ecosystem is broader than most direct alternatives',
-          body: [
-            `Framework, SDK, and CI coverage reduce platform lock-in risk and improve adoption viability for mixed-stack teams.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'Interactive sandbox visibility can be stronger on the homepage',
-          body: [
-            `The product feels robust, but an immediate sandbox or runnable demo path would further reduce trial friction before signup.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across developer experience sub-dimensions:',
-      breakdown: [
-        { label: 'Docs quality', value: 92, tone: 'green' },
-        { label: 'SDK breadth', value: 90, tone: 'green' },
-        { label: 'Quickstart friction', value: 88, tone: 'green' },
-        { label: 'Code samples', value: 85, tone: 'green' },
-        { label: 'API reference', value: 86, tone: 'green' },
-      ],
-      recommendations: [
-        'Add a public interactive demo path linked directly from the homepage',
-        'Keep visible social counters and ecosystem metrics actively refreshed',
-        'Promote MCP-native and agent-native workflows as top-level differentiators',
-      ],
-    },
-    {
-      id: 'section-conversion',
-      number: '05',
-      title: 'Conversion & Pricing Clarity',
-      subtitle: 'Pricing transparency, CTA hierarchy, and upgrade path clarity',
-      findings: [
-        `Pricing transparency is good, and the free tier appears meaningful enough for real product evaluation. This is a strong base for self-serve conversion.`,
-        `The main conversion gap is CTA hierarchy. Demo and free-trial actions compete too equally in contexts where most developer visitors should likely start with self-serve.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Pricing tiers and overage model are clear and legible',
-          body: [
-            `The model communicates plan boundaries and usage costs with less ambiguity than many adjacent LLMOps tools.`,
-          ],
-          sourceUrl: 'https://www.confident-ai.com/pricing',
-          sourceLabel: 'confident-ai.com/pricing',
-        },
-        {
-          kind: 'strength',
-          title: 'Free tier appears substantive rather than symbolic',
-          body: [
-            `A usable free plan lowers evaluation friction and supports broader developer-led product discovery.`,
-          ],
-        },
-        {
-          kind: 'gap',
-          title: 'Primary CTA intent is diluted by equal-weight alternatives',
-          body: [
-            `When self-serve is viable, the free trial path should carry stronger visual priority than demo booking in most top-level homepage placements.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across conversion sub-dimensions:',
-      breakdown: [
-        { label: 'Pricing clarity', value: 86, tone: 'green' },
-        { label: 'Free tier value', value: 88, tone: 'green' },
-        { label: 'CTA hierarchy', value: 58, tone: 'amber' },
-        { label: 'Signup friction', value: 80, tone: 'green' },
-        { label: 'Upgrade path', value: 72, tone: 'amber' },
-      ],
-      recommendations: [
-        'Make try free the dominant primary CTA and demote demo request where appropriate',
-        'Explain the practical upgrade trigger between starter and premium tiers',
-        'Add a sticky or mid-page CTA to catch intent before the bottom of the page',
-      ],
-    },
-  ],
-  footerNote:
-    'Overall score: 78. Confident AI has strong technical depth, excellent docs, and a credible open-source moat via DeepEval. The biggest gains now are narrative compression, stronger testimonial depth, and clearer CTA hierarchy. Assessment is based on publicly visible homepage, docs, pricing, and repository signals as of April 2026.',
+	scores: [
+		{
+			id: 'messaging',
+			label: 'Messaging',
+			score: 82,
+			verdict: 'Strong',
+			tone: 'green',
+			sectionId: 'section-messaging',
+		},
+		{
+			id: 'structure',
+			label: 'Structure',
+			score: 76,
+			verdict: 'Solid',
+			tone: 'green',
+			sectionId: 'section-structure',
+		},
+		{
+			id: 'trust',
+			label: 'Trust',
+			score: 70,
+			verdict: 'Growing',
+			tone: 'amber',
+			sectionId: 'section-trust',
+		},
+		{
+			id: 'developer-exp',
+			label: 'Dev UX',
+			score: 88,
+			verdict: 'Excellent',
+			tone: 'green',
+			sectionId: 'section-devx',
+		},
+	],
+	sections: [
+		{
+			id: 'section-messaging',
+			number: '01',
+			title: 'Messaging & Positioning',
+			subtitle: 'Value proposition clarity and audience fit',
+			findings: [
+				`The core headline is strong and specific: Confident AI positions itself as an AI quality platform with lower engineering overhead, which is a clear contrast against competitors that speak almost exclusively to platform engineers.`,
+				`The traces to datasets to evals to experiments narrative communicates a full workflow in very little space. The weakness is audience spread: the homepage speaks to engineers, PMs, and QA at once, but PM and QA paths are less concrete than the engineering path.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'The primary value loop is compressed and memorable',
+					body: [
+						`The homepage subhead communicates an end-to-end evaluation workflow rather than a single feature. That creates a stronger product story than tooling pages that lead with isolated capabilities.`,
+					],
+					sourceUrl: 'https://www.confident-ai.com',
+					sourceLabel: 'confident-ai.com',
+				},
+				{
+					kind: 'opportunity',
+					title: 'PM and QA messaging needs concrete visual proof',
+					body: [
+						`The who-we-serve segmentation is directionally right, but the supporting visuals and examples remain engineering-heavy. Showing explicit PM and QA workflows on-page would improve multi-persona clarity.`,
+					],
+				},
+				{
+					kind: 'strength',
+					title: 'Jargon is lower than category average',
+					body: [
+						`The copy stays more outcome-oriented than many LLMOps alternatives, which helps technical buyers bring in non-engineering stakeholders earlier in the evaluation process.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across messaging sub-dimensions:',
+			breakdown: [
+				{ label: 'Headline clarity', value: 88, tone: 'green' },
+				{ label: 'Value prop depth', value: 84, tone: 'green' },
+				{ label: 'Audience fit', value: 72, tone: 'amber' },
+				{ label: 'Differentiation', value: 82, tone: 'green' },
+				{ label: 'Jargon control', value: 80, tone: 'green' },
+			],
+			recommendations: [
+				'Add PM and QA specific screenshots directly in the who-we-serve block',
+				'Preserve the traces to datasets to evals messaging as the primary story',
+				'Add one quick copy line under each persona describing the first action they should take',
+			],
+		},
+		{
+			id: 'section-structure',
+			number: '02',
+			title: 'Page Structure & Information Architecture',
+			subtitle: 'Hierarchy, depth, and conversion flow',
+			findings: [
+				`The homepage has strong material, but there is too much of it before the best conversion-relevant sections. The overall information density creates long-scroll fatigue for first-time evaluators.`,
+				`The how-it-works setup narrative appears later than expected even though it is one of the most reassuring blocks for technical teams assessing setup friction.`,
+			],
+			evidence: [
+				{
+					kind: 'gap',
+					title: 'Too many feature slices appear before setup clarity',
+					body: [
+						`Multiple feature cards and support sections appear before practical onboarding flow details. This can dilute attention and delay the point where a visitor understands how quickly they can test the product.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'How-it-works should move closer to the hero',
+					body: [
+						`Moving the setup sequence immediately after the hero and logo trust band would reduce uncertainty and likely improve mid-page conversion behavior.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'Feature card count can be reduced without losing depth',
+					body: [
+						`Keeping three high-priority cards on the homepage and linking to deeper product pages for the rest would tighten narrative flow while preserving discoverability.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across structure sub-dimensions:',
+			breakdown: [
+				{ label: 'Content hierarchy', value: 70, tone: 'amber' },
+				{ label: 'Scroll depth risk', value: 65, tone: 'amber' },
+				{ label: 'Section uniqueness', value: 72, tone: 'amber' },
+				{ label: 'CTA placement', value: 82, tone: 'green' },
+				{ label: 'Navigation clarity', value: 85, tone: 'green' },
+			],
+			recommendations: [
+				'Move how-it-works immediately after the hero and trust logos',
+				'Reduce homepage feature cards to top three capabilities',
+				'Add a mid-page CTA so the middle of the page has a clear next action',
+			],
+		},
+		{
+			id: 'section-trust',
+			number: '03',
+			title: 'Trust & Social Proof',
+			subtitle: 'Validation, outcomes, and credibility signals',
+			findings: [
+				`Brand logos and compliance positioning are strong, and the DeepEval ecosystem footprint is an asset many competitors cannot match. Trust breadth is there, but trust depth is thinner than it could be.`,
+				`The biggest gap is narrative proof. One testimonial and broad claims are helpful, but they leave measurable customer outcomes underrepresented on the homepage.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Enterprise logos and compliance badges establish baseline credibility quickly',
+					body: [
+						`Recognizable brand logos plus SOC 2 and HIPAA messaging create immediate confidence for enterprise-minded evaluators.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'DeepEval traction should be surfaced more prominently on homepage',
+					body: [
+						`GitHub stars and monthly usage are high-signal proof points for developer-first products. They should be treated as first-class trust metrics in the hero or logo region.`,
+					],
+					sourceUrl: 'https://github.com/confident-ai/deepeval',
+					sourceLabel: 'github.com/confident-ai/deepeval',
+				},
+				{
+					kind: 'gap',
+					title: 'Testimonial volume and specificity are below what logos imply',
+					body: [
+						`A larger testimonial set with concrete outcomes would better support the scale claims and bridge the gap between recognition logos and practical buyer confidence.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across trust sub-dimensions:',
+			breakdown: [
+				{ label: 'Logo credibility', value: 90, tone: 'green' },
+				{ label: 'Testimonial depth', value: 45, tone: 'red' },
+				{ label: 'Case study access', value: 60, tone: 'amber' },
+				{ label: 'Community signals', value: 72, tone: 'amber' },
+				{ label: 'Compliance badges', value: 92, tone: 'green' },
+			],
+			recommendations: [
+				'Add two to three customer stories with explicit before and after metrics',
+				'Highlight DeepEval usage and star metrics on the homepage hero or trust band',
+				'Keep social counters synchronized so visible proof does not look stale',
+			],
+		},
+		{
+			id: 'section-devx',
+			number: '04',
+			title: 'Developer Experience & Docs',
+			subtitle: 'Documentation quality, SDK breadth, and integration readiness',
+			findings: [
+				`Developer experience is a top-tier strength. The docs are clear, workflow-oriented, and practical. SDK and framework coverage is broad, and quickstart friction appears low.`,
+				`Integration breadth across agent and orchestration ecosystems is substantial, and the homepage code examples show realistic usage rather than toy snippets.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Documentation architecture is coherent and execution quality is high',
+					body: [
+						`The docs map cleanly to evaluation and observability workflows, which helps teams move from exploration to implementation without hunting for conceptual gaps.`,
+					],
+					sourceUrl: 'https://docs.confident-ai.com',
+					sourceLabel: 'docs.confident-ai.com',
+				},
+				{
+					kind: 'strength',
+					title: 'Integration ecosystem is broader than most direct alternatives',
+					body: [
+						`Framework, SDK, and CI coverage reduce platform lock-in risk and improve adoption viability for mixed-stack teams.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'Interactive sandbox visibility can be stronger on the homepage',
+					body: [
+						`The product feels robust, but an immediate sandbox or runnable demo path would further reduce trial friction before signup.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across developer experience sub-dimensions:',
+			breakdown: [
+				{ label: 'Docs quality', value: 92, tone: 'green' },
+				{ label: 'SDK breadth', value: 90, tone: 'green' },
+				{ label: 'Quickstart friction', value: 88, tone: 'green' },
+				{ label: 'Code samples', value: 85, tone: 'green' },
+				{ label: 'API reference', value: 86, tone: 'green' },
+			],
+			recommendations: [
+				'Add a public interactive demo path linked directly from the homepage',
+				'Keep visible social counters and ecosystem metrics actively refreshed',
+				'Promote MCP-native and agent-native workflows as top-level differentiators',
+			],
+		},
+		{
+			id: 'section-conversion',
+			number: '05',
+			title: 'Conversion & Pricing Clarity',
+			subtitle: 'Pricing transparency, CTA hierarchy, and upgrade path clarity',
+			findings: [
+				`Pricing transparency is good, and the free tier appears meaningful enough for real product evaluation. This is a strong base for self-serve conversion.`,
+				`The main conversion gap is CTA hierarchy. Demo and free-trial actions compete too equally in contexts where most developer visitors should likely start with self-serve.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Pricing tiers and overage model are clear and legible',
+					body: [
+						`The model communicates plan boundaries and usage costs with less ambiguity than many adjacent LLMOps tools.`,
+					],
+					sourceUrl: 'https://www.confident-ai.com/pricing',
+					sourceLabel: 'confident-ai.com/pricing',
+				},
+				{
+					kind: 'strength',
+					title: 'Free tier appears substantive rather than symbolic',
+					body: [
+						`A usable free plan lowers evaluation friction and supports broader developer-led product discovery.`,
+					],
+				},
+				{
+					kind: 'gap',
+					title: 'Primary CTA intent is diluted by equal-weight alternatives',
+					body: [
+						`When self-serve is viable, the free trial path should carry stronger visual priority than demo booking in most top-level homepage placements.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across conversion sub-dimensions:',
+			breakdown: [
+				{ label: 'Pricing clarity', value: 86, tone: 'green' },
+				{ label: 'Free tier value', value: 88, tone: 'green' },
+				{ label: 'CTA hierarchy', value: 58, tone: 'amber' },
+				{ label: 'Signup friction', value: 80, tone: 'green' },
+				{ label: 'Upgrade path', value: 72, tone: 'amber' },
+			],
+			recommendations: [
+				'Make try free the dominant primary CTA and demote demo request where appropriate',
+				'Explain the practical upgrade trigger between starter and premium tiers',
+				'Add a sticky or mid-page CTA to catch intent before the bottom of the page',
+			],
+		},
+	],
+	footerNote:
+		'Overall score: 78. Confident AI has strong technical depth, excellent docs, and a credible open-source moat via DeepEval. The biggest gains now are narrative compression, stronger testimonial depth, and clearer CTA hierarchy. Assessment is based on publicly visible homepage, docs, pricing, and repository signals as of April 2026.',
 };
 
 export const ozigiReview: ReviewExperienceProps = {
-  scores: [
-    {
-      id: 'api',
-      label: 'API',
-      score: 62,
-      verdict: 'Developing',
-      tone: 'amber',
-      sectionId: 'section-api',
-    },
-    {
-      id: 'documentation',
-      label: 'Documentation',
-      score: 82,
-      verdict: 'Strong',
-      tone: 'green',
-      sectionId: 'section-docs',
-    },
-    {
-      id: 'community',
-      label: 'Community',
-      score: 38,
-      verdict: 'Early',
-      tone: 'red',
-      sectionId: 'section-community',
-    },
-    {
-      id: 'education',
-      label: 'Education',
-      score: 65,
-      verdict: 'Promising',
-      tone: 'amber',
-      sectionId: 'section-education',
-    },
-  ],
-  sections: [
-    {
-      id: 'section-api',
-      number: '01',
-      title: 'API Design & Developer Experience',
-      subtitle: 'Internal architecture strength versus external integration readiness',
-      findings: [
-        `Ozigi's internal generation pipeline is thoughtfully designed. Persona context, banned lexicon constraints, and raw source context are composed deliberately before inference, which shows strong engineering intent rather than prompt hacking.`,
-        `JSON stability is treated as a production concern through schema-oriented output handling, which is an advanced choice for an early-stage product and reduces downstream parsing failures.`,
-        `Publishing flows are architecture-aware: generation is kept separate from distribution, and explicit user review exists before posting to channels like X.`,
-        `The external developer surface is minimal. There is no public API reference, no documented auth model, and no SDK path for teams that want to integrate Ozigi into their own tooling.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Internal API architecture is credible and intentional',
-          body: [
-            `The architecture and docs indicate a builder who understands generation quality controls at system level. The separation of generation and publishing reduces accidental automation risks and keeps human review in the loop.`,
-          ],
-        },
-        {
-          kind: 'gap',
-          title: 'Public API capability is currently absent or undocumented',
-          body: [
-            `Enterprise API access is referenced, but there is no public endpoint catalog, auth guide, request-response schema, or client library. This is a mismatch for a developer-positioned tool.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'Expose engine capabilities as a productized developer surface',
-          body: [
-            `Packaging campaign generation and publish actions into a stable API with webhooks would unlock workflows in CI/CD, automation tools, and internal content systems.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across API and integration sub-dimensions:',
-      breakdown: [
-        { label: 'Internal Architecture', value: 78, tone: 'green' },
-        { label: 'Public API Existence', value: 15, tone: 'red' },
-        { label: 'API Documentation', value: 10, tone: 'red' },
-        { label: 'SDK / Client Libraries', value: 5, tone: 'red' },
-        { label: 'JSON Schema Design', value: 80, tone: 'green' },
-        { label: 'Auth Patterns', value: 76, tone: 'green' },
-        { label: 'Local Dev Setup', value: 82, tone: 'green' },
-        { label: 'Integration Points', value: 30, tone: 'red' },
-      ],
-      recommendations: [
-        'Ship public REST endpoints for campaign creation, retrieval, and publish actions',
-        'Publish webhook events for campaign lifecycle states',
-        'Extract core generation logic into a standalone package for developers',
-      ],
-    },
-    {
-      id: 'section-docs',
-      number: '02',
-      title: 'Documentation',
-      subtitle: 'Narrative quality, technical depth, and operational completeness',
-      findings: [
-        `Ozigi documentation is structured as a progressive workflow, not a disconnected reference index. The sequence from setup through generation, editing, publishing, and newsletters makes the system easier to learn.`,
-        `The writing quality is unusually high. Core pages teach conceptual thinking, not just button-clicking, and the TL;DR pattern makes each page skimmable without losing depth.`,
-        `Deep-dive docs such as Banned Lexicon, System Personas, and Human-in-the-Loop communicate product philosophy and implementation trade-offs with real clarity.`,
-        `Completeness is the gap: there is no public API reference, little documented error handling, and setup guides for some integrations need stronger step-by-step treatment.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Documentation teaches both workflow and reasoning',
-          body: [
-            `The docs read like engineering guidance written by the builder. They explain why certain constraints exist and how to think about output quality, which is far more useful than surface-level feature documentation.`,
-          ],
-        },
-        {
-          kind: 'gap',
-          title: 'Operational docs are missing in key reliability areas',
-          body: [
-            `Troubleshooting content for model rate limits, failed URL ingestion, persona limits, and platform delivery failures is limited or absent. These scenarios need first-class documentation.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'Add practical templates and setup walkthroughs',
-          body: [
-            `A Persona Cookbook and screenshot-based webhook setup guides would make docs significantly more actionable for founders and operators who are not deeply technical.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across documentation sub-dimensions:',
-      breakdown: [
-        { label: 'Structure', value: 86, tone: 'green' },
-        { label: 'Clarity of Writing', value: 90, tone: 'green' },
-        { label: 'Technical Depth', value: 88, tone: 'green' },
-        { label: 'Code Samples', value: 80, tone: 'green' },
-        { label: 'TL;DR Pattern', value: 92, tone: 'green' },
-        { label: 'API Reference', value: 5, tone: 'red' },
-        { label: 'Error Handling', value: 10, tone: 'red' },
-        { label: 'Quickstart', value: 84, tone: 'green' },
-      ],
-      recommendations: [
-        'Add a troubleshooting and error-states documentation page',
-        'Create a Persona Cookbook with reusable, proven templates',
-        'Publish complete Discord and Slack webhook setup guides with screenshots',
-      ],
-    },
-    {
-      id: 'section-community',
-      number: '03',
-      title: 'Developer Community',
-      subtitle: 'GitHub engagement, social channels, and participation signals',
-      findings: [
-        `The project shows active founder shipping velocity, but external participation is minimal. Repo activity exists without strong contributor or discussion momentum.`,
-        `Community scaffolding is present, including contribution guidelines and starter labels, but usage is low and public conversation channels are mostly quiet.`,
-        `There is no clear product community center. Support appears email-first, with limited visible social or forum-based community interaction loops.`,
-        `This weakens the signal for a creator and developer product where public proof, shared outputs, and user interaction are core trust multipliers.`,
-      ],
-      evidence: [
-        {
-          kind: 'gap',
-          title: 'Community infrastructure exists but has low activation',
-          body: [
-            `GitHub discussions and contribution paths are available, but they currently show little ongoing user engagement. Without visible activity, potential contributors assume the project is early or inactive from the outside.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'Launch a dedicated user and builder community channel',
-          body: [
-            `A focused Discord with channels for showcases, persona templates, feature requests, and developer contributions would create recurring participation and organic proof.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'Use product social identity to amplify user outcomes',
-          body: [
-            `A dedicated product account that regularly highlights user-created content can function as both social proof and living product demo.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across community sub-dimensions:',
-      breakdown: [
-        { label: 'GitHub Stars', value: 20, tone: 'red' },
-        { label: 'External Contributors', value: 15, tone: 'red' },
-        { label: 'Discussion Activity', value: 5, tone: 'red' },
-        { label: 'Issue Engagement', value: 15, tone: 'red' },
-        { label: 'Social Presence', value: 25, tone: 'red' },
-        { label: 'Contribution Scaffolding', value: 65, tone: 'amber' },
-        { label: 'Support Channels', value: 20, tone: 'red' },
-      ],
-      recommendations: [
-        'Launch a Discord community and seed it with real user activity',
-        'Create a dedicated product social account and showcase user outputs',
-        'Seed GitHub Discussions with targeted prompts and roadmap threads',
-      ],
-    },
-    {
-      id: 'section-education',
-      number: '04',
-      title: 'Developer Education',
-      subtitle: 'Conceptual teaching, tutorials, and first-run guidance',
-      findings: [
-        `Conceptual education is a strength. Core docs and architecture notes teach practical AI product thinking, not just product mechanics.`,
-        `Tutorial depth is the major shortfall. There are few end-to-end walkthroughs that guide users from blank slate to successful campaign output with expected inputs and outcomes.`,
-        `Video support and first-run onboarding are underdeveloped, which increases time-to-value for non-technical users and slows early product adoption.`,
-        `The opportunity is execution-focused rather than strategic: the writing quality already exists, and translating it into repeatable tutorials would likely raise activation quickly.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Conceptual education quality is already high',
-          body: [
-            `The docs communicate core ideas like identity-first prompting, banned-lexicon constraints, and human-in-the-loop editing with unusual clarity. This is a high-quality foundation to build from.`,
-          ],
-        },
-        {
-          kind: 'gap',
-          title: 'Practical tutorial and video coverage is sparse',
-          body: [
-            `Users need concrete build-first paths such as PR-to-campaign, notes-to-LinkedIn, and weekly-pipeline workflows. Visual walkthroughs and sample campaigns can reduce onboarding friction significantly.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'Improve onboarding with guided examples',
-          body: [
-            `A pre-populated sample campaign and a short embedded product video can make the human-in-the-loop flow immediately understandable before users create anything from scratch.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across education sub-dimensions:',
-      breakdown: [
-        { label: 'Conceptual Depth', value: 85, tone: 'green' },
-        { label: 'Step-by-Step Tutorials', value: 15, tone: 'red' },
-        { label: 'Video Content', value: 0, tone: 'red' },
-        { label: 'Blog as Education', value: 55, tone: 'amber' },
-        { label: 'Onboarding Flow', value: 50, tone: 'amber' },
-        { label: 'Sample Content', value: 20, tone: 'red' },
-        { label: 'Architecture Teaching', value: 88, tone: 'green' },
-      ],
-      recommendations: [
-        'Create three end-to-end tutorials for specific, real user jobs',
-        'Ship a short how-to video covering context to persona to edit to publish',
-        'Add a sample campaign to the first-run product experience',
-      ],
-    },
-  ],
-  footerNote:
-    "Overall score: 62. Ozigi's strongest surface today is documentation quality and architectural thinking. The biggest constraints are external developer surface area, low community activity, and limited tutorial depth. The foundation is strong and the path forward is clear: ship a public API, improve onboarding education, and build visible user participation loops.",
+	scores: [
+		{
+			id: 'api',
+			label: 'API',
+			score: 62,
+			verdict: 'Developing',
+			tone: 'amber',
+			sectionId: 'section-api',
+		},
+		{
+			id: 'documentation',
+			label: 'Documentation',
+			score: 82,
+			verdict: 'Strong',
+			tone: 'green',
+			sectionId: 'section-docs',
+		},
+		{
+			id: 'community',
+			label: 'Community',
+			score: 38,
+			verdict: 'Early',
+			tone: 'red',
+			sectionId: 'section-community',
+		},
+		{
+			id: 'education',
+			label: 'Education',
+			score: 65,
+			verdict: 'Promising',
+			tone: 'amber',
+			sectionId: 'section-education',
+		},
+	],
+	sections: [
+		{
+			id: 'section-api',
+			number: '01',
+			title: 'API Design & Developer Experience',
+			subtitle: 'Internal architecture strength versus external integration readiness',
+			findings: [
+				`Ozigi's internal generation pipeline is thoughtfully designed. Persona context, banned lexicon constraints, and raw source context are composed deliberately before inference, which shows strong engineering intent rather than prompt hacking.`,
+				`JSON stability is treated as a production concern through schema-oriented output handling, which is an advanced choice for an early-stage product and reduces downstream parsing failures.`,
+				`Publishing flows are architecture-aware: generation is kept separate from distribution, and explicit user review exists before posting to channels like X.`,
+				`The external developer surface is minimal. There is no public API reference, no documented auth model, and no SDK path for teams that want to integrate Ozigi into their own tooling.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Internal API architecture is credible and intentional',
+					body: [
+						`The architecture and docs indicate a builder who understands generation quality controls at system level. The separation of generation and publishing reduces accidental automation risks and keeps human review in the loop.`,
+					],
+				},
+				{
+					kind: 'gap',
+					title: 'Public API capability is currently absent or undocumented',
+					body: [
+						`Enterprise API access is referenced, but there is no public endpoint catalog, auth guide, request-response schema, or client library. This is a mismatch for a developer-positioned tool.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'Expose engine capabilities as a productized developer surface',
+					body: [
+						`Packaging campaign generation and publish actions into a stable API with webhooks would unlock workflows in CI/CD, automation tools, and internal content systems.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across API and integration sub-dimensions:',
+			breakdown: [
+				{ label: 'Internal Architecture', value: 78, tone: 'green' },
+				{ label: 'Public API Existence', value: 15, tone: 'red' },
+				{ label: 'API Documentation', value: 10, tone: 'red' },
+				{ label: 'SDK / Client Libraries', value: 5, tone: 'red' },
+				{ label: 'JSON Schema Design', value: 80, tone: 'green' },
+				{ label: 'Auth Patterns', value: 76, tone: 'green' },
+				{ label: 'Local Dev Setup', value: 82, tone: 'green' },
+				{ label: 'Integration Points', value: 30, tone: 'red' },
+			],
+			recommendations: [
+				'Ship public REST endpoints for campaign creation, retrieval, and publish actions',
+				'Publish webhook events for campaign lifecycle states',
+				'Extract core generation logic into a standalone package for developers',
+			],
+		},
+		{
+			id: 'section-docs',
+			number: '02',
+			title: 'Documentation',
+			subtitle: 'Narrative quality, technical depth, and operational completeness',
+			findings: [
+				`Ozigi documentation is structured as a progressive workflow, not a disconnected reference index. The sequence from setup through generation, editing, publishing, and newsletters makes the system easier to learn.`,
+				`The writing quality is unusually high. Core pages teach conceptual thinking, not just button-clicking, and the TL;DR pattern makes each page skimmable without losing depth.`,
+				`Deep-dive docs such as Banned Lexicon, System Personas, and Human-in-the-Loop communicate product philosophy and implementation trade-offs with real clarity.`,
+				`Completeness is the gap: there is no public API reference, little documented error handling, and setup guides for some integrations need stronger step-by-step treatment.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Documentation teaches both workflow and reasoning',
+					body: [
+						`The docs read like engineering guidance written by the builder. They explain why certain constraints exist and how to think about output quality, which is far more useful than surface-level feature documentation.`,
+					],
+				},
+				{
+					kind: 'gap',
+					title: 'Operational docs are missing in key reliability areas',
+					body: [
+						`Troubleshooting content for model rate limits, failed URL ingestion, persona limits, and platform delivery failures is limited or absent. These scenarios need first-class documentation.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'Add practical templates and setup walkthroughs',
+					body: [
+						`A Persona Cookbook and screenshot-based webhook setup guides would make docs significantly more actionable for founders and operators who are not deeply technical.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across documentation sub-dimensions:',
+			breakdown: [
+				{ label: 'Structure', value: 86, tone: 'green' },
+				{ label: 'Clarity of Writing', value: 90, tone: 'green' },
+				{ label: 'Technical Depth', value: 88, tone: 'green' },
+				{ label: 'Code Samples', value: 80, tone: 'green' },
+				{ label: 'TL;DR Pattern', value: 92, tone: 'green' },
+				{ label: 'API Reference', value: 5, tone: 'red' },
+				{ label: 'Error Handling', value: 10, tone: 'red' },
+				{ label: 'Quickstart', value: 84, tone: 'green' },
+			],
+			recommendations: [
+				'Add a troubleshooting and error-states documentation page',
+				'Create a Persona Cookbook with reusable, proven templates',
+				'Publish complete Discord and Slack webhook setup guides with screenshots',
+			],
+		},
+		{
+			id: 'section-community',
+			number: '03',
+			title: 'Developer Community',
+			subtitle: 'GitHub engagement, social channels, and participation signals',
+			findings: [
+				`The project shows active founder shipping velocity, but external participation is minimal. Repo activity exists without strong contributor or discussion momentum.`,
+				`Community scaffolding is present, including contribution guidelines and starter labels, but usage is low and public conversation channels are mostly quiet.`,
+				`There is no clear product community center. Support appears email-first, with limited visible social or forum-based community interaction loops.`,
+				`This weakens the signal for a creator and developer product where public proof, shared outputs, and user interaction are core trust multipliers.`,
+			],
+			evidence: [
+				{
+					kind: 'gap',
+					title: 'Community infrastructure exists but has low activation',
+					body: [
+						`GitHub discussions and contribution paths are available, but they currently show little ongoing user engagement. Without visible activity, potential contributors assume the project is early or inactive from the outside.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'Launch a dedicated user and builder community channel',
+					body: [
+						`A focused Discord with channels for showcases, persona templates, feature requests, and developer contributions would create recurring participation and organic proof.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'Use product social identity to amplify user outcomes',
+					body: [
+						`A dedicated product account that regularly highlights user-created content can function as both social proof and living product demo.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across community sub-dimensions:',
+			breakdown: [
+				{ label: 'GitHub Stars', value: 20, tone: 'red' },
+				{ label: 'External Contributors', value: 15, tone: 'red' },
+				{ label: 'Discussion Activity', value: 5, tone: 'red' },
+				{ label: 'Issue Engagement', value: 15, tone: 'red' },
+				{ label: 'Social Presence', value: 25, tone: 'red' },
+				{ label: 'Contribution Scaffolding', value: 65, tone: 'amber' },
+				{ label: 'Support Channels', value: 20, tone: 'red' },
+			],
+			recommendations: [
+				'Launch a Discord community and seed it with real user activity',
+				'Create a dedicated product social account and showcase user outputs',
+				'Seed GitHub Discussions with targeted prompts and roadmap threads',
+			],
+		},
+		{
+			id: 'section-education',
+			number: '04',
+			title: 'Developer Education',
+			subtitle: 'Conceptual teaching, tutorials, and first-run guidance',
+			findings: [
+				`Conceptual education is a strength. Core docs and architecture notes teach practical AI product thinking, not just product mechanics.`,
+				`Tutorial depth is the major shortfall. There are few end-to-end walkthroughs that guide users from blank slate to successful campaign output with expected inputs and outcomes.`,
+				`Video support and first-run onboarding are underdeveloped, which increases time-to-value for non-technical users and slows early product adoption.`,
+				`The opportunity is execution-focused rather than strategic: the writing quality already exists, and translating it into repeatable tutorials would likely raise activation quickly.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Conceptual education quality is already high',
+					body: [
+						`The docs communicate core ideas like identity-first prompting, banned-lexicon constraints, and human-in-the-loop editing with unusual clarity. This is a high-quality foundation to build from.`,
+					],
+				},
+				{
+					kind: 'gap',
+					title: 'Practical tutorial and video coverage is sparse',
+					body: [
+						`Users need concrete build-first paths such as PR-to-campaign, notes-to-LinkedIn, and weekly-pipeline workflows. Visual walkthroughs and sample campaigns can reduce onboarding friction significantly.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'Improve onboarding with guided examples',
+					body: [
+						`A pre-populated sample campaign and a short embedded product video can make the human-in-the-loop flow immediately understandable before users create anything from scratch.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across education sub-dimensions:',
+			breakdown: [
+				{ label: 'Conceptual Depth', value: 85, tone: 'green' },
+				{ label: 'Step-by-Step Tutorials', value: 15, tone: 'red' },
+				{ label: 'Video Content', value: 0, tone: 'red' },
+				{ label: 'Blog as Education', value: 55, tone: 'amber' },
+				{ label: 'Onboarding Flow', value: 50, tone: 'amber' },
+				{ label: 'Sample Content', value: 20, tone: 'red' },
+				{ label: 'Architecture Teaching', value: 88, tone: 'green' },
+			],
+			recommendations: [
+				'Create three end-to-end tutorials for specific, real user jobs',
+				'Ship a short how-to video covering context to persona to edit to publish',
+				'Add a sample campaign to the first-run product experience',
+			],
+		},
+	],
+	footerNote:
+		"Overall score: 62. Ozigi's strongest surface today is documentation quality and architectural thinking. The biggest constraints are external developer surface area, low community activity, and limited tutorial depth. The foundation is strong and the path forward is clear: ship a public API, improve onboarding education, and build visible user participation loops.",
 };
 
 export const orgnReview: ReviewExperienceProps = {
-  scores: [
-    {
-      id: 'api',
-      label: 'API',
-      score: 76,
-      verdict: 'Strong',
-      tone: 'green',
-      sectionId: 'section-api',
-    },
-    {
-      id: 'documentation',
-      label: 'Documentation',
-      score: 68,
-      verdict: 'Solid',
-      tone: 'amber',
-      sectionId: 'section-docs',
-    },
-    {
-      id: 'community',
-      label: 'Community',
-      score: 22,
-      verdict: 'Absent',
-      tone: 'red',
-      sectionId: 'section-community',
-    },
-    {
-      id: 'education',
-      label: 'Education',
-      score: 32,
-      verdict: 'Early',
-      tone: 'red',
-      sectionId: 'section-education',
-    },
-  ],
-  sections: [
-    {
-      id: 'section-api',
-      number: '01',
-      title: 'API Design & Developer Experience',
-      subtitle: 'OLLM interoperability strengths and CDE automation gaps',
-      findings: [
-        `OLLM is OpenAI-compatible and practical to adopt. The API uses the standard <code>/v1/chat/completions</code> pattern with bearer token auth, so existing OpenAI SDK integrations can be adapted by changing base URL and model identifiers.`,
-        `Model IDs are provider namespaced (for example <code>phala/gemma-3-27b-it</code>), and the console exposes model availability with confidentiality status for TEE-backed execution.`,
-        `Attestation UX is integrated directly into request flows. Metadata like request ID, model, provider, usage, latency, and cryptographic verification artifacts are visible while prompts and outputs remain private.`,
-        `Origin CDE itself has no documented public API, CLI, or SDK yet. Workflow automation for projects, tasks, trials, and attestations is currently product-UI driven.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'OLLM delivers a clean compatibility layer for existing AI integrations',
-          body: [
-            `OpenAI-style endpoint shape and straightforward quickstart examples reduce migration friction for teams that already have OpenAI-compatible clients in production.`,
-            `This is one of the strongest launch-day choices because it lowers adoption cost without requiring new mental models for request flow structure.`,
-          ],
-        },
-        {
-          kind: 'strength',
-          title: 'Attestation visibility is productized instead of hidden in compliance docs',
-          body: [
-            `The cryptographic evidence model is surfaced as part of developer workflow, making verification tangible rather than theoretical for regulated enterprise teams.`,
-          ],
-        },
-        {
-          kind: 'gap',
-          title: 'Origin CDE lacks public automation interfaces',
-          body: [
-            `No public endpoints, SDKs, or CLI commands are documented for project lifecycle automation. That blocks CI/CD integration patterns many enterprise teams will expect at GA.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across API sub-dimensions:',
-      breakdown: [
-        { label: 'OLLM API Design', value: 85, tone: 'green' },
-        { label: 'OpenAI Compatibility', value: 92, tone: 'green' },
-        { label: 'Attestation UX', value: 80, tone: 'green' },
-        { label: 'IDE Integrations', value: 78, tone: 'green' },
-        { label: 'CDE Public API', value: 5, tone: 'red' },
-        { label: 'CLI / SDK', value: 0, tone: 'red' },
-        { label: 'Agent Mode UX', value: 82, tone: 'green' },
-        { label: 'Workspace Model', value: 78, tone: 'green' },
-      ],
-      recommendations: [
-        'Ship a CDE CLI at GA for project, trial, and attestation workflows',
-        'Add an OLLM attestation export endpoint for compliance automation',
-        'Publish a public model catalog endpoint with capabilities and pricing metadata',
-      ],
-    },
-    {
-      id: 'section-docs',
-      number: '02',
-      title: 'Documentation',
-      subtitle: 'Thorough security material, but missing reference depth and teaching layer',
-      findings: [
-        `Documentation scope is broad for launch day. Origin and OLLM docs cover quickstarts, architecture, security model, access control, and core workflows with practical sequencing and screenshots.`,
-        `Security coverage is notably deep. TEE mechanics, attestation concepts, encryption layers, and zero-retention claims are described with a level of detail aligned to enterprise security evaluation.`,
-        `The writing style trends toward internal engineering specification tone, with occasional marketing language mixed into technical pages.`,
-        `Key reference gaps remain: no full OLLM API reference, limited parameter and error-code coverage, no public rate-limit detail, and no published pricing matrix by model.`,
-        `Agent modes are referenced as product differentiators but are not documented with role behavior, use-case guidance, or example prompts.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Quickstart and security docs are strong for a pre-GA launch',
-          body: [
-            `The stepwise quickstart provides practical onboarding structure, and the security pages show enough architecture depth to support enterprise stakeholder review.`,
-          ],
-        },
-        {
-          kind: 'gap',
-          title: 'OLLM lacks a complete public API reference surface',
-          body: [
-            `A single endpoint quickstart is not enough for production API evaluation. Teams need full schemas, parameter behavior, errors, limits, and pricing details to compare alternatives reliably.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'Translate security architecture into developer-focused conceptual education',
-          body: [
-            `The technical depth already exists. Adding plain-language explainers and concrete developer scenarios would make confidential computing concepts much more accessible.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across documentation sub-dimensions:',
-      breakdown: [
-        { label: 'Structure', value: 76, tone: 'green' },
-        { label: 'Quickstart Quality', value: 80, tone: 'green' },
-        { label: 'Security Docs Depth', value: 88, tone: 'green' },
-        { label: 'Writing Voice', value: 52, tone: 'amber' },
-        { label: 'API Reference', value: 20, tone: 'red' },
-        { label: 'Agent Mode Docs', value: 10, tone: 'red' },
-        { label: 'Pricing Transparency', value: 15, tone: 'red' },
-        { label: 'Screenshots', value: 78, tone: 'green' },
-      ],
-      recommendations: [
-        'Publish a full OLLM API reference with parameters, errors, limits, and pricing',
-        'Add dedicated docs for Reviewer, Researcher, Architect, and Explorer modes',
-        'Separate marketing statements from technical documentation voice',
-      ],
-    },
-    {
-      id: 'section-community',
-      number: '03',
-      title: 'Developer Community',
-      subtitle: 'Product Hunt visibility exists, but ecosystem channels are largely absent',
-      findings: [
-        `Origin launched on Product Hunt with focused positioning around architecture-level privacy and confidential development infrastructure.`,
-        `Launch-day traction exists but appears early, with limited upvotes, comments, and no broad evidence of distributed community activation yet.`,
-        `Outside Product Hunt, developer community presence is minimal: no clear GitHub org footprint, no active product social channel, and no visible forum, Discord, or Slack community path.`,
-        `Current engagement flow is mostly demo booking or early-access application, which limits public conversation and community-led trust formation.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Product Hunt launch message is sharp and memorable',
-          body: [
-            `The positioning language is clear and differentiated for a security-first AI coding product, giving the launch a distinct narrative hook.`,
-          ],
-        },
-        {
-          kind: 'gap',
-          title: 'No sustained public community infrastructure beyond launch channel',
-          body: [
-            `Without public social, GitHub, or chat community surfaces, launch-day interest has limited pathways for retention and ongoing engagement.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'Build community scaffolding before GA attention accelerates',
-          body: [
-            `A product social identity, public changelog, and early-access community space would convert launch visibility into an owned, compounding audience.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across community sub-dimensions:',
-      breakdown: [
-        { label: 'Product Hunt Launch', value: 55, tone: 'amber' },
-        { label: 'GitHub Presence', value: 0, tone: 'red' },
-        { label: 'Social Media', value: 0, tone: 'red' },
-        { label: 'Community Channels', value: 0, tone: 'red' },
-        { label: 'Blog / Content', value: 8, tone: 'red' },
-        { label: 'Customer Stories', value: 5, tone: 'red' },
-        { label: 'Support Access', value: 15, tone: 'red' },
-      ],
-      recommendations: [
-        'Create and maintain product accounts on X, LinkedIn, and GitHub',
-        'Publish a launch architecture blog that explains confidential development design',
-        'Open a private early-access community channel for direct product feedback',
-      ],
-    },
-    {
-      id: 'section-education',
-      number: '04',
-      title: 'Developer Education',
-      subtitle: 'High-concept category with limited tutorial and media support',
-      findings: [
-        `Origin introduces concepts many developers have not used directly: confidential computing, TEEs, and attestation-backed AI workflows.`,
-        `Current materials explain mechanics but do less to teach practical why-this-matters reasoning across real developer scenarios and threat models.`,
-        `Tutorial coverage is sparse, with minimal scenario-based guides and no substantial public video walkthroughs despite a visually rich product flow.`,
-        `Onboarding design appears promising from documented screenshots and workflow sequence, but invite-only access limits experiential learning and community-shared tutorials.`,
-      ],
-      evidence: [
-        {
-          kind: 'gap',
-          title: 'Conceptual education does not yet match product novelty',
-          body: [
-            `Category-creation products require plain-language teaching and concrete examples. The current docs are strong on architecture detail but lighter on practical conceptual onboarding.`,
-          ],
-        },
-        {
-          kind: 'gap',
-          title: 'Tutorial and video ecosystem is mostly absent at launch',
-          body: [
-            `There are few end-to-end use-case guides and no clear walkthrough media path for users who need to see full workflow execution before applying for access.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'A strong educational layer could accelerate category adoption quickly',
-          body: [
-            `Focused explainers and industry-specific examples can convert abstract security claims into concrete developer and compliance value propositions.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across education sub-dimensions:',
-      breakdown: [
-        { label: 'Conceptual Teaching', value: 35, tone: 'red' },
-        { label: 'Tutorials', value: 0, tone: 'red' },
-        { label: 'Video Content', value: 0, tone: 'red' },
-        { label: 'Blog / Articles', value: 5, tone: 'red' },
-        { label: 'Onboarding Design', value: 60, tone: 'amber' },
-        { label: 'Use Case Guides', value: 0, tone: 'red' },
-        { label: 'Security Education', value: 45, tone: 'amber' },
-      ],
-      recommendations: [
-        'Publish a foundational confidential-computing explainer for developers',
-        'Create a short end-to-end product walkthrough video',
-        'Ship regulated-industry guides for fintech, healthcare, and government workflows',
-      ],
-    },
-  ],
-  footerNote:
-    "Launch-day review for ORGN and OLLM based on publicly available surfaces. Security architecture ambition is unusually strong, while community and educational infrastructure are still early. Pillar scores reflect launch state; overall narrative assessment in source material was 51, while computed score in this review system is derived from mean pillar average.",
+	scores: [
+		{
+			id: 'api',
+			label: 'API',
+			score: 76,
+			verdict: 'Strong',
+			tone: 'green',
+			sectionId: 'section-api',
+		},
+		{
+			id: 'documentation',
+			label: 'Documentation',
+			score: 68,
+			verdict: 'Solid',
+			tone: 'amber',
+			sectionId: 'section-docs',
+		},
+		{
+			id: 'community',
+			label: 'Community',
+			score: 22,
+			verdict: 'Absent',
+			tone: 'red',
+			sectionId: 'section-community',
+		},
+		{
+			id: 'education',
+			label: 'Education',
+			score: 32,
+			verdict: 'Early',
+			tone: 'red',
+			sectionId: 'section-education',
+		},
+	],
+	sections: [
+		{
+			id: 'section-api',
+			number: '01',
+			title: 'API Design & Developer Experience',
+			subtitle: 'OLLM interoperability strengths and CDE automation gaps',
+			findings: [
+				`OLLM is OpenAI-compatible and practical to adopt. The API uses the standard <code>/v1/chat/completions</code> pattern with bearer token auth, so existing OpenAI SDK integrations can be adapted by changing base URL and model identifiers.`,
+				`Model IDs are provider namespaced (for example <code>phala/gemma-3-27b-it</code>), and the console exposes model availability with confidentiality status for TEE-backed execution.`,
+				`Attestation UX is integrated directly into request flows. Metadata like request ID, model, provider, usage, latency, and cryptographic verification artifacts are visible while prompts and outputs remain private.`,
+				`Origin CDE itself has no documented public API, CLI, or SDK yet. Workflow automation for projects, tasks, trials, and attestations is currently product-UI driven.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'OLLM delivers a clean compatibility layer for existing AI integrations',
+					body: [
+						`OpenAI-style endpoint shape and straightforward quickstart examples reduce migration friction for teams that already have OpenAI-compatible clients in production.`,
+						`This is one of the strongest launch-day choices because it lowers adoption cost without requiring new mental models for request flow structure.`,
+					],
+				},
+				{
+					kind: 'strength',
+					title: 'Attestation visibility is productized instead of hidden in compliance docs',
+					body: [
+						`The cryptographic evidence model is surfaced as part of developer workflow, making verification tangible rather than theoretical for regulated enterprise teams.`,
+					],
+				},
+				{
+					kind: 'gap',
+					title: 'Origin CDE lacks public automation interfaces',
+					body: [
+						`No public endpoints, SDKs, or CLI commands are documented for project lifecycle automation. That blocks CI/CD integration patterns many enterprise teams will expect at GA.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across API sub-dimensions:',
+			breakdown: [
+				{ label: 'OLLM API Design', value: 85, tone: 'green' },
+				{ label: 'OpenAI Compatibility', value: 92, tone: 'green' },
+				{ label: 'Attestation UX', value: 80, tone: 'green' },
+				{ label: 'IDE Integrations', value: 78, tone: 'green' },
+				{ label: 'CDE Public API', value: 5, tone: 'red' },
+				{ label: 'CLI / SDK', value: 0, tone: 'red' },
+				{ label: 'Agent Mode UX', value: 82, tone: 'green' },
+				{ label: 'Workspace Model', value: 78, tone: 'green' },
+			],
+			recommendations: [
+				'Ship a CDE CLI at GA for project, trial, and attestation workflows',
+				'Add an OLLM attestation export endpoint for compliance automation',
+				'Publish a public model catalog endpoint with capabilities and pricing metadata',
+			],
+		},
+		{
+			id: 'section-docs',
+			number: '02',
+			title: 'Documentation',
+			subtitle: 'Thorough security material, but missing reference depth and teaching layer',
+			findings: [
+				`Documentation scope is broad for launch day. Origin and OLLM docs cover quickstarts, architecture, security model, access control, and core workflows with practical sequencing and screenshots.`,
+				`Security coverage is notably deep. TEE mechanics, attestation concepts, encryption layers, and zero-retention claims are described with a level of detail aligned to enterprise security evaluation.`,
+				`The writing style trends toward internal engineering specification tone, with occasional marketing language mixed into technical pages.`,
+				`Key reference gaps remain: no full OLLM API reference, limited parameter and error-code coverage, no public rate-limit detail, and no published pricing matrix by model.`,
+				`Agent modes are referenced as product differentiators but are not documented with role behavior, use-case guidance, or example prompts.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Quickstart and security docs are strong for a pre-GA launch',
+					body: [
+						`The stepwise quickstart provides practical onboarding structure, and the security pages show enough architecture depth to support enterprise stakeholder review.`,
+					],
+				},
+				{
+					kind: 'gap',
+					title: 'OLLM lacks a complete public API reference surface',
+					body: [
+						`A single endpoint quickstart is not enough for production API evaluation. Teams need full schemas, parameter behavior, errors, limits, and pricing details to compare alternatives reliably.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'Translate security architecture into developer-focused conceptual education',
+					body: [
+						`The technical depth already exists. Adding plain-language explainers and concrete developer scenarios would make confidential computing concepts much more accessible.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across documentation sub-dimensions:',
+			breakdown: [
+				{ label: 'Structure', value: 76, tone: 'green' },
+				{ label: 'Quickstart Quality', value: 80, tone: 'green' },
+				{ label: 'Security Docs Depth', value: 88, tone: 'green' },
+				{ label: 'Writing Voice', value: 52, tone: 'amber' },
+				{ label: 'API Reference', value: 20, tone: 'red' },
+				{ label: 'Agent Mode Docs', value: 10, tone: 'red' },
+				{ label: 'Pricing Transparency', value: 15, tone: 'red' },
+				{ label: 'Screenshots', value: 78, tone: 'green' },
+			],
+			recommendations: [
+				'Publish a full OLLM API reference with parameters, errors, limits, and pricing',
+				'Add dedicated docs for Reviewer, Researcher, Architect, and Explorer modes',
+				'Separate marketing statements from technical documentation voice',
+			],
+		},
+		{
+			id: 'section-community',
+			number: '03',
+			title: 'Developer Community',
+			subtitle: 'Product Hunt visibility exists, but ecosystem channels are largely absent',
+			findings: [
+				`Origin launched on Product Hunt with focused positioning around architecture-level privacy and confidential development infrastructure.`,
+				`Launch-day traction exists but appears early, with limited upvotes, comments, and no broad evidence of distributed community activation yet.`,
+				`Outside Product Hunt, developer community presence is minimal: no clear GitHub org footprint, no active product social channel, and no visible forum, Discord, or Slack community path.`,
+				`Current engagement flow is mostly demo booking or early-access application, which limits public conversation and community-led trust formation.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Product Hunt launch message is sharp and memorable',
+					body: [
+						`The positioning language is clear and differentiated for a security-first AI coding product, giving the launch a distinct narrative hook.`,
+					],
+				},
+				{
+					kind: 'gap',
+					title: 'No sustained public community infrastructure beyond launch channel',
+					body: [
+						`Without public social, GitHub, or chat community surfaces, launch-day interest has limited pathways for retention and ongoing engagement.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'Build community scaffolding before GA attention accelerates',
+					body: [
+						`A product social identity, public changelog, and early-access community space would convert launch visibility into an owned, compounding audience.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across community sub-dimensions:',
+			breakdown: [
+				{ label: 'Product Hunt Launch', value: 55, tone: 'amber' },
+				{ label: 'GitHub Presence', value: 0, tone: 'red' },
+				{ label: 'Social Media', value: 0, tone: 'red' },
+				{ label: 'Community Channels', value: 0, tone: 'red' },
+				{ label: 'Blog / Content', value: 8, tone: 'red' },
+				{ label: 'Customer Stories', value: 5, tone: 'red' },
+				{ label: 'Support Access', value: 15, tone: 'red' },
+			],
+			recommendations: [
+				'Create and maintain product accounts on X, LinkedIn, and GitHub',
+				'Publish a launch architecture blog that explains confidential development design',
+				'Open a private early-access community channel for direct product feedback',
+			],
+		},
+		{
+			id: 'section-education',
+			number: '04',
+			title: 'Developer Education',
+			subtitle: 'High-concept category with limited tutorial and media support',
+			findings: [
+				`Origin introduces concepts many developers have not used directly: confidential computing, TEEs, and attestation-backed AI workflows.`,
+				`Current materials explain mechanics but do less to teach practical why-this-matters reasoning across real developer scenarios and threat models.`,
+				`Tutorial coverage is sparse, with minimal scenario-based guides and no substantial public video walkthroughs despite a visually rich product flow.`,
+				`Onboarding design appears promising from documented screenshots and workflow sequence, but invite-only access limits experiential learning and community-shared tutorials.`,
+			],
+			evidence: [
+				{
+					kind: 'gap',
+					title: 'Conceptual education does not yet match product novelty',
+					body: [
+						`Category-creation products require plain-language teaching and concrete examples. The current docs are strong on architecture detail but lighter on practical conceptual onboarding.`,
+					],
+				},
+				{
+					kind: 'gap',
+					title: 'Tutorial and video ecosystem is mostly absent at launch',
+					body: [
+						`There are few end-to-end use-case guides and no clear walkthrough media path for users who need to see full workflow execution before applying for access.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'A strong educational layer could accelerate category adoption quickly',
+					body: [
+						`Focused explainers and industry-specific examples can convert abstract security claims into concrete developer and compliance value propositions.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across education sub-dimensions:',
+			breakdown: [
+				{ label: 'Conceptual Teaching', value: 35, tone: 'red' },
+				{ label: 'Tutorials', value: 0, tone: 'red' },
+				{ label: 'Video Content', value: 0, tone: 'red' },
+				{ label: 'Blog / Articles', value: 5, tone: 'red' },
+				{ label: 'Onboarding Design', value: 60, tone: 'amber' },
+				{ label: 'Use Case Guides', value: 0, tone: 'red' },
+				{ label: 'Security Education', value: 45, tone: 'amber' },
+			],
+			recommendations: [
+				'Publish a foundational confidential-computing explainer for developers',
+				'Create a short end-to-end product walkthrough video',
+				'Ship regulated-industry guides for fintech, healthcare, and government workflows',
+			],
+		},
+	],
+	footerNote:
+		'Launch-day review for ORGN and OLLM based on publicly available surfaces. Security architecture ambition is unusually strong, while community and educational infrastructure are still early. Pillar scores reflect launch state; overall narrative assessment in source material was 51, while computed score in this review system is derived from mean pillar average.',
 };
 
 export const aiCousticsReview: ReviewExperienceProps = {
-  scores: [
-    {
-      id: 'api',
-      label: 'API',
-      score: 85,
-      verdict: 'Strong',
-      tone: 'green',
-      sectionId: 'section-api',
-    },
-    {
-      id: 'documentation',
-      label: 'Documentation',
-      score: 78,
-      verdict: 'Solid',
-      tone: 'green',
-      sectionId: 'section-docs',
-    },
-    {
-      id: 'community',
-      label: 'Community',
-      score: 62,
-      verdict: 'Growing',
-      tone: 'amber',
-      sectionId: 'section-community',
-    },
-    {
-      id: 'education',
-      label: 'Education',
-      score: 80,
-      verdict: 'Strong',
-      tone: 'green',
-      sectionId: 'section-education',
-    },
-  ],
-  sections: [
-    {
-      id: 'section-api',
-      number: '01',
-      title: 'API Design & Developer Experience',
-      subtitle: 'SDK architecture, model design, and integration readiness',
-      findings: [
-        `ai-coustics ships a native SDK rather than a cloud-only API, with language bindings in C, Python, Rust, and Node.js plus integration paths for LiveKit and Pipecat. For real-time audio processing, this architecture is practical and performant.` ,
-        `The model line-up is clearly segmented: Quail for machine-optimized voice AI pipelines and Rook for human-listening quality. Variant naming is consistent, and trade-offs are documented clearly enough to support practical model selection in production flows.`,
-        `The developer platform provides a real self-serve workflow: account creation, SDK key generation, model testing, and billing controls in one place with a free trial and no credit card required.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Native SDK architecture is production-oriented',
-          body: [
-            `The C-core plus language-wrapper model is a strong fit for low-latency audio enhancement and avoids GPU dependency in common deployment paths.`,
-            `This design gives ai-coustics both portability and performance for teams shipping voice systems at scale.`,
-          ],
-        },
-        {
-          kind: 'strength',
-          title: 'Framework integrations are practical and quick to adopt',
-          body: [
-            `The LiveKit path is lightweight to start and exposes an enhancement-level parameter that gives explicit control over insertion vs deletion behavior in speech pipelines.`,
-            `Pipecat presence adds ecosystem reach in voice-agent workflows where integration speed matters.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'No permanent free tier for long-tail builders',
-          body: [
-            `There is a free trial, but no ongoing hobby-tier option for students and side projects to stay active after initial evaluation.`,
-            `A capped permanent free plan would likely increase ecosystem adoption and future paid conversion as projects mature.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across API sub-dimensions:',
-      breakdown: [
-        { label: 'SDK Architecture', value: 92, tone: 'green' },
-        { label: 'Language Coverage', value: 88, tone: 'green' },
-        { label: 'Framework Integrations', value: 86, tone: 'green' },
-        { label: 'Developer Platform', value: 82, tone: 'green' },
-        { label: 'Model Selection UX', value: 85, tone: 'green' },
-        { label: 'Try-Before-Buy', value: 88, tone: 'green' },
-        { label: 'Pricing Transparency', value: 82, tone: 'green' },
-      ],
-      recommendations: [
-        'Add a permanent free tier with a capped monthly minute allowance',
-        'Publish platform API endpoints for key automation workflows',
-        'Explore a WebAssembly SDK path for browser-native voice applications',
-      ],
-    },
-    {
-      id: 'section-docs',
-      number: '02',
-      title: 'Documentation',
-      subtitle: 'Integration-first structure and practical quickstarts',
-      findings: [
-        `The docs are organized around integration paths (LiveKit, Pipecat, low-level bindings) rather than generic feature lists. That framing answers the developer's first question quickly: where this fits in an existing stack.`,
-        `The model guide is detailed and candid, including variant IDs, sizes, sample rates, delay characteristics, and realistic caveats about human-perceived quality versus machine-optimized output.`,
-        `Coverage gaps remain around deep function-level SDK reference detail, migration guidance from legacy API surfaces, and production edge-case documentation.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Integration-path navigation is well executed',
-          body: [
-            `The docs present practical entry points and reduce time spent mapping product concepts to implementation context.`,
-            `Quickstarts are command-level and implementation-ready rather than purely conceptual walkthroughs.`,
-          ],
-        },
-        {
-          kind: 'strength',
-          title: 'Model documentation quality is high',
-          body: [
-            `The docs provide enough operational context for teams to make informed model choices across Voice AI and communications use cases.`,
-          ],
-        },
-        {
-          kind: 'gap',
-          title: 'Reference depth and production edge-case docs need expansion',
-          body: [
-            `The SDK reference surface appears thinner than expected for C and Rust at function-signature and error-handling depth.`,
-            `Operational guidance for memory footprint, CPU behavior under load, and failure modes would improve production readiness.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across documentation sub-dimensions:',
-      breakdown: [
-        { label: 'Structure', value: 84, tone: 'green' },
-        { label: 'Integration Paths', value: 86, tone: 'green' },
-        { label: 'Model Guide', value: 90, tone: 'green' },
-        { label: 'LiveKit Quickstart', value: 88, tone: 'green' },
-        { label: 'SDK Reference Depth', value: 58, tone: 'amber' },
-        { label: 'Error Handling', value: 35, tone: 'red' },
-        { label: 'Changelog', value: 80, tone: 'green' },
-        { label: 'Pricing Docs', value: 82, tone: 'green' },
-      ],
-      recommendations: [
-        'Expand SDK reference pages with full signatures, types, and error codes',
-        'Add a deployment guide covering CPU, memory, and model-distribution strategy',
-        'Publish a migration guide from the legacy API model to the SDK architecture',
-      ],
-    },
-    {
-      id: 'section-community',
-      number: '03',
-      title: 'Developer Community',
-      subtitle: 'Early but multi-channel with credible ecosystem anchors',
-      findings: [
-        `Community presence exists across Discord, GitHub, and Hugging Face, with customer validation from known companies and integrations in major voice-agent ecosystems.`,
-        `GitHub coverage is broad for the stage, with multiple SDK repositories and active recent commits, but external engagement metrics remain modest relative to product quality.`,
-        `Discord appears oriented toward technical support more than broad community participation, which is useful for onboarding but weaker for peer-to-peer momentum.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Customer proof is specific and credible',
-          body: [
-            `Named testimonials and published technical case-study material provide stronger trust signals than anonymous quotes.`,
-          ],
-        },
-        {
-          kind: 'strength',
-          title: 'Ecosystem integrations improve discoverability',
-          body: [
-            `First-class positioning in LiveKit and Pipecat integration flows creates partner-led distribution and practical adoption paths.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'Community channels are present but not yet compounding',
-          body: [
-            `The infrastructure exists, but visible community-generated content and contribution loops are still early.`,
-            `Expanding case studies and encouraging public benchmark sharing would raise activity quality and trust density.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across community sub-dimensions:',
-      breakdown: [
-        { label: 'Discord', value: 55, tone: 'amber' },
-        { label: 'GitHub Activity', value: 52, tone: 'amber' },
-        { label: 'Hugging Face', value: 75, tone: 'green' },
-        { label: 'Customer Proof', value: 82, tone: 'green' },
-        { label: 'Partner Ecosystem', value: 78, tone: 'green' },
-        { label: 'Blog Cadence', value: 65, tone: 'amber' },
-        { label: 'Social Media', value: 45, tone: 'amber' },
-      ],
-      recommendations: [
-        'Publish more technical customer case studies beyond Synthesia',
-        'Expand Discord into community channels for showcases, benchmarks, and integrations',
-        'Deepen partner co-marketing with framework ecosystems like LiveKit and Pipecat',
-      ],
-    },
-    {
-      id: 'section-education',
-      number: '04',
-      title: 'Developer Education',
-      subtitle: 'High-quality technical content with room for interactive onboarding',
-      findings: [
-        `The strongest educational asset is the Voice Focus 2.0 deep-dive: benchmark methodology, error-type decomposition, model behavior, and practical implications are all explained at a high technical standard.`,
-        `The Dawn Chorus dataset and public benchmark narratives create meaningful research credibility and allow independent evaluation beyond marketing claims.`,
-        `Onboarding paths are varied (demo, platform, framework quickstart, blog), but there is still no browser-based real-time demo moment for immediate product feel.`,
-      ],
-      evidence: [
-        {
-          kind: 'strength',
-          title: 'Technical educational content quality is top-tier',
-          body: [
-            `The best content goes beyond product explanation and teaches developers how to reason about speech pipeline quality in production systems.`,
-          ],
-        },
-        {
-          kind: 'strength',
-          title: 'Open dataset work supports category trust',
-          body: [
-            `Publishing evaluation data in public channels helps position ai-coustics as a contributor to the field, not only a vendor.`,
-          ],
-        },
-        {
-          kind: 'opportunity',
-          title: 'Interactive first-five-minutes experience is missing',
-          body: [
-            `A browser-native microphone demo would likely improve activation for developers who need direct experiential validation before integration.`,
-          ],
-        },
-      ],
-      breakdownIntro: 'Score breakdown across education sub-dimensions:',
-      breakdown: [
-        { label: 'Technical Deep-Dives', value: 94, tone: 'green' },
-        { label: 'Research Credibility', value: 90, tone: 'green' },
-        { label: 'Blog Quality', value: 86, tone: 'green' },
-        { label: 'Category Education', value: 82, tone: 'green' },
-        { label: 'Tutorials', value: 78, tone: 'green' },
-        { label: 'Onboarding Paths', value: 76, tone: 'green' },
-        { label: 'Interactive Demo', value: 45, tone: 'amber' },
-        { label: 'Glossary', value: 75, tone: 'green' },
-      ],
-      recommendations: [
-        'Build a browser-based live microphone demo for immediate product validation',
-        'Publish a complete voice-agent audio architecture guide from mic to speaker',
-        'Run recurring benchmark updates whenever major STT providers ship model changes',
-      ],
-    },
-  ],
-  footerNote:
-    'ai-coustics presents a mature developer experience with strong SDK architecture, practical integrations, clear documentation structure, and high-quality technical education. Remaining gaps are primarily around deeper SDK reference detail, stronger community participation loops, and a more interactive first-run experience.',
+	scores: [
+		{
+			id: 'api',
+			label: 'API',
+			score: 85,
+			verdict: 'Strong',
+			tone: 'green',
+			sectionId: 'section-api',
+		},
+		{
+			id: 'documentation',
+			label: 'Documentation',
+			score: 78,
+			verdict: 'Solid',
+			tone: 'green',
+			sectionId: 'section-docs',
+		},
+		{
+			id: 'community',
+			label: 'Community',
+			score: 62,
+			verdict: 'Growing',
+			tone: 'amber',
+			sectionId: 'section-community',
+		},
+		{
+			id: 'education',
+			label: 'Education',
+			score: 80,
+			verdict: 'Strong',
+			tone: 'green',
+			sectionId: 'section-education',
+		},
+	],
+	sections: [
+		{
+			id: 'section-api',
+			number: '01',
+			title: 'API Design & Developer Experience',
+			subtitle: 'SDK architecture, model design, and integration readiness',
+			findings: [
+				`ai-coustics ships a native SDK rather than a cloud-only API, with language bindings in C, Python, Rust, and Node.js plus integration paths for LiveKit and Pipecat. For real-time audio processing, this architecture is practical and performant.`,
+				`The model line-up is clearly segmented: Quail for machine-optimized voice AI pipelines and Rook for human-listening quality. Variant naming is consistent, and trade-offs are documented clearly enough to support practical model selection in production flows.`,
+				`The developer platform provides a real self-serve workflow: account creation, SDK key generation, model testing, and billing controls in one place with a free trial and no credit card required.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Native SDK architecture is production-oriented',
+					body: [
+						`The C-core plus language-wrapper model is a strong fit for low-latency audio enhancement and avoids GPU dependency in common deployment paths.`,
+						`This design gives ai-coustics both portability and performance for teams shipping voice systems at scale.`,
+					],
+				},
+				{
+					kind: 'strength',
+					title: 'Framework integrations are practical and quick to adopt',
+					body: [
+						`The LiveKit path is lightweight to start and exposes an enhancement-level parameter that gives explicit control over insertion vs deletion behavior in speech pipelines.`,
+						`Pipecat presence adds ecosystem reach in voice-agent workflows where integration speed matters.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'No permanent free tier for long-tail builders',
+					body: [
+						`There is a free trial, but no ongoing hobby-tier option for students and side projects to stay active after initial evaluation.`,
+						`A capped permanent free plan would likely increase ecosystem adoption and future paid conversion as projects mature.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across API sub-dimensions:',
+			breakdown: [
+				{ label: 'SDK Architecture', value: 92, tone: 'green' },
+				{ label: 'Language Coverage', value: 88, tone: 'green' },
+				{ label: 'Framework Integrations', value: 86, tone: 'green' },
+				{ label: 'Developer Platform', value: 82, tone: 'green' },
+				{ label: 'Model Selection UX', value: 85, tone: 'green' },
+				{ label: 'Try-Before-Buy', value: 88, tone: 'green' },
+				{ label: 'Pricing Transparency', value: 82, tone: 'green' },
+			],
+			recommendations: [
+				'Add a permanent free tier with a capped monthly minute allowance',
+				'Publish platform API endpoints for key automation workflows',
+				'Explore a WebAssembly SDK path for browser-native voice applications',
+			],
+		},
+		{
+			id: 'section-docs',
+			number: '02',
+			title: 'Documentation',
+			subtitle: 'Integration-first structure and practical quickstarts',
+			findings: [
+				`The docs are organized around integration paths (LiveKit, Pipecat, low-level bindings) rather than generic feature lists. That framing answers the developer's first question quickly: where this fits in an existing stack.`,
+				`The model guide is detailed and candid, including variant IDs, sizes, sample rates, delay characteristics, and realistic caveats about human-perceived quality versus machine-optimized output.`,
+				`Coverage gaps remain around deep function-level SDK reference detail, migration guidance from legacy API surfaces, and production edge-case documentation.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Integration-path navigation is well executed',
+					body: [
+						`The docs present practical entry points and reduce time spent mapping product concepts to implementation context.`,
+						`Quickstarts are command-level and implementation-ready rather than purely conceptual walkthroughs.`,
+					],
+				},
+				{
+					kind: 'strength',
+					title: 'Model documentation quality is high',
+					body: [
+						`The docs provide enough operational context for teams to make informed model choices across Voice AI and communications use cases.`,
+					],
+				},
+				{
+					kind: 'gap',
+					title: 'Reference depth and production edge-case docs need expansion',
+					body: [
+						`The SDK reference surface appears thinner than expected for C and Rust at function-signature and error-handling depth.`,
+						`Operational guidance for memory footprint, CPU behavior under load, and failure modes would improve production readiness.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across documentation sub-dimensions:',
+			breakdown: [
+				{ label: 'Structure', value: 84, tone: 'green' },
+				{ label: 'Integration Paths', value: 86, tone: 'green' },
+				{ label: 'Model Guide', value: 90, tone: 'green' },
+				{ label: 'LiveKit Quickstart', value: 88, tone: 'green' },
+				{ label: 'SDK Reference Depth', value: 58, tone: 'amber' },
+				{ label: 'Error Handling', value: 35, tone: 'red' },
+				{ label: 'Changelog', value: 80, tone: 'green' },
+				{ label: 'Pricing Docs', value: 82, tone: 'green' },
+			],
+			recommendations: [
+				'Expand SDK reference pages with full signatures, types, and error codes',
+				'Add a deployment guide covering CPU, memory, and model-distribution strategy',
+				'Publish a migration guide from the legacy API model to the SDK architecture',
+			],
+		},
+		{
+			id: 'section-community',
+			number: '03',
+			title: 'Developer Community',
+			subtitle: 'Early but multi-channel with credible ecosystem anchors',
+			findings: [
+				`Community presence exists across Discord, GitHub, and Hugging Face, with customer validation from known companies and integrations in major voice-agent ecosystems.`,
+				`GitHub coverage is broad for the stage, with multiple SDK repositories and active recent commits, but external engagement metrics remain modest relative to product quality.`,
+				`Discord appears oriented toward technical support more than broad community participation, which is useful for onboarding but weaker for peer-to-peer momentum.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Customer proof is specific and credible',
+					body: [
+						`Named testimonials and published technical case-study material provide stronger trust signals than anonymous quotes.`,
+					],
+				},
+				{
+					kind: 'strength',
+					title: 'Ecosystem integrations improve discoverability',
+					body: [
+						`First-class positioning in LiveKit and Pipecat integration flows creates partner-led distribution and practical adoption paths.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'Community channels are present but not yet compounding',
+					body: [
+						`The infrastructure exists, but visible community-generated content and contribution loops are still early.`,
+						`Expanding case studies and encouraging public benchmark sharing would raise activity quality and trust density.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across community sub-dimensions:',
+			breakdown: [
+				{ label: 'Discord', value: 55, tone: 'amber' },
+				{ label: 'GitHub Activity', value: 52, tone: 'amber' },
+				{ label: 'Hugging Face', value: 75, tone: 'green' },
+				{ label: 'Customer Proof', value: 82, tone: 'green' },
+				{ label: 'Partner Ecosystem', value: 78, tone: 'green' },
+				{ label: 'Blog Cadence', value: 65, tone: 'amber' },
+				{ label: 'Social Media', value: 45, tone: 'amber' },
+			],
+			recommendations: [
+				'Publish more technical customer case studies beyond Synthesia',
+				'Expand Discord into community channels for showcases, benchmarks, and integrations',
+				'Deepen partner co-marketing with framework ecosystems like LiveKit and Pipecat',
+			],
+		},
+		{
+			id: 'section-education',
+			number: '04',
+			title: 'Developer Education',
+			subtitle: 'High-quality technical content with room for interactive onboarding',
+			findings: [
+				`The strongest educational asset is the Voice Focus 2.0 deep-dive: benchmark methodology, error-type decomposition, model behavior, and practical implications are all explained at a high technical standard.`,
+				`The Dawn Chorus dataset and public benchmark narratives create meaningful research credibility and allow independent evaluation beyond marketing claims.`,
+				`Onboarding paths are varied (demo, platform, framework quickstart, blog), but there is still no browser-based real-time demo moment for immediate product feel.`,
+			],
+			evidence: [
+				{
+					kind: 'strength',
+					title: 'Technical educational content quality is top-tier',
+					body: [
+						`The best content goes beyond product explanation and teaches developers how to reason about speech pipeline quality in production systems.`,
+					],
+				},
+				{
+					kind: 'strength',
+					title: 'Open dataset work supports category trust',
+					body: [
+						`Publishing evaluation data in public channels helps position ai-coustics as a contributor to the field, not only a vendor.`,
+					],
+				},
+				{
+					kind: 'opportunity',
+					title: 'Interactive first-five-minutes experience is missing',
+					body: [
+						`A browser-native microphone demo would likely improve activation for developers who need direct experiential validation before integration.`,
+					],
+				},
+			],
+			breakdownIntro: 'Score breakdown across education sub-dimensions:',
+			breakdown: [
+				{ label: 'Technical Deep-Dives', value: 94, tone: 'green' },
+				{ label: 'Research Credibility', value: 90, tone: 'green' },
+				{ label: 'Blog Quality', value: 86, tone: 'green' },
+				{ label: 'Category Education', value: 82, tone: 'green' },
+				{ label: 'Tutorials', value: 78, tone: 'green' },
+				{ label: 'Onboarding Paths', value: 76, tone: 'green' },
+				{ label: 'Interactive Demo', value: 45, tone: 'amber' },
+				{ label: 'Glossary', value: 75, tone: 'green' },
+			],
+			recommendations: [
+				'Build a browser-based live microphone demo for immediate product validation',
+				'Publish a complete voice-agent audio architecture guide from mic to speaker',
+				'Run recurring benchmark updates whenever major STT providers ship model changes',
+			],
+		},
+	],
+	footerNote:
+		'ai-coustics presents a mature developer experience with strong SDK architecture, practical integrations, clear documentation structure, and high-quality technical education. Remaining gaps are primarily around deeper SDK reference detail, stronger community participation loops, and a more interactive first-run experience.',
 };
 
 export const reviewDataBySlug: Record<string, ReviewExperienceProps> = {
-  'docsalot-in-review': docsalotReview,
-  'scalekit-in-review': scalekitReview,
-  'confident-ai-in-review': confidentAiReview,
-  'ozigi-in-review': ozigiReview,
-  'orgn-in-review': orgnReview,
-  'ai-coustics-in-review': aiCousticsReview,
+	'docsalot-in-review': docsalotReview,
+	'scalekit-in-review': scalekitReview,
+	'confident-ai-in-review': confidentAiReview,
+	'ozigi-in-review': ozigiReview,
+	'orgn-in-review': orgnReview,
+	'ai-coustics-in-review': aiCousticsReview,
 };
 
 export function getOverallScore(review: ReviewExperienceProps): number {
-  const total = review.scores.reduce((sum, item) => sum + item.score, 0);
-  return Math.round(total / review.scores.length);
+	const total = review.scores.reduce((sum, item) => sum + item.score, 0);
+	return Math.round(total / review.scores.length);
 }
 
 export function getOverallScoreForSlug(slug: string): number | null {
-  const review = reviewDataBySlug[slug];
-  return review ? getOverallScore(review) : null;
+	const review = reviewDataBySlug[slug];
+	return review ? getOverallScore(review) : null;
 }

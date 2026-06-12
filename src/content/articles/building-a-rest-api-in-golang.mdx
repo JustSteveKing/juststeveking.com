@@ -3,14 +3,14 @@ title: Building a REST API in GoLang
 description: Discover the process of building a REST API in GoLang, from setting up Docker containers to structuring and scaling your application effectively.
 category: API Development
 pubDate: 2020-07-24
-image: "/images/social/articles/rest-api-golang.png"
+image: '/images/social/articles/rest-api-golang.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["golang", "rest-api", "docker", "backend-development"]
+tags: ['golang', 'rest-api', 'docker', 'backend-development']
 ---
 
 I have been building APIs for production environments for many years now,
@@ -20,7 +20,7 @@ a post on GoLang.
 
 For the past 4 weeks I have been using GoLang as my primary language with one of my clients, after an initial consultation on their requirements and talking about where they were seeing botlenecks in their business - some modernisation was needed. I initially went through an Event Storming session to see the sort of business events that were common in their business, to see if it would highlight any additional (hidden) issues. After a successful session it was clear that their systems were no cohesive enough, and speed was a major issue. This seemed like a perfect opportunity to use GoLang to help solve their problems.
 
-This post will walk through an approach I have taken to build a REST API in GoLang, and why I do things a certain way. I am not saying this is *the* way to build REST APIs in the language, but coming from other languages this way made the most sense after some trial and error. For the purpose of being to the point, I will not be following how I would usually build an API. I would usually take the Design first API approach - using openapi specifications to design my API before writting code, and I also will not be writting tests because there are 100s of examples of writting tests out there. This is a concise post about how I go about building APIs in GoLang.
+This post will walk through an approach I have taken to build a REST API in GoLang, and why I do things a certain way. I am not saying this is _the_ way to build REST APIs in the language, but coming from other languages this way made the most sense after some trial and error. For the purpose of being to the point, I will not be following how I would usually build an API. I would usually take the Design first API approach - using openapi specifications to design my API before writting code, and I also will not be writting tests because there are 100s of examples of writting tests out there. This is a concise post about how I go about building APIs in GoLang.
 
 My first step in any API build, is to create a Docker container to run my API on. I love docker for many reasons, but that is another blog post. When building docker containers I tend to stick to the rule of one service per container - meaning if you have a cache layer, database layer, and an application layer you should have 3 containers running together. Here is the base **Dockerfile** that I use for my GoLang service:
 
@@ -44,23 +44,23 @@ ENTRYPOINT go run cmd/rest-api/server.go
 What we have here is a nice lightweight GoLang container for us to inject our API into. The next step is to create our **docker-compose.yml** file to define our services, I prefer using the docker-compose approach while building applications. Here is an example of my docker-compose file:
 
 ```yaml
-version: "3"
+version: '3'
 
 networks:
-    api:
+  api:
 
 services:
-    go_api:
-        build:
-        context: .
-        dockerfile: Dockerfile
-        container_name: go_rest_api
-        networks:
-        - api
-        ports:
-        - 8080:8080
-        volumes:
-        - ./:/app
+  go_api:
+    build:
+    context: .
+    dockerfile: Dockerfile
+    container_name: go_rest_api
+    networks:
+      - api
+    ports:
+      - 8080:8080
+    volumes:
+      - ./:/app
 ```
 
 What we are doing here is creating a network for our REST API, creating a container and giving it a name, giving the container build instructions from our Dockerfile, and setting the container post and mounting volumes. I won't go into too much detail here, as this is a tutorial on GoLang not docker.
@@ -285,7 +285,7 @@ func (app *Application) WaitForShutdown() {
 }
 ```
 
-So to start with, we define a struct for our application, what do we want our application to be built with? What are the core components in the Application itself outside our domain code. We need a server, a router, a logger and some configuration. So back in our kernel we saw that we run this application. This simple tells our configured application server to listen and serve. We then wait to see if this returns an error for any reason, and if it does - we panic with the error.  This is to code that we run in our goroutine, on the separate thread.
+So to start with, we define a struct for our application, what do we want our application to be built with? What are the core components in the Application itself outside our domain code. We need a server, a router, a logger and some configuration. So back in our kernel we saw that we run this application. This simple tells our configured application server to listen and serve. We then wait to see if this returns an error for any reason, and if it does - we panic with the error. This is to code that we run in our goroutine, on the separate thread.
 
 The next thing you will notice is the WaitForShutdown function, which is a graceful way of listening for any interuption signals, and then we can close the application down and exit out program. This code was something that I was advised on by several other developers. I wondered if there was an efficient and "nice" way to exit a program, and this is the end result. I cannot take full credit for this beautiful looking code.
 
@@ -386,8 +386,8 @@ So what we are doing here is simply creating a new service, with an implementati
 
 Routing in GoLang is nice, it's clean and it makes sense. I have build 2 go modules for this next part:
 
-* [Go API Problem](https://github.com/JustSteveKing/go-api-problem) - for when you want consistent API error responses.
-* [Go HTTP Response](https://github.com/JustSteveKing/go-http-response) - for building API responses in a very specific format.
+- [Go API Problem](https://github.com/JustSteveKing/go-api-problem) - for when you want consistent API error responses.
+- [Go HTTP Response](https://github.com/JustSteveKing/go-http-response) - for building API responses in a very specific format.
 
 To start with let's look at the first part, creating a handler
 
@@ -441,7 +441,7 @@ func (handler *Handler) Handle(response http.ResponseWritter, request *http.Requ
         },
         handler.App.Config.HTTP.Problem,
         )
-        
+
         return
     }
 

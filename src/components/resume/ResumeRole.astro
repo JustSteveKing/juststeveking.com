@@ -23,48 +23,75 @@ const { role, current = false } = Astro.props;
 		<div class="flex flex-col gap-1">
 			<div class="flex items-center gap-2">
 				<span class="text-[15px] font-semibold fg-strong">{role.position}</span>
-				{current && (
-					<span
-						class="font-mono text-[9px] font-bold uppercase tracking-[0.08em] fg-success border border-current rounded-[3px] px-1.5 py-0.5 leading-snug"
-						aria-label="Current role"
-					>Now</span>
-				)}
+				{
+					current && (
+						<span
+							class="font-mono text-[9px] font-bold uppercase tracking-[0.08em] fg-success border border-current rounded-[3px] px-1.5 py-0.5 leading-snug"
+							aria-label="Current role"
+						>
+							Now
+						</span>
+					)
+				}
 			</div>
 			<span class="text-[13px] fg-weak">
-				{role.url
-					? <a href={role.url} target="_blank" rel="noopener noreferrer" class="fg-weak no-underline transition-colors hover:[color:var(--color-accent)]">{role.name}</a>
-					: role.name}
+				{
+					role.url ? (
+						<a
+							href={role.url}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="fg-weak no-underline transition-colors hover:[color:var(--color-accent)]"
+						>
+							{role.name}
+						</a>
+					) : (
+						role.name
+					)
+				}
 			</span>
 		</div>
 		<div class="flex items-center gap-1.5 font-mono text-[12px] fg-weak shrink-0 flex-wrap">
 			<time datetime={role.startDate}>{formatDate(role.startDate)}</time>
 			<span aria-hidden="true">–</span>
-			{current
-				? <span>Present</span>
-				: <time datetime={role.endDate}>{formatDate(role.endDate!)}</time>}
-			<span class="font-mono text-[11px] fg-weak border border-edge rounded-[3px] px-1.5 py-0.5 ml-0.5">
+			{
+				current ? (
+					<span>Present</span>
+				) : (
+					<time datetime={role.endDate}>{formatDate(role.endDate!)}</time>
+				)
+			}
+			<span
+				class="font-mono text-[11px] fg-weak border border-edge rounded-[3px] px-1.5 py-0.5 ml-0.5"
+			>
 				{duration(role.startDate, role.endDate)}
 			</span>
 		</div>
 	</header>
 
-	{role.summary && (
-		<p class="text-[13px] leading-relaxed fg mb-3 max-w-[72ch]">{role.summary}</p>
-	)}
+	{role.summary && <p class="text-[13px] leading-relaxed fg mb-3 max-w-[72ch]">{role.summary}</p>}
 
-	{role.highlights && role.highlights.length > 0 && (
-		<ul class="list-none p-0 m-0 mb-3 flex flex-col gap-1.5" aria-label="Key highlights">
-			{role.highlights.map(h => (
-				<li class="text-[13px] leading-snug fg pl-4 relative before:content-['·'] before:absolute before:left-1 before:[color:var(--color-accent)] before:font-black">{h}</li>
-			))}
-		</ul>
-	)}
+	{
+		role.highlights && role.highlights.length > 0 && (
+			<ul class="list-none p-0 m-0 mb-3 flex flex-col gap-1.5" aria-label="Key highlights">
+				{role.highlights.map((h) => (
+					<li class="text-[13px] leading-snug fg pl-4 relative before:content-['·'] before:absolute before:left-1 before:[color:var(--color-accent)] before:font-black">
+						{h}
+					</li>
+				))}
+			</ul>
+		)
+	}
 
-	{role.technologies && role.technologies.length > 0 && (
-		<div class="flex flex-wrap gap-1.5 mt-3.5" aria-label="Technologies">
-			{role.technologies.map(t => (
-				<span class="font-mono text-[11px] fg-weak bg-surface-weak border border-edge-weak rounded-[3px] px-1.5 py-0.5">{t}</span>
-			))}
-		</div>
-	)}
+	{
+		role.technologies && role.technologies.length > 0 && (
+			<div class="flex flex-wrap gap-1.5 mt-3.5" aria-label="Technologies">
+				{role.technologies.map((t) => (
+					<span class="font-mono text-[11px] fg-weak bg-surface-weak border border-edge-weak rounded-[3px] px-1.5 py-0.5">
+						{t}
+					</span>
+				))}
+			</div>
+		)
+	}
 </article>

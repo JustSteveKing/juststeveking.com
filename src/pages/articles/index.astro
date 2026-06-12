@@ -20,7 +20,7 @@ const articlesSchema = {
 	url: `${site.url}/articles`,
 	description: pageMeta.description,
 	author: { '@type': 'Person', name: site.author, url: site.url },
-	blogPost: page.map(article => ({
+	blogPost: page.map((article) => ({
 		'@type': 'BlogPosting',
 		headline: article.data.title,
 		description: article.data.description,
@@ -32,11 +32,7 @@ const articlesSchema = {
 ---
 
 <Layout {...pageMeta} jsonLd={articlesSchema}>
-	<PageHeader
-		prompt={blogMeta.prompt}
-		title={blogMeta.title}
-		subtitle={blogMeta.subtitle}
-	/>
+	<PageHeader prompt={blogMeta.prompt} title={blogMeta.title} subtitle={blogMeta.subtitle} />
 
 	<section aria-label="Articles">
 		<ArticleList articles={page} />

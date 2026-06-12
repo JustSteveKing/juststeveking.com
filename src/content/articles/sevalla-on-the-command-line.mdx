@@ -3,7 +3,7 @@ title: Sevalla on the Command Line
 description: Build a beautiful Go-powered CLI tool to manage your Sevalla apps directly from the terminal - no browser, just clean, fast, TUI driven control.
 category: API Development
 pubDate: 2025-05-20
-image: "/images/articles/sevalla-cli.png"
+image: '/images/articles/sevalla-cli.png'
 minRead: 7
 sponsor:
   name: Sevalla
@@ -14,7 +14,7 @@ author:
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["go", "cli-development", "terminal-ui", "api-integration"]
+tags: ['go', 'cli-development', 'terminal-ui', 'api-integration']
 ---
 
 Sometimes you don't want to have to leave your terminal, it's easy, it's convenient, and it's always there. With that in mind, I thought I would write an article about how I like to check in on my applications that I have deployed on [Sevalla](https://juststeveking.link/host).
@@ -38,10 +38,12 @@ go mod init github.com/juststeveking/sevalla
 You will notice that the directory path and name is similar enough, this is so I can navigate my local directories like I would on GitHub - a time saver when you work on multiple things all the time!
 
 Let's create the following directories:
+
 - `cmd`: A place for all individual commands to live.
 - `internal`: A place for all internal code to live that the commands will need.
 
 We are going to require a few dependencies for this project:
+
 - [Cobra](https://github.com/spf13/cobra)
 - [Clack Prompts](https://github.com/orochaa/go-clack/tree/master/prompts#readme)
 
@@ -137,23 +139,23 @@ func (c *Config) SetCompanyId(companyId string) {
 func (c *Config) CreateConfig() error {
 	configDir := filepath.Join(os.Getenv("HOME"), ".config", "sevalla")
 	configFile := filepath.Join(configDir, "config.json")
-	
+
 	if err := os.MkdirAll(configDir, 0755); err != nil {
 		return err
 	}
-	
+
 	file, err := os.OpenFile(configFile, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		return err
 	}
-	
+
 	defer file.Close()
-	
+
 	encoder := json.NewEncoder(file)
 	if err := encoder.Encode(c); err != nil {
 		return err
 	}
-	
+
 	return nil
 }
 ```
@@ -198,7 +200,7 @@ Finally, we have the creation/writing logic for the file and directory under the
 ```go
 configDir := filepath.Join(os.Getenv("HOME"), ".config", "sevalla")
 configFile := filepath.Join(configDir, "config.json")
-	
+
 if err := os.MkdirAll(configDir, 0755); err != nil {
 	return err
 }
@@ -211,7 +213,7 @@ file, err := os.OpenFile(configFile, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
 if err != nil {
 	return err
 }
-	
+
 defer file.Close()
 ```
 
@@ -224,7 +226,7 @@ encoder := json.NewEncoder(file)
 if err := encoder.Encode(c); err != nil {
 	return err
 }
-	
+
 return nil
 ```
 
@@ -418,7 +420,6 @@ var appListCmd = &cobra.Command{
 }
 ```
 
-
 We need to make sure we register these commands in our `cmd/root.go` root command file. We can register sub-commands for our CLI using the following approach:
 
 ```go
@@ -465,7 +466,6 @@ func (s *Sevalla) Applications() ([]Application, error) {
 	return resp.Company.Apps.Items, nil
 }
 ```
-
 
 We are now able to use this module to make the request.
 

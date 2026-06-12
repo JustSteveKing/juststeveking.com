@@ -3,14 +3,14 @@ title: Running PHPStan on max with Laravel
 description: Discover how to enhance your Laravel project with static analysis using Larastan. Add confidence and type safety to your code.
 category: Laravel
 pubDate: 2022-06-20
-image: "/images/articles/laravel-phpstan.png"
+image: '/images/articles/laravel-phpstan.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "phpstan", "static-analysis", "type-safety"]
+tags: ['laravel', 'phpstan', 'static-analysis', 'type-safety']
 ---
 
 Over the last few years static analysis in PHP, and more specifically Laravel, has become more and more popular. With more people adopting it into their Software Delivery Lifecycle, I thought it would be a good time to write a tutorial on how you can add this to your Laravel project.
@@ -35,13 +35,13 @@ Once we have this dependency installed as a dev dependency, we can set up the co
 
 ```yaml
 includes:
-    - ./vendor/nunomaduro/larastan/extension.neon
+  - ./vendor/nunomaduro/larastan/extension.neon
 parameters:
-    paths:
-        - app
-    level: 9
-    ignoreErrors:
-    excludePaths:
+  paths:
+    - app
+  level: 9
+  ignoreErrors:
+  excludePaths:
 ```
 
 We start with `includes` these are typically rules from packages that we want to include in our base phpstan ruleset. Then we move onto parameters, the first option `paths` allows us to define where we want phpstan to check - in our case we are only interested in our `app` directory where our Application code lives. You can extend this to cover over areas if you like, but be careful what you include as things are about to get strict! Next our `level` PHPStan has various levels it can check at, 0 being the lowest and 9 currently being the highest. As you can see we have set our level to 9, I would suggest this on an existing application as ideally you would want to work up to this level - but as this is a brand new project we can be pretty comfortable at 9. Next we have `ignoreErrors` and `excludePaths` these 2 are options that allow us to basically tell PHPStan to ignore files or specific errors that either we aren’t interested in, or we cannot control or fix right now. Perhaps you are in the middle of refactoring a few things and you are getting errors, you might be refactoring this code in a way that static analysis will be fine later on and you want to ignore the errors until you are done.
@@ -56,16 +56,20 @@ The output we are getting from a default Laravel application is shown below:
 
 ```markdown
 Note: Using configuration file /Users/steve/code/sites/larastan-test/phpstan.neon.
- 18/18 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+18/18 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
 
- ------ ---------------------------------------------------------------------------------------------------------------------------- 
-  Line   Providers/RouteServiceProvider.php                                                                                          
- ------ ---------------------------------------------------------------------------------------------------------------------------- 
-  49     Parameter #1 $key of method Illuminate\Cache\RateLimiting\Limit::by() expects string, int<min, -1>|int<1, max>|string|null  
-         given.                                                                                                                      
- ------ ---------------------------------------------------------------------------------------------------------------------------- 
-                                                                                                       
- [ERROR] Found 1 error 
+---
+
+Line Providers/RouteServiceProvider.php
+
+---
+
+49 Parameter #1 $key of method Illuminate\Cache\RateLimiting\Limit::by() expects string, int<min, -1>|int<1, max>|string|null  
+ given.
+
+---
+
+[ERROR] Found 1 error
 ```
 
 As you can see we only get one error with the default Laravel application, even when our strictness is set as high as it can go. That is pretty good going right? Of course you might see different results if you are adding this to an existing project, but following this tutorial you will learn how to approach these issues so you have a nice workflow to follow.
@@ -122,9 +126,9 @@ We have added a return type to the method, made the callback a static closure - 
 
 ```markdown
 Note: Using configuration file /Users/steve/code/sites/larastan-test/phpstan.neon.
- 18/18 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
-                                                                                                            
- [OK] No errors
+18/18 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+[OK] No errors
 ```
 
 So we have the default Laravel application running on PHPStan at max, now we need to start adding some actual logic to our application so that we can ensure type safety as we add features and logic. For this we are going to create a simple application that stores bookmarks, nothing fancy.
@@ -140,14 +144,14 @@ We want to make our migration up method look like the following:
 ```php
 Schema::create('bookmarks', static function (Blueprint $table): void {
     $table->id();
-            
+
     $table->string('name');
     $table->string('url');
-            
+
     $table->boolean('starred')->default(false);
-            
+
     $table->foreignId('user_id')->index()->constrained()->cascadeOnDelete();
-            
+
     $table->timestamps();
 });
 ```
@@ -246,47 +250,59 @@ composer phpstan
 
 ```markdown
 Note: Using configuration file /Users/steve/code/sites/larastan-test/phpstan.neon.
- 20/20 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+20/20 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
 
- ------ ------------------------------------------------------------------------------------------------- 
-  Line   Http/Controllers/Bookmarks/IndexController.php                                                   
- ------ ------------------------------------------------------------------------------------------------- 
-  15     Method App\Http\Controllers\Bookmarks\IndexController::__invoke() has no return type specified.  
- ------ ------------------------------------------------------------------------------------------------- 
+---
 
- ------ ----------------------------------------------------------------------------------------------------------------------------- 
-  Line   Models/Bookmark.php                                                                                                          
- ------ ----------------------------------------------------------------------------------------------------------------------------- 
-  33     Method App\Models\Bookmark::user() return type with generic class Illuminate\Database\Eloquent\Relations\BelongsTo does not  
-         specify its types: TRelatedModel, TChildModel                                                                                
-         💡 You can turn this off by setting checkGenericClassInNonGenericObjectType: false in your                                   
-         phpstan.neon.                                                                                                                
- ------ ----------------------------------------------------------------------------------------------------------------------------- 
+Line Http/Controllers/Bookmarks/IndexController.php
 
- ------ ---------------------------------------------------------------------------------------------------------------------------- 
-  Line   Models/User.php                                                                                                             
- ------ ---------------------------------------------------------------------------------------------------------------------------- 
-  49     Method App\Models\User::bookmarks() return type with generic class Illuminate\Database\Eloquent\Relations\HasMany does not  
-         specify its types: TRelatedModel                                                                                            
-         💡 You can turn this off by setting checkGenericClassInNonGenericObjectType: false in your                                  
-         phpstan.neon.                                                                                                               
- ------ ---------------------------------------------------------------------------------------------------------------------------- 
-                                                                                                                        
- [ERROR] Found 3 errors   
+---
+
+15 Method App\Http\Controllers\Bookmarks\IndexController::\_\_invoke() has no return type specified.
+
+---
+
+---
+
+Line Models/Bookmark.php
+
+---
+
+33 Method App\Models\Bookmark::user() return type with generic class Illuminate\Database\Eloquent\Relations\BelongsTo does not  
+ specify its types: TRelatedModel, TChildModel  
+ 💡 You can turn this off by setting checkGenericClassInNonGenericObjectType: false in your  
+ phpstan.neon.
+
+---
+
+---
+
+Line Models/User.php
+
+---
+
+49 Method App\Models\User::bookmarks() return type with generic class Illuminate\Database\Eloquent\Relations\HasMany does not  
+ specify its types: TRelatedModel  
+ 💡 You can turn this off by setting checkGenericClassInNonGenericObjectType: false in your  
+ phpstan.neon.
+
+---
+
+[ERROR] Found 3 errors
 ```
 
 The first thing standing out to me is the `Method App\Models\User::bookmarks() return type with generic class` error, now I don’t want to have a huge reliance on generics for this application. The error actually tells us what we can do, so let’s add `checkGenericClassInNonGenericObjectType: false` to our `phpstan.neon` file:
 
 ```yaml
 includes:
-    - ./vendor/nunomaduro/larastan/extension.neon
+  - ./vendor/nunomaduro/larastan/extension.neon
 parameters:
-    paths:
-        - app
-    level: 9
-    ignoreErrors:
-    excludePaths:
-    checkGenericClassInNonGenericObjectType: false
+  paths:
+    - app
+  level: 9
+  ignoreErrors:
+  excludePaths:
+  checkGenericClassInNonGenericObjectType: false
 ```
 
 Now if we run the analysis again, there will be only 5 errors and these are all to do with our controllers - let us start with our `IndexController` and see what we can do. Refactor your index controller to look like the following:
@@ -311,12 +327,14 @@ class IndexController extends Controller
 If we run static analysis against our code now, and pay attention only to the controller we are working on, we will see the following issues:
 
 ```markdown
------- ------------------------------------------------------------------------------------------------- 
-  Line   Http/Controllers/Bookmarks/IndexController.php                                                   
- ------ ------------------------------------------------------------------------------------------------- 
-  15     Method App\Http\Controllers\Bookmarks\IndexController::__invoke() has no return type specified.  
-  21     Cannot access property $id on App\Models\User|null.                                              
- ------ ------------------------------------------------------------------------------------------------- 
+---
+Line Http/Controllers/Bookmarks/IndexController.php
+---
+
+15 Method App\Http\Controllers\Bookmarks\IndexController::\_\_invoke() has no return type specified.  
+ 21 Cannot access property $id on App\Models\User|null.
+
+---
 ```
 
 So what can we do about these 2 errors? The first one is relatively simple to fix, we can add a return type:
@@ -349,10 +367,9 @@ composer phpstan
 
 ```markdown
 Note: Using configuration file /Users/steve/code/sites/larastan-test/phpstan.neon.
- 20/20 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+20/20 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
 
-                                                                                                                        
- [OK] No errors
+[OK] No errors
 ```
 
 Now that we have no errors coming from our `IndexController` anymore. What we do next is iterate through our application, making sure that we run our static analysis checks at important points. The last thing that we want to do is wait until the end of a sprint, or the end of adding a new feature to run it to find we have to spend countless hours fixing static analysis issues. However, at the end of it all - you will have code that you trust, and that is one of my favourite benefits of using static analysis in general. If you can pair static analysis with a good test suite, then there is no reason you should ever not have confidence in your code.

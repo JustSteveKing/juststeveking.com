@@ -3,7 +3,7 @@ title: What are MCP Servers, and why should I care?
 description: Discover how Model Context Protocol servers revolutionize Laravel development with AI integration.
 category: Laravel
 pubDate: 2025-06-06
-image: "/images/articles/mcp-laravel.png"
+image: '/images/articles/mcp-laravel.png'
 minRead: 30
 sponsor:
   name: Sevalla
@@ -14,7 +14,7 @@ author:
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["mcp-servers", "laravel", "ai-development", "laravel-loop"]
+tags: ['mcp-servers', 'laravel', 'ai-development', 'laravel-loop']
 ---
 
 I've been building Laravel applications for over eight years now, and I can count on one hand the number of times a new technology has made me completely rethink my development workflow. Model Context Protocol (MCP) servers are one of those rare game-changers that initially seem like clever tech demos until you realize they're about to fundamentally alter how we interact with our codebases.
@@ -26,6 +26,7 @@ Let me start with a story that'll sound familiar to anyone who's maintained a La
 It was one of those nights. Our platform was throwing intermittent 500 errors, and I was deep in detective mode. The error logs pointed to something in our order processing pipeline, but the stack traces were cryptic. I found myself with fifteen browser tabs open: Laravel docs, Stack Overflow, our Sentry dashboard, table plus, and three different log files.
 
 My debugging process looked like this:
+
 1. Copy error message from logs
 2. Search through codebase for related methods
 3. Check database schema in another window
@@ -92,6 +93,7 @@ This is one of those moments where I love the Laravel community - someone has al
 Looking at their [GitHub repository](https://github.com/kirschbaum-development/laravel-loop), Laravel Loop provides several compelling features:
 
 **Pre-built Toolkits**: The package comes with ready-to-use toolkits including:
+
 - Laravel Model Tools for interacting with your model data
 - Laravel Factories Tools for creating test data from your MCP client
 - Stripe integration for e-commerce applications
@@ -111,7 +113,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Register pre-built toolkits
         Loop::toolkit(LaravelModelToolkit::make());
-        
+
         // Build custom tools using familiar patterns
         Loop::tool(
             CustomTool::make(
@@ -208,7 +210,7 @@ use Kirschbaum\Loop\Contracts\Toolkit;
 class CustomBusinessLogicToolkit implements Toolkit
 {
     use \Kirschbaum\Loop\Concerns\Makeable;
-    
+
     public function getTools(): ToolCollection
     {
         return new ToolCollection([
@@ -253,7 +255,7 @@ We might start designing Laravel applications with AI readability in mind, creat
 I'm planning to implement Laravel Loop in my next project, and I'm particularly interested in exploring:
 
 1. **Custom Business Logic Tools**: Building tools that understand our specific domain and can reason about our unique challenges
-2. **Integration Patterns**: How well it works with existing development workflows and team processes  
+2. **Integration Patterns**: How well it works with existing development workflows and team processes
 3. **Performance Characteristics**: How the different transport options perform with complex queries
 4. **Security Boundaries**: Practical approaches to data sanitization and environment isolation
 
@@ -264,22 +266,26 @@ The package is still in beta, which means there's an opportunity to be part of s
 If you're interested in exploring Laravel Loop, here's the approach I'm planning to take:
 
 **Week 1: Basic Setup and Exploration**
+
 - Install Laravel Loop in a development project
 - Set up a basic connection to Claude Desktop
 - Register the pre-built toolkits and explore their capabilities
 - Ask simple questions about models and routes to understand the interaction patterns
 
 **Week 2: Custom Tool Development**
+
 - Build a simple custom tool focused on a specific pain point
 - Start with something straightforward like configuration analysis or log parsing
 - Experiment with different question patterns to understand how the AI interprets the tools
 
 **Week 3: Workflow Integration**
+
 - Try incorporating Laravel Loop into daily development tasks
 - Use it for code reviews, debugging sessions, and architecture discussions
 - Document what works well and what doesn't
 
 **Week 4: Advanced Patterns**
+
 - Experiment with business-logic tools that understand our specific domain
 - Build tools that combine multiple data sources
 - Start thinking about how this could change long-term development processes
@@ -293,4 +299,3 @@ Laravel Loop appears to be the most mature implementation of this concept specif
 The technology is ready, the protocols are open, and the Laravel community is already building on this foundation. The question isn't whether MCP servers will change how we build Laravel applications – it's how quickly we'll adapt to this new paradigm.
 
 What aspects of your Laravel development workflow do you think would benefit most from this kind of AI integration? Are there specific pain points you face that tools like Laravel Loop might address? I'm curious to hear your thoughts as I embark on this exploration.
-

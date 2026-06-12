@@ -2,169 +2,235 @@
 import Layout from '@/layouts/Layout.astro';
 import { PageHeader, Logo } from '@/components';
 import { designKit as pageMeta } from '@/config/pages';
-import { 
-  designKitMeta, 
-  designKitColors as colors, 
-  designKitTypography as typography, 
-  designKitVisualLanguage as visualLanguage 
+import {
+	designKitMeta,
+	designKitColors as colors,
+	designKitTypography as typography,
+	designKitVisualLanguage as visualLanguage,
 } from '@/data/content';
 ---
 
 <Layout {...pageMeta}>
-  <PageHeader
-    prompt={designKitMeta.prompt}
-    title={designKitMeta.title}
-    subtitle={designKitMeta.subtitle}
-  />
+	<PageHeader
+		prompt={designKitMeta.prompt}
+		title={designKitMeta.title}
+		subtitle={designKitMeta.subtitle}
+	/>
 
-  <div class="px-section py-section flex flex-col gap-32">
-    <!-- Logo Section -->
-    <section>
-      <div class="flex items-center justify-between mb-12">
-        <h2 class="font-mono text-[11px] uppercase tracking-[0.2em] fg-weak font-bold">01. Logo</h2>
-        <a href="/favicon.svg" download class="text-[12px] font-mono fg-accent hover:underline flex items-center gap-2">
-          <span>Download SVG</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        </a>
-      </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="group relative bg-[#eff1f5] border border-black/5 rounded-2xl p-16 flex flex-col items-center justify-center transition-all hover:shadow-md">
-          <div class="w-24 h-24 text-[#4c4f69] transition-transform duration-500 group-hover:scale-110">
-            <Logo />
-          </div>
-          <p class="absolute bottom-6 font-mono text-[9px] uppercase tracking-widest text-[#4c4f69]/60 transition-opacity">Light Mode</p>
-        </div>
-        
-        <div class="group relative bg-[#1e1e2e] border border-white/5 rounded-2xl p-16 flex flex-col items-center justify-center transition-all hover:shadow-md">
-          <div class="w-24 h-24 text-[#cdd6f4] transition-transform duration-500 group-hover:scale-110">
-            <Logo />
-          </div>
-          <p class="absolute bottom-6 font-mono text-[9px] uppercase tracking-widest text-[#cdd6f4]/40 transition-opacity">Dark Mode</p>
-        </div>
+	<div class="px-section py-section flex flex-col gap-32">
+		<!-- Logo Section -->
+		<section>
+			<div class="flex items-center justify-between mb-12">
+				<h2 class="font-mono text-[11px] uppercase tracking-[0.2em] fg-weak font-bold">01. Logo</h2>
+				<a
+					href="/favicon.svg"
+					download
+					class="text-[12px] font-mono fg-accent hover:underline flex items-center gap-2"
+				>
+					<span>Download SVG</span>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="14"
+						height="14"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline
+							points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg
+					>
+				</a>
+			</div>
 
-        <div class="group relative bg-[#8839ef] border border-white/10 rounded-2xl p-16 flex flex-col items-center justify-center transition-all hover:shadow-md">
-          <div class="w-24 h-24 text-white transition-transform duration-500 group-hover:rotate-12">
-            <Logo />
-          </div>
-          <p class="absolute bottom-6 font-mono text-[9px] uppercase tracking-widest text-white/40 transition-opacity">Brand Accent</p>
-        </div>
-      </div>
-      
-      <div class="mt-12 max-w-2xl">
-        <p class="text-lg fg leading-relaxed">
-          The monogram represents the intersection of technical precision and creative problem-solving. 
-          It should be used with ample clear space to maintain its visual impact.
-        </p>
-      </div>
-    </section>
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+				<div
+					class="group relative bg-[#eff1f5] border border-black/5 rounded-2xl p-16 flex flex-col items-center justify-center transition-all hover:shadow-md"
+				>
+					<div
+						class="w-24 h-24 text-[#4c4f69] transition-transform duration-500 group-hover:scale-110"
+					>
+						<Logo />
+					</div>
+					<p
+						class="absolute bottom-6 font-mono text-[9px] uppercase tracking-widest text-[#4c4f69]/60 transition-opacity"
+					>
+						Light Mode
+					</p>
+				</div>
 
-    <!-- Colors Section -->
-    <section>
-      <h2 class="font-mono text-[11px] uppercase tracking-[0.2em] fg-weak font-bold mb-12">02. Color Palette</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
-        {colors.map(color => (
-          <div class="group">
-            <div 
-              class="relative aspect-[16/9] rounded-xl border border-edge shadow-sm mb-4 overflow-hidden transition-all group-hover:shadow-md group-hover:-translate-y-1" 
-              style={`background-color: var(${color.variable});`}
-            >
-              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/5 pointer-events-none">
-                <span class="font-mono text-[10px] uppercase tracking-widest text-white drop-shadow-md">Reference Only</span>
-              </div>
-            </div>
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <p class="font-bold fg-strong text-[15px]">{color.name}</p>
-                <code class="text-[10px] fg-accent font-medium">{color.variable}</code>
-              </div>
-              <p class="font-mono text-[11px] fg-weak uppercase mb-2 tracking-tight">{color.hex}</p>
-              <p class="text-[13px] fg-weak leading-relaxed">{color.description}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
+				<div
+					class="group relative bg-[#1e1e2e] border border-white/5 rounded-2xl p-16 flex flex-col items-center justify-center transition-all hover:shadow-md"
+				>
+					<div
+						class="w-24 h-24 text-[#cdd6f4] transition-transform duration-500 group-hover:scale-110"
+					>
+						<Logo />
+					</div>
+					<p
+						class="absolute bottom-6 font-mono text-[9px] uppercase tracking-widest text-[#cdd6f4]/40 transition-opacity"
+					>
+						Dark Mode
+					</p>
+				</div>
 
-    <!-- Typography Section -->
-    <section>
-      <h2 class="font-mono text-[11px] uppercase tracking-[0.2em] fg-weak font-bold mb-12">03. Typography</h2>
-      
-      <div class="space-y-24">
-        <div class="relative">
-          <div class="flex items-baseline gap-6 mb-8 border-b border-edge pb-4">
-            <span class="text-5xl font-bold fg-strong">{typography.primary.name}</span>
-            <span class="font-mono text-[12px] fg-weak uppercase tracking-widest">Primary Typeface</span>
-          </div>
-          <div class="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 items-start">
-            <div class="space-y-4">
-              <p class="text-[15px] fg leading-relaxed">
-                {typography.primary.description}
-              </p>
-              <div class="flex flex-col gap-2 font-mono text-[12px] fg-weak">
-                <span>Category: {typography.primary.category}</span>
-                <span>Creator: {typography.primary.creator}</span>
-              </div>
-            </div>
-            <div class="space-y-8 bg-surface-weak rounded-2xl p-8 border border-edge">
-              <div class="space-y-2">
-                <p class="text-4xl font-bold fg-strong tracking-tight">The quick brown fox jumps over the lazy dog</p>
-                <p class="text-2xl font-medium fg">The quick brown fox jumps over the lazy dog</p>
-                <p class="text-lg fg-weak">The quick brown fox jumps over the lazy dog</p>
-              </div>
-              <div class="flex flex-wrap gap-6 pt-6 border-t border-edge/40">
-                {typography.primary.weights.map(weight => (
-                  <span class="text-sm fg">{weight}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+				<div
+					class="group relative bg-[#8839ef] border border-white/10 rounded-2xl p-16 flex flex-col items-center justify-center transition-all hover:shadow-md"
+				>
+					<div class="w-24 h-24 text-white transition-transform duration-500 group-hover:rotate-12">
+						<Logo />
+					</div>
+					<p
+						class="absolute bottom-6 font-mono text-[9px] uppercase tracking-widest text-white/40 transition-opacity"
+					>
+						Brand Accent
+					</p>
+				</div>
+			</div>
 
-        <div class="relative">
-          <div class="flex items-baseline gap-6 mb-8 border-b border-edge pb-4">
-            <span class="text-4xl font-mono font-bold fg-accent">{typography.technical.name}</span>
-            <span class="font-mono text-[12px] fg-weak uppercase tracking-widest">Technical Interface</span>
-          </div>
-          <div class="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 items-start">
-            <div class="space-y-4">
-              <p class="text-[15px] fg leading-relaxed">
-                {typography.technical.description}
-              </p>
-              <div class="flex flex-col gap-2 font-mono text-[12px] fg-weak">
-                <span>Category: {typography.technical.category}</span>
-                <span>Creator: {typography.technical.creator}</span>
-              </div>
-            </div>
-            <div class="space-y-8 bg-surface-weak rounded-2xl p-8 border border-edge">
-              <div class="space-y-4 font-mono">
-                  <p class="text-3xl font-bold fg-accent tracking-tight">const brand = "juststeveking";</p>
-                  <p class="text-xl font-medium fg-accent">function designKit() &#123; return true; &#125;</p>
-                  <p class="text-base fg-weak">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789</p>
-              </div>
-              <div class="flex flex-wrap gap-6 pt-6 border-t border-edge/40 font-mono">
-                {typography.technical.weights.map(weight => (
-                  <span class="text-sm fg-accent">{weight}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+			<div class="mt-12 max-w-2xl">
+				<p class="text-lg fg leading-relaxed">
+					The monogram represents the intersection of technical precision and creative
+					problem-solving. It should be used with ample clear space to maintain its visual impact.
+				</p>
+			</div>
+		</section>
 
-    <!-- Visual Language -->
-    <section class="border-t border-edge pt-24">
-      <h2 class="font-mono text-[11px] uppercase tracking-[0.2em] fg-weak font-bold mb-12">04. Visual Language</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {visualLanguage.map(item => (
-          <div class="space-y-4">
-            <div class="h-2 w-12 bg-accent rounded-full"></div>
-            <h4 class="font-bold fg-strong">{item.label}</h4>
-            <p class="text-sm fg-weak leading-relaxed">{item.description}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  </div>
+		<!-- Colors Section -->
+		<section>
+			<h2 class="font-mono text-[11px] uppercase tracking-[0.2em] fg-weak font-bold mb-12">
+				02. Color Palette
+			</h2>
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+				{
+					colors.map((color) => (
+						<div class="group">
+							<div
+								class="relative aspect-[16/9] rounded-xl border border-edge shadow-sm mb-4 overflow-hidden transition-all group-hover:shadow-md group-hover:-translate-y-1"
+								style={`background-color: var(${color.variable});`}
+							>
+								<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/5 pointer-events-none">
+									<span class="font-mono text-[10px] uppercase tracking-widest text-white drop-shadow-md">
+										Reference Only
+									</span>
+								</div>
+							</div>
+							<div>
+								<div class="flex items-center justify-between mb-1">
+									<p class="font-bold fg-strong text-[15px]">{color.name}</p>
+									<code class="text-[10px] fg-accent font-medium">{color.variable}</code>
+								</div>
+								<p class="font-mono text-[11px] fg-weak uppercase mb-2 tracking-tight">
+									{color.hex}
+								</p>
+								<p class="text-[13px] fg-weak leading-relaxed">{color.description}</p>
+							</div>
+						</div>
+					))
+				}
+			</div>
+		</section>
+
+		<!-- Typography Section -->
+		<section>
+			<h2 class="font-mono text-[11px] uppercase tracking-[0.2em] fg-weak font-bold mb-12">
+				03. Typography
+			</h2>
+
+			<div class="space-y-24">
+				<div class="relative">
+					<div class="flex items-baseline gap-6 mb-8 border-b border-edge pb-4">
+						<span class="text-5xl font-bold fg-strong">{typography.primary.name}</span>
+						<span class="font-mono text-[12px] fg-weak uppercase tracking-widest"
+							>Primary Typeface</span
+						>
+					</div>
+					<div class="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 items-start">
+						<div class="space-y-4">
+							<p class="text-[15px] fg leading-relaxed">
+								{typography.primary.description}
+							</p>
+							<div class="flex flex-col gap-2 font-mono text-[12px] fg-weak">
+								<span>Category: {typography.primary.category}</span>
+								<span>Creator: {typography.primary.creator}</span>
+							</div>
+						</div>
+						<div class="space-y-8 bg-surface-weak rounded-2xl p-8 border border-edge">
+							<div class="space-y-2">
+								<p class="text-4xl font-bold fg-strong tracking-tight">
+									The quick brown fox jumps over the lazy dog
+								</p>
+								<p class="text-2xl font-medium fg">The quick brown fox jumps over the lazy dog</p>
+								<p class="text-lg fg-weak">The quick brown fox jumps over the lazy dog</p>
+							</div>
+							<div class="flex flex-wrap gap-6 pt-6 border-t border-edge/40">
+								{
+									typography.primary.weights.map((weight) => (
+										<span class="text-sm fg">{weight}</span>
+									))
+								}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="relative">
+					<div class="flex items-baseline gap-6 mb-8 border-b border-edge pb-4">
+						<span class="text-4xl font-mono font-bold fg-accent">{typography.technical.name}</span>
+						<span class="font-mono text-[12px] fg-weak uppercase tracking-widest"
+							>Technical Interface</span
+						>
+					</div>
+					<div class="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 items-start">
+						<div class="space-y-4">
+							<p class="text-[15px] fg leading-relaxed">
+								{typography.technical.description}
+							</p>
+							<div class="flex flex-col gap-2 font-mono text-[12px] fg-weak">
+								<span>Category: {typography.technical.category}</span>
+								<span>Creator: {typography.technical.creator}</span>
+							</div>
+						</div>
+						<div class="space-y-8 bg-surface-weak rounded-2xl p-8 border border-edge">
+							<div class="space-y-4 font-mono">
+								<p class="text-3xl font-bold fg-accent tracking-tight">
+									const brand = "juststeveking";
+								</p>
+								<p class="text-xl font-medium fg-accent">
+									function designKit() &#123; return true; &#125;
+								</p>
+								<p class="text-base fg-weak">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789</p>
+							</div>
+							<div class="flex flex-wrap gap-6 pt-6 border-t border-edge/40 font-mono">
+								{
+									typography.technical.weights.map((weight) => (
+										<span class="text-sm fg-accent">{weight}</span>
+									))
+								}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Visual Language -->
+		<section class="border-t border-edge pt-24">
+			<h2 class="font-mono text-[11px] uppercase tracking-[0.2em] fg-weak font-bold mb-12">
+				04. Visual Language
+			</h2>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+				{
+					visualLanguage.map((item) => (
+						<div class="space-y-4">
+							<div class="h-2 w-12 bg-accent rounded-full" />
+							<h4 class="font-bold fg-strong">{item.label}</h4>
+							<p class="text-sm fg-weak leading-relaxed">{item.description}</p>
+						</div>
+					))
+				}
+			</div>
+		</section>
+	</div>
 </Layout>

@@ -1,7 +1,7 @@
 ---
-project: "PHP-FIG"
-description: "Core Committee member helping shape PHP standards and recommendations for the community."
-url: "https://www.php-fig.org/"
+project: 'PHP-FIG'
+description: 'Core Committee member helping shape PHP standards and recommendations for the community.'
+url: 'https://www.php-fig.org/'
 order: 2
 ---
 

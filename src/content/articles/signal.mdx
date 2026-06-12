@@ -1,8 +1,8 @@
 ---
-title: "Introducing Signal: documentation that lives in your code"
-description: "Signal is a PHP library that generates living documentation from native attributes. Annotate your classes, run one command, get accurate docs."
+title: 'Introducing Signal: documentation that lives in your code'
+description: 'Signal is a PHP library that generates living documentation from native attributes. Annotate your classes, run one command, get accurate docs.'
 category: PHP
-devTo: "https://dev.to/juststevemcd/introducing-signal-documentation-that-lives-in-your-code-gfg"
+devTo: 'https://dev.to/juststevemcd/introducing-signal-documentation-that-lives-in-your-code-gfg'
 pubDate: 2026-04-30
 minRead: 12
 author:
@@ -10,7 +10,7 @@ author:
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["php", "documentation", "attributes", "developer experience"]
+tags: ['php', 'documentation', 'attributes', 'developer experience']
 ---
 
 I have a confession. I have shipped more than a few projects where the documentation was a lie.
@@ -39,14 +39,12 @@ Then create a `signal.json` config at your project root. This tells Signal where
 
 ```json
 {
-    "input": "src/",
-    "output": {
-        "format": ["markdown", "json"],
-        "path": "docs/"
-    },
-    "exclude": [
-        "src/Attributes/"
-    ]
+	"input": "src/",
+	"output": {
+		"format": ["markdown", "json"],
+		"path": "docs/"
+	},
+	"exclude": ["src/Attributes/"]
 }
 ```
 
@@ -534,38 +532,38 @@ For the `store()` method above, Signal produces something close to this:
 
 **Requires Authorization:**
 
-| Ability | Description |
-|---------|-------------|
-| `orders.create` | - |
+| Ability         | Description |
+| --------------- | ----------- |
+| `orders.create` | -           |
 
 **Validates:**
 
-| Field | Rules | Description |
-|-------|-------|-------------|
-| `items` | `required\|array\|min:1` | Line items for the order |
-| `items.*.product_id` | `required\|integer\|exists:products,id` | - |
-| `items.*.quantity` | `required\|integer\|min:1` | - |
-| `payment_method` | `required\|in:card,bank_transfer` | - |
+| Field                | Rules                                   | Description              |
+| -------------------- | --------------------------------------- | ------------------------ |
+| `items`              | `required\|array\|min:1`                | Line items for the order |
+| `items.*.product_id` | `required\|integer\|exists:products,id` | -                        |
+| `items.*.quantity`   | `required\|integer\|min:1`              | -                        |
+| `payment_method`     | `required\|in:card,bank_transfer`       | -                        |
 
 **Emits:**
 
-| Event | Description |
-|-------|-------------|
+| Event         | Description                             |
+| ------------- | --------------------------------------- |
 | `OrderPlaced` | Dispatched after the order is persisted |
 
 **Side Effects:**
 
-| Description | Tags |
-|-------------|------|
-| Sends order confirmation email to the customer | `email` |
-| Reserves inventory for each line item | `inventory` |
+| Description                                    | Tags        |
+| ---------------------------------------------- | ----------- |
+| Sends order confirmation email to the customer | `email`     |
+| Reserves inventory for each line item          | `inventory` |
 
 **Throws:**
 
-| Exception | Description |
-|-----------|-------------|
-| `PaymentFailedException` | When the gateway rejects the charge |
-| `InsufficientStockException` | When a product cannot be reserved |
+| Exception                    | Description                         |
+| ---------------------------- | ----------------------------------- |
+| `PaymentFailedException`     | When the gateway rejects the charge |
+| `InsufficientStockException` | When a product cannot be reserved   |
 ```
 
 Clean tables. No noise. Everything a developer needs to understand a method without opening the implementation.
@@ -580,48 +578,61 @@ Here is a trimmed example of what the JSON looks like for the controller above:
 
 ```json
 {
-    "generated_at": "2025-04-30T09:00:00+00:00",
-    "classes": [
-        {
-            "name": "OrderController",
-            "namespace": "App\\Http\\Controllers\\Api\\V1",
-            "fully_qualified_name": "App\\Http\\Controllers\\Api\\V1\\OrderController",
-            "file": "src/Http/Controllers/Api/V1/OrderController.php",
-            "type": "controller",
-            "description": "RESTful controller for managing customer orders",
-            "tags": ["orders", "api", "v1"],
-            "dependencies": [
-                { "class": "OrderService", "description": "Handles order business logic" },
-                { "class": "OrderRepository", "description": "" }
-            ],
-            "methods": [
-                {
-                    "name": "store",
-                    "route": {
-                        "method": "post",
-                        "path": "/v1/orders",
-                        "description": "Place a new order"
-                    },
-                    "authorize": [
-                        { "ability": "orders.create", "description": "" }
-                    ],
-                    "validates": [
-                        { "field": "items", "rules": "required|array|min:1", "description": "Line items for the order" },
-                        { "field": "items.*.product_id", "rules": "required|integer|exists:products,id", "description": "" }
-                    ],
-                    "emits": [
-                        { "event": "OrderPlaced", "description": "Dispatched after the order is persisted", "tags": [] }
-                    ],
-                    "side_effects": [
-                        { "description": "Sends order confirmation email to the customer", "tags": ["email"] }
-                    ],
-                    "throws": [
-                        { "exception": "PaymentFailedException", "description": "When the gateway rejects the charge" }
-                    ]
-                }
-            ]
-        }
-    ]
+	"generated_at": "2025-04-30T09:00:00+00:00",
+	"classes": [
+		{
+			"name": "OrderController",
+			"namespace": "App\\Http\\Controllers\\Api\\V1",
+			"fully_qualified_name": "App\\Http\\Controllers\\Api\\V1\\OrderController",
+			"file": "src/Http/Controllers/Api/V1/OrderController.php",
+			"type": "controller",
+			"description": "RESTful controller for managing customer orders",
+			"tags": ["orders", "api", "v1"],
+			"dependencies": [
+				{ "class": "OrderService", "description": "Handles order business logic" },
+				{ "class": "OrderRepository", "description": "" }
+			],
+			"methods": [
+				{
+					"name": "store",
+					"route": {
+						"method": "post",
+						"path": "/v1/orders",
+						"description": "Place a new order"
+					},
+					"authorize": [{ "ability": "orders.create", "description": "" }],
+					"validates": [
+						{
+							"field": "items",
+							"rules": "required|array|min:1",
+							"description": "Line items for the order"
+						},
+						{
+							"field": "items.*.product_id",
+							"rules": "required|integer|exists:products,id",
+							"description": ""
+						}
+					],
+					"emits": [
+						{
+							"event": "OrderPlaced",
+							"description": "Dispatched after the order is persisted",
+							"tags": []
+						}
+					],
+					"side_effects": [
+						{ "description": "Sends order confirmation email to the customer", "tags": ["email"] }
+					],
+					"throws": [
+						{
+							"exception": "PaymentFailedException",
+							"description": "When the gateway rejects the charge"
+						}
+					]
+				}
+			]
+		}
+	]
 }
 ```
 
@@ -651,4 +662,4 @@ If you have ever inherited a codebase where the docs were useless and the only s
 
 Signal is open source and available at [github.com/JustSteveKing/signal](https://github.com/JustSteveKing/signal). Install it, annotate a controller or service, run the generator, and see what comes out. Issues and contributions are welcome.
 
-*If you build something interesting with the JSON output, whether that is a custom portal, a CI gate, or something I haven't thought of, I would genuinely like to hear about it.*
+_If you build something interesting with the JSON output, whether that is a custom portal, a CI gate, or something I haven't thought of, I would genuinely like to hear about it._

@@ -3,14 +3,14 @@ title: Embracing The Tall Stack with Event Sourcing, an adventure into the unkno
 description: Dive into blending Laravel's TALL stack with event sourcing, learning to create efficient and reactive PHP applications with modern web development techniques.
 category: Laravel
 pubDate: 2020-06-04
-image: "/images/articles/tall-stack-event-sourcing.png"
+image: '/images/articles/tall-stack-event-sourcing.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["tall-stack", "event-sourcing", "laravel", "php"]
+tags: ['tall-stack', 'event-sourcing', 'laravel', 'php']
 ---
 
 TALL stack is growing in popularity in the Laravel community, and rightly so.
@@ -21,7 +21,7 @@ one step further.
 
 A few days ago I read some absolutely fantstic articles by the people over at [Spatie](https://spatie.be/), specifically [Freek Van Der Herten](https://freek.dev/) and [Brent Roose](https://stitcher.io/) - but I am sure more of the team were involved.
 
-To summarise these two articles ([one written by Brent](https://stitcher.io/blog/combining-event-sourcing-and-stateful-systems))([one written by Freek](https://freek.dev/1634-mixing-event-sourcing-in-a-traditional-laravel-app)), using a fully event sourced system will add complexities that can get difficult to manage very quickly - especially when not everything really ***needs*** to be event sourced. Using a fully stateful application has been the standard for a lot of the industry for many years, and is your typical go to system. Most people want some level of CRUD (create read update delete) behaviour on a set of resources, and the application will just be a database wrapper allowing for manipulation and aggregation of these resources. I would like to stress here, **there is nothing wrong with this approach at all**. In short terms, this article poses the question: Why can these approaches be mixed in the same system?
+To summarise these two articles ([one written by Brent](https://stitcher.io/blog/combining-event-sourcing-and-stateful-systems))([one written by Freek](https://freek.dev/1634-mixing-event-sourcing-in-a-traditional-laravel-app)), using a fully event sourced system will add complexities that can get difficult to manage very quickly - especially when not everything really **_needs_** to be event sourced. Using a fully stateful application has been the standard for a lot of the industry for many years, and is your typical go to system. Most people want some level of CRUD (create read update delete) behaviour on a set of resources, and the application will just be a database wrapper allowing for manipulation and aggregation of these resources. I would like to stress here, **there is nothing wrong with this approach at all**. In short terms, this article poses the question: Why can these approaches be mixed in the same system?
 
 It sounds obvious right? Why has nobody asked this before? As soon as I read these articles it clicked with me, this is an obvious approach to the event sourcing problem while adding extra business intelligence to a traditional stateful application. So with that in mind I decided to combine the awesome power of the TALL stack with a simple Event Sourced application, so far it doesn't do much - simple user registration and password reset functionality that comes as standard in a Laravel application, but also in the tall stack preset. The purpose of this exercise was to see how well these approaches would work combined.
 
@@ -77,8 +77,8 @@ class User extends Authenticatable
 
 Now we have our User model updated in the right place, we need to make some changes in a few places:
 
-* `app/config/auth.php` make sure to change the providers model to the new model context
-* next we will have a new set of LiveWire components available under `app/Http/Livewire/Auth` which we will be working on next.
+- `app/config/auth.php` make sure to change the providers model to the new model context
+- next we will have a new set of LiveWire components available under `app/Http/Livewire/Auth` which we will be working on next.
 
 Once you have hooked up the auth correctly, feel free to test from this point to ensure it is working and all function ality works as it is. Our next step is to install the [spatie/laravel-event-sourcing package](https://docs.spatie.be/laravel-event-sourcing/v3/installation-setup/) - I would highly recommend have a thorough read through the documentation and watching the introductory videos, they explain things very well.
 
@@ -108,11 +108,11 @@ class UserCreated implements ShouldBeStored
 
   /**
   * User Created Constructor
-  * 
+  *
   * @param string $name
   * @param string $email
   * @param string $password
-  * 
+  *
   * @return void
   */
   public function __construct(
@@ -167,10 +167,10 @@ class UserProjector implements Projector
 
   /**
   * Creates a new user
-  * 
+  *
   * @param UserCreated $event
   * @param string $aggregateUuid
-  * 
+  *
   * @return void
   */
   public function onUserCreated(UserCreated $event, string $aggregateUuid)

@@ -3,14 +3,14 @@ title: Using Data Objects; Domain Commands
 description: Laravel DDD; Use Data Objects and Domain Commands to escape 'array hell' and perform clean write operations in your application.
 category: Laravel
 pubDate: 2022-05-03
-image: "/images/articles/laravel-ddd.png"
+image: '/images/articles/laravel-ddd.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "domain-driven-design", "data-objects", "command-pattern"]
+tags: ['laravel', 'domain-driven-design', 'data-objects', 'command-pattern']
 ---
 
 In our last installment we spoke about how we can use data objects and data object factories to escape what I call “array hell”, a place where we have no idea what is in something passed to a method and there is no context or strictness about them. Now that we know how we are going to create these let’s look at a way we can use them!
@@ -125,6 +125,7 @@ class PostsServiceProvider extends ServiceProvider
     ];
 }
 ```
+
 This is a single service provider that will let us add all the bindings for the posts in our blogging domain, as we move on we will be able to register things such as Queries and more.
 
 Now all that is left for us to do is to let our Blogging domains Service Provider know about this additional provider, and then we can start binding to our DI container within Laravel.

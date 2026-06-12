@@ -29,35 +29,44 @@ const podcastsSchema = {
 
 	<section aria-label="Podcast episodes">
 		<ul class="list-none p-0 m-0" role="list">
-			{episodes.map(ep => (
-				<li class="border-b border-edge last:border-b-0">
-					<div class="flex flex-col gap-2 px-section py-6 sm:flex-row sm:justify-between sm:items-start sm:gap-6">
-						<div class="flex flex-col gap-1.5 min-w-0">
-							<span class="font-mono text-[11px] fg-accent uppercase tracking-[0.06em] font-semibold">{ep.data.episode}</span>
-							{ep.data.url ? (
-								<a
-									href={ep.data.url}
-									target="_blank"
-									rel="noopener noreferrer"
-									class="text-[15px] font-medium fg-strong leading-snug no-underline transition-colors hover:fg-accent"
+			{
+				episodes.map((ep) => (
+					<li class="border-b border-edge last:border-b-0">
+						<div class="flex flex-col gap-2 px-section py-6 sm:flex-row sm:justify-between sm:items-start sm:gap-6">
+							<div class="flex flex-col gap-1.5 min-w-0">
+								<span class="font-mono text-[11px] fg-accent uppercase tracking-[0.06em] font-semibold">
+									{ep.data.episode}
+								</span>
+								{ep.data.url ? (
+									<a
+										href={ep.data.url}
+										target="_blank"
+										rel="noopener noreferrer"
+										class="text-[15px] font-medium fg-strong leading-snug no-underline transition-colors hover:fg-accent"
+									>
+										{ep.data.title}
+									</a>
+								) : (
+									<span class="text-[15px] font-medium fg-strong leading-snug">
+										{ep.data.title}
+									</span>
+								)}
+								{ep.data.description && (
+									<p class="text-[13px] fg leading-relaxed line-clamp-2">{ep.data.description}</p>
+								)}
+							</div>
+							<div class="shrink-0">
+								<time
+									class="font-mono text-[12px] fg-weak whitespace-nowrap"
+									datetime={ep.data.date.toISOString()}
 								>
-									{ep.data.title}
-								</a>
-							) : (
-								<span class="text-[15px] font-medium fg-strong leading-snug">{ep.data.title}</span>
-							)}
-							{ep.data.description && (
-								<p class="text-[13px] fg leading-relaxed line-clamp-2">{ep.data.description}</p>
-							)}
+									{formatDate(ep.data.date)}
+								</time>
+							</div>
 						</div>
-						<div class="shrink-0">
-							<time class="font-mono text-[12px] fg-weak whitespace-nowrap" datetime={ep.data.date.toISOString()}>
-								{formatDate(ep.data.date)}
-							</time>
-						</div>
-					</div>
-				</li>
-			))}
+					</li>
+				))
+			}
 		</ul>
 	</section>
 </Layout>

@@ -13,19 +13,29 @@ interface Props {
 
 const { items, variant = 'article' } = Astro.props;
 
-const navClass = variant === 'filter'
-	? 'flex items-center gap-2 px-section py-3 border-b border-edge-weak font-mono text-[12px] fg-weak'
-	: 'flex items-center gap-2 mb-6 font-mono text-[12px] fg-weak';
+const navClass =
+	variant === 'filter'
+		? 'flex items-center gap-2 px-section py-3 border-b border-edge-weak font-mono text-[12px] fg-weak'
+		: 'flex items-center gap-2 mb-6 font-mono text-[12px] fg-weak';
 ---
 
 <nav class={navClass} aria-label="Breadcrumb">
-	{items.map((item, i) => (
-		<>
-			{i > 0 && <span aria-hidden="true">/</span>}
-			{item.href
-				? <a href={item.href} class="fg-weak no-underline transition-colors hover:[color:var(--color-accent)]" {...(i === items.length - 1 ? { 'aria-current': 'page' } : {})}>{item.label}</a>
-				: <span aria-current={i === items.length - 1 ? 'page' : undefined}>{item.label}</span>
-			}
-		</>
-	))}
+	{
+		items.map((item, i) => (
+			<>
+				{i > 0 && <span aria-hidden="true">/</span>}
+				{item.href ? (
+					<a
+						href={item.href}
+						class="fg-weak no-underline transition-colors hover:[color:var(--color-accent)]"
+						{...(i === items.length - 1 ? { 'aria-current': 'page' } : {})}
+					>
+						{item.label}
+					</a>
+				) : (
+					<span aria-current={i === items.length - 1 ? 'page' : undefined}>{item.label}</span>
+				)}
+			</>
+		))
+	}
 </nav>

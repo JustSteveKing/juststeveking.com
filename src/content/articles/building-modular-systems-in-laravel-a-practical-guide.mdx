@@ -1,9 +1,20 @@
 ---
-title: "Building modular systems in Laravel - A practical guide"
-description: "Learn how modular architecture transforms Laravel apps into scalable, maintainable systems."
+title: 'Building modular systems in Laravel - A practical guide'
+description: 'Learn how modular architecture transforms Laravel apps into scalable, maintainable systems.'
 category: Laravel
 pubDate: 2025-10-08
-tags: ["Laravel", "PHP", "Architecture", "Modular", "Microservices", "Design Patterns", "Sevalla", "Testing", "Scalability"]
+tags:
+  [
+    'Laravel',
+    'PHP',
+    'Architecture',
+    'Modular',
+    'Microservices',
+    'Design Patterns',
+    'Sevalla',
+    'Testing',
+    'Scalability',
+  ]
 draft: false
 sponsor:
   name: Sevalla
@@ -11,10 +22,10 @@ sponsor:
   logo: https://github.com/sevalla-hosting.png
 featured: true
 readingTime: 17
-canonical: "https://sevalla.com/blog/building-modular-systems-laravel/"
+canonical: 'https://sevalla.com/blog/building-modular-systems-laravel/'
 crossPost:
-  originalUrl: "https://sevalla.com/blog/building-modular-systems-laravel/"
-  originalSite: "Sevalla Blog"
+  originalUrl: 'https://sevalla.com/blog/building-modular-systems-laravel/'
+  originalSite: 'Sevalla Blog'
   publishedDate: 2025-08-18
   permission: true
 ---
@@ -78,12 +89,12 @@ The first thing you'll need to do is update your `composer.json` to autoload the
 
 ```json
 {
-  "autoload": {
-    "psr-4": {
-      "App\\": "app/",
-      "Modules\\": "src/Modules/"
-    }
-  }
+	"autoload": {
+		"psr-4": {
+			"App\\": "app/",
+			"Modules\\": "src/Modules/"
+		}
+	}
 }
 ```
 
@@ -451,4 +462,4 @@ I've seen teams reduce their deployment anxiety from "fingers crossed" to "confi
 
 ---
 
-*This article was originally published on [Sevalla Blog](https://sevalla.com/blog/building-modular-systems-laravel/). Follow me on [Twitter](https://twitter.com/juststeveking) for more Laravel and architecture insights.*
+_This article was originally published on [Sevalla Blog](https://sevalla.com/blog/building-modular-systems-laravel/). Follow me on [Twitter](https://twitter.com/juststeveking) for more Laravel and architecture insights._

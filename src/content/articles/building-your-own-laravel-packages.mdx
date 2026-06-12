@@ -3,14 +3,14 @@ title: Building your own Laravel Packages
 description: Master building Laravel packages with step-by-step guidance on design, commands, DTOs, and testing.
 category: Laravel
 pubDate: 2022-08-05
-image: "/images/articles/building-your-own-laravel-packages.png"
+image: '/images/articles/building-your-own-laravel-packages.png'
 minRead: 14
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "package-development", "php", "data-transfer-objects"]
+tags: ['laravel', 'package-development', 'php', 'data-transfer-objects']
 ---
 
 Sharing code has never been more accessible, and installing PHP packages has become convenient; building packages however? In this tutorial, I will walk through how to start and publish a new Laravel package. Going through the setup and tools you can use to ensure your package quality and that if you build and publish something, you do it well.
@@ -33,39 +33,39 @@ Now that we have a repo to work with, we know that we will be able to commit thi
 
 ```json
 {
-  "name": "juststeveking/laravel-data-object-tools",
-  "description": "A set of tools to make working with Data Transfer Objects easier in Laravel",
-  "type": "library",
-  "license": "MIT",
-  "authors": [
-    {
-      "role": "Developer",
-      "name": "Steve McDougall",
-      "email": "juststevemcd@gmail.com",
-      "homepage": "https://www.juststeveking.uk/"
-    }
-  ],
-  "autoload": {
-    "psr-4": {
-      "JustSteveKing\\DataObjects\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "JustSteveKing\\DataObjects\\Tests\\": "tests/"
-    }
-  },
-  "require": {
-    "php": "^8.1"
-  },
-  "require-dev": {},
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "config": {
-    "sort-packages": true,
-    "preferred-install": "dist",
-    "optimize-autoloader": true
-  }
+	"name": "juststeveking/laravel-data-object-tools",
+	"description": "A set of tools to make working with Data Transfer Objects easier in Laravel",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"role": "Developer",
+			"name": "Steve McDougall",
+			"email": "juststevemcd@gmail.com",
+			"homepage": "https://www.juststeveking.uk/"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"JustSteveKing\\DataObjects\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"JustSteveKing\\DataObjects\\Tests\\": "tests/"
+		}
+	},
+	"require": {
+		"php": "^8.1"
+	},
+	"require-dev": {},
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"config": {
+		"sort-packages": true,
+		"preferred-install": "dist",
+		"optimize-autoloader": true
+	}
 }
 ```
 
@@ -184,7 +184,7 @@ final class DataTransferObjectMakeCommand extends GeneratorCommand
         return "{$rootNamespace}\\DataObjects";
     }
 }
-``` 
+```
 
 Let's walk through this command to understand what we are creating. Our command wants to extend the `GeneratorCommand` as we want to generate a new file. This is useful to understand, as there is little documentation on how to do this. The only thing we need for this command is a method called `getStub` - which is what the command needs to know how to load the location of the stub file to aid in the generation of the file. I have created a directory in the root of my package called `stubs`, a familiar place for Laravel applications. You will see here that I am checking the installed PHP version to see if we are on PHP 8.2, and if we are - we want to load in the correct stub version to take advantage of read-only classes. The chances of this right now are pretty low - however, we are not that far away. This approach helps generate files for specific PHP versions, so you can ensure support for each version you wish to support.
 
@@ -503,7 +503,7 @@ I like to use PSR-12 for my code style, so let us create a `pint.json` in the ro
 
 ```json
 {
-  "preset": "psr12"
+	"preset": "psr12"
 }
 ```
 
@@ -523,10 +523,10 @@ To configure PHPStan, we will need to create a `phpstan.neon` in the root of our
 
 ```yaml
 parameters:
-    level: 9
+  level: 9
 
-    paths:
-        - src
+  paths:
+    - src
 ```
 
 Finally, we can run PHPStan to ensure that we look good from a type perspective.

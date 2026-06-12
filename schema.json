@@ -1,130 +1,133 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$defs": {
-    "article": {
-      "type": "object",
-      "required": ["title", "description", "pubDate"],
-      "properties": {
-        "title": { "type": "string" },
-        "description": { "type": "string", "maxLength": 200 },
-        "category": { "type": "string" },
-        "tags": { "type": "array", "items": { "type": "string" } },
-        "pubDate": { "type": "string", "format": "date" },
-        "updatedDate": { "type": "string", "format": "date" },
-        "image": { "type": "string" },
-        "featured": { "type": "boolean" },
-        "draft": { "type": "boolean" }
-      }
-    },
-    "apiGuide": {
-      "type": "object",
-      "required": ["title", "description", "category", "useWhen", "avoidWhen"],
-      "properties": {
-        "title": { "type": "string" },
-        "description": { "type": "string", "maxLength": 220 },
-        "category": { "type": "string" },
-        "complexity": { "type": "string", "enum": ["intro", "intermediate", "advanced"] },
-        "useWhen": { "type": "string" },
-        "avoidWhen": { "type": "string" },
-        "tags": { "type": "array", "items": { "type": "string" } },
-        "publishedDate": { "type": "string", "format": "date" }
-      }
-    },
-    "video": {
-      "type": "object",
-      "required": ["title", "description", "videoId", "publishedDate", "duration"],
-      "properties": {
-        "title": { "type": "string" },
-        "description": { "type": "string" },
-        "videoId": { "type": "string" },
-        "publishedDate": { "type": "string", "format": "date" },
-        "duration": { "type": "string" },
-        "views": { "type": "string" },
-        "type": { "type": "string", "enum": ["video", "shorts", "livestream"] }
-      }
-    },
-    "package": {
-      "type": "object",
-      "required": ["name", "description"],
-      "properties": {
-        "name": { "type": "string" },
-        "description": { "type": "string" },
-        "packagist": { "type": "string" },
-        "github": { "type": "string" },
-        "tech": { "type": "array", "items": { "type": "string" } }
-      }
-    },
-    "talk": {
-      "type": "object",
-      "required": ["title", "event", "location", "date", "category"],
-      "properties": {
-        "title": { "type": "string" },
-        "event": { "type": "string" },
-        "location": { "type": "string" },
-        "date": { "type": "string", "format": "date" },
-        "category": { "type": "string", "enum": ["conference", "workshop", "meetup", "webinar", "panel"] }
-      }
-    },
-    "podcast": {
-      "type": "object",
-      "required": ["title", "episode", "date"],
-      "properties": {
-        "title": { "type": "string" },
-        "episode": { "type": "string" },
-        "date": { "type": "string", "format": "date" }
-      }
-    },
-    "testimonial": {
-      "type": "object",
-      "required": ["quote", "author"],
-      "properties": {
-        "quote": { "type": "string" },
-        "author": {
-          "type": "object",
-          "required": ["name", "role", "company"],
-          "properties": {
-            "name": { "type": "string" },
-            "role": { "type": "string" },
-            "company": { "type": "string" }
-          }
-        }
-      }
-    },
-    "contribution": {
-      "type": "object",
-      "required": ["project", "description"],
-      "properties": {
-        "project": { "type": "string" },
-        "description": { "type": "string" }
-      }
-    },
-    "series": {
-      "type": "object",
-      "required": ["title"],
-      "properties": {
-        "title": { "type": "string" },
-        "description": { "type": "string" }
-      }
-    },
-    "toolCategory": {
-      "type": "object",
-      "required": ["title", "icon", "items"],
-      "properties": {
-        "title": { "type": "string" },
-        "icon": { "type": "string" },
-        "items": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": ["name"],
-            "properties": {
-              "name": { "type": "string" },
-              "description": { "type": "string" },
-              "url": { "type": "string" }
-            }
-          }
-        }
-      }
-    }
-  }
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$defs": {
+		"article": {
+			"type": "object",
+			"required": ["title", "description", "pubDate"],
+			"properties": {
+				"title": { "type": "string" },
+				"description": { "type": "string", "maxLength": 200 },
+				"category": { "type": "string" },
+				"tags": { "type": "array", "items": { "type": "string" } },
+				"pubDate": { "type": "string", "format": "date" },
+				"updatedDate": { "type": "string", "format": "date" },
+				"image": { "type": "string" },
+				"featured": { "type": "boolean" },
+				"draft": { "type": "boolean" }
+			}
+		},
+		"apiGuide": {
+			"type": "object",
+			"required": ["title", "description", "category", "useWhen", "avoidWhen"],
+			"properties": {
+				"title": { "type": "string" },
+				"description": { "type": "string", "maxLength": 220 },
+				"category": { "type": "string" },
+				"complexity": { "type": "string", "enum": ["intro", "intermediate", "advanced"] },
+				"useWhen": { "type": "string" },
+				"avoidWhen": { "type": "string" },
+				"tags": { "type": "array", "items": { "type": "string" } },
+				"publishedDate": { "type": "string", "format": "date" }
+			}
+		},
+		"video": {
+			"type": "object",
+			"required": ["title", "description", "videoId", "publishedDate", "duration"],
+			"properties": {
+				"title": { "type": "string" },
+				"description": { "type": "string" },
+				"videoId": { "type": "string" },
+				"publishedDate": { "type": "string", "format": "date" },
+				"duration": { "type": "string" },
+				"views": { "type": "string" },
+				"type": { "type": "string", "enum": ["video", "shorts", "livestream"] }
+			}
+		},
+		"package": {
+			"type": "object",
+			"required": ["name", "description"],
+			"properties": {
+				"name": { "type": "string" },
+				"description": { "type": "string" },
+				"packagist": { "type": "string" },
+				"github": { "type": "string" },
+				"tech": { "type": "array", "items": { "type": "string" } }
+			}
+		},
+		"talk": {
+			"type": "object",
+			"required": ["title", "event", "location", "date", "category"],
+			"properties": {
+				"title": { "type": "string" },
+				"event": { "type": "string" },
+				"location": { "type": "string" },
+				"date": { "type": "string", "format": "date" },
+				"category": {
+					"type": "string",
+					"enum": ["conference", "workshop", "meetup", "webinar", "panel"]
+				}
+			}
+		},
+		"podcast": {
+			"type": "object",
+			"required": ["title", "episode", "date"],
+			"properties": {
+				"title": { "type": "string" },
+				"episode": { "type": "string" },
+				"date": { "type": "string", "format": "date" }
+			}
+		},
+		"testimonial": {
+			"type": "object",
+			"required": ["quote", "author"],
+			"properties": {
+				"quote": { "type": "string" },
+				"author": {
+					"type": "object",
+					"required": ["name", "role", "company"],
+					"properties": {
+						"name": { "type": "string" },
+						"role": { "type": "string" },
+						"company": { "type": "string" }
+					}
+				}
+			}
+		},
+		"contribution": {
+			"type": "object",
+			"required": ["project", "description"],
+			"properties": {
+				"project": { "type": "string" },
+				"description": { "type": "string" }
+			}
+		},
+		"series": {
+			"type": "object",
+			"required": ["title"],
+			"properties": {
+				"title": { "type": "string" },
+				"description": { "type": "string" }
+			}
+		},
+		"toolCategory": {
+			"type": "object",
+			"required": ["title", "icon", "items"],
+			"properties": {
+				"title": { "type": "string" },
+				"icon": { "type": "string" },
+				"items": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"required": ["name"],
+						"properties": {
+							"name": { "type": "string" },
+							"description": { "type": "string" },
+							"url": { "type": "string" }
+						}
+					}
+				}
+			}
+		}
+	}
 }

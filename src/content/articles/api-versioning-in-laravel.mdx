@@ -3,14 +3,14 @@ title: API Versioning in Laravel - All you need to know
 description: All you need to know about API Versioning. What is it, what types of versioning exist, how are they used and why you might need it?
 category: Laravel
 pubDate: 2023-11-25
-image: "/images/social/articles/api-versioning-in-laravel.png"
+image: '/images/social/articles/api-versioning-in-laravel.png'
 minRead: 14
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "api-development", "versioning", "rest-api"]
+tags: ['laravel', 'api-development', 'versioning', 'rest-api']
 ---
 
 ## Introduction
@@ -28,7 +28,6 @@ As you can imagine, not versioning your API correctly can have a detrimental imp
 **But how should you version your API?**
 
 What approaches are there? Do you even need to version your API? Perhaps you have an internal application that utilises an API that only a small group of people use in a non business critical role, do you still need to version your API? Let’s look into these questions and more.
-
 
 ## Basics: What is API Versioning
 
@@ -76,7 +75,7 @@ public function index(request)
       data = this.service.v1.listall()
     case 'v2':
       data = this.service.v2.listall()
-  
+
   return response.data(data)
 ```
 

@@ -1,34 +1,34 @@
 ---
-name: "juststeveking/http-auth-strategies"
-description: "A simple PHP package that is used to create different Http Auth Headers"
-packagist: "https://packagist.org/packages/juststeveking/http-auth-strategies"
-github: "https://github.com/JustSteveKing/http-auth-strategies"
-link: "https://github.com/JustSteveKing/http-auth-strategies"
-tech: ["PHP"]
+name: 'juststeveking/http-auth-strategies'
+description: 'A simple PHP package that is used to create different Http Auth Headers'
+packagist: 'https://packagist.org/packages/juststeveking/http-auth-strategies'
+github: 'https://github.com/JustSteveKing/http-auth-strategies'
+link: 'https://github.com/JustSteveKing/http-auth-strategies'
+tech: ['PHP']
 featured: false
 downloads: 72253
 monthlyDownloads: 625
 stars: 8
-version: "v1.2.0"
-updatedAt: "2026-06-10"
+version: 'v1.2.0'
+updatedAt: '2026-06-10'
 ---
 
 # Http Auth Strategies
 
 <!-- BADGES_START -->
+
 [![Latest Version][badge-release]][packagist]
 [![PHP Version][badge-php]][php]
-
 
 [![Total Downloads][badge-downloads]][downloads]
 
 [badge-release]: https://img.shields.io/packagist/v/juststeveking/http-auth-strategies.svg?style=flat-square&label=release
 [badge-php]: https://img.shields.io/packagist/php-v/juststeveking/http-auth-strategies.svg?style=flat-square
 [badge-downloads]: https://img.shields.io/packagist/dt/juststeveking/http-auth-strategies.svg?style=flat-square&colorB=mediumvioletred
-
 [packagist]: https://packagist.org/packages/juststeveking/http-auth-strategies
 [php]: https://php.net
 [downloads]: https://packagist.org/packages/juststeveking/http-auth-strategies
+
 <!-- BADGES_END -->
 
 A simple PHP package that is used to create different Http Auth Headers.
@@ -74,4 +74,3 @@ $strategy->setHeaderName('X-API-KEY');
 $strategy->getHeader('Bearer');
 // ['X-API-KEY' => 'Bearer your-api-key']
 ```
-

@@ -1,16 +1,16 @@
 ---
-name: "juststeveking/gtin-php"
-description: "A PHP package for validating GTIN codes"
-packagist: "https://packagist.org/packages/juststeveking/gtin-php"
-github: "https://github.com/JustSteveKing/gtin-php"
-link: "https://github.com/JustSteveKing/gtin-php"
-tech: ["PHP"]
+name: 'juststeveking/gtin-php'
+description: 'A PHP package for validating GTIN codes'
+packagist: 'https://packagist.org/packages/juststeveking/gtin-php'
+github: 'https://github.com/JustSteveKing/gtin-php'
+link: 'https://github.com/JustSteveKing/gtin-php'
+tech: ['PHP']
 featured: false
 downloads: 133011
 monthlyDownloads: 559
 stars: 5
-version: "v1.0.1"
-updatedAt: "2026-06-10"
+version: 'v1.0.1'
+updatedAt: '2026-06-10'
 ---
 
 # A PHP Validator for the GTIN standard
@@ -123,6 +123,7 @@ public function rules()
 Feel free to use the `Gtin` class directly if that is more convinient.
 
 ## Testing
+
 ```bash
 composer test
 ```
@@ -143,4 +144,3 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-

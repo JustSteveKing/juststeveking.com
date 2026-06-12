@@ -1,21 +1,21 @@
 ---
-title: "Webhook event delivery with signed payloads"
-slug: "webhook-event-delivery-with-signed-payloads"
-description: "Push events to third-party systems in near-real-time with signed payloads, retry logic, and event replay capabilities."
-category: "integration"
-complexity: "intermediate"
-apiStyles: ["rest"]
-useWhen: "Your API needs to push events to third-party systems in near-real-time."
+title: 'Webhook event delivery with signed payloads'
+slug: 'webhook-event-delivery-with-signed-payloads'
+description: 'Push events to third-party systems in near-real-time with signed payloads, retry logic, and event replay capabilities.'
+category: 'integration'
+complexity: 'intermediate'
+apiStyles: ['rest']
+useWhen: 'Your API needs to push events to third-party systems in near-real-time.'
 avoidWhen: "Consumers can easily poll, latency requirements are low, or you don't want webhook operational overhead."
-tags: ["webhooks", "events", "signing", "security"]
-related: ["idempotency-keys-for-safe-retries"]
+tags: ['webhooks', 'events', 'signing', 'security']
+related: ['idempotency-keys-for-safe-retries']
 ---
 
 Webhooks let your system notify others when something happens, instead of making them constantly poll. A robust pattern includes:
 
-- Registering endpoints as resources (`/webhook-endpoints`).  
-- Signing payloads so consumers can verify authenticity.  
-- Retries with exponential backoff on non‑2xx responses.  
+- Registering endpoints as resources (`/webhook-endpoints`).
+- Signing payloads so consumers can verify authenticity.
+- Retries with exponential backoff on non‑2xx responses.
 - A way to replay events safely.
 
 Example: webhook endpoint registration.
@@ -36,7 +36,7 @@ Content-Type: application/json
   "id": "wh_123",
   "url": "https://api.example-client.test/webhooks/invoices",
   "events": ["invoice.created", "invoice.paid"],
-  "secret": "whsec_6d9e2ab4..." 
+  "secret": "whsec_6d9e2ab4..."
 }
 ```
 

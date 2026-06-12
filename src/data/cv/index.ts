@@ -32,15 +32,15 @@ export const cvProjects: ResumeProject[] = resume.projects ?? [];
 // ——— Filtered helpers ———
 
 export function currentRoles(): ResumeWork[] {
-	return workHistory.filter(w => !w.endDate);
+	return workHistory.filter((w) => !w.endDate);
 }
 
 export function pastRoles(): ResumeWork[] {
-	return workHistory.filter(w => !!w.endDate);
+	return workHistory.filter((w) => !!w.endDate);
 }
 
 export function skillByName(name: string): ResumeSkill | undefined {
-	return skills.find(s => s.name.toLowerCase() === name.toLowerCase());
+	return skills.find((s) => s.name.toLowerCase() === name.toLowerCase());
 }
 
 // ——— Date / duration helpers ———
@@ -56,8 +56,7 @@ export function duration(startDate: string, endDate?: string): string {
 	const start = new Date(startDate);
 	const end = endDate ? new Date(endDate) : new Date();
 	const months =
-		(end.getFullYear() - start.getFullYear()) * 12 +
-		(end.getMonth() - start.getMonth());
+		(end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
 	if (months < 12) return `${months}mo`;
 	const years = Math.floor(months / 12);
 	const rem = months % 12;

@@ -3,14 +3,14 @@ title: Eloquent API Calls
 description: Discover advanced techniques for API integration in Laravel, focusing on configuring GitHub API calls, utilizing Enums, and creating efficient client resources.
 category: Laravel
 pubDate: 2022-12-09
-image: "/images/articles/eloquent-api-calls.png"
+image: '/images/articles/eloquent-api-calls.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "api-integration", "github-api", "object-oriented-design"]
+tags: ['laravel', 'api-integration', 'github-api', 'object-oriented-design']
 ---
 
 Time and again, I have spoken about API integrations, and each time I find an improvement from the last, once more into the fray.
@@ -215,7 +215,7 @@ trait HasResource
     public function __construct(
         private ResourceContract $resource,
     ) {}
-    
+
     public function resource(): ResourceContract
     {
         return $this->resource;

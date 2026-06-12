@@ -3,14 +3,14 @@ title: Working with Laravel Model Events
 description: Learn how to work with Laravel Model Events and explore different approaches to handle them efficiently. Discover pros and cons of each method.
 category: Laravel
 pubDate: 2022-08-25
-image: "/images/articles/laravel-model-events.png"
+image: '/images/articles/laravel-model-events.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "eloquent", "model-events", "event-handling"]
+tags: ['laravel', 'eloquent', 'model-events', 'event-handling']
 ---
 
 When working with Eloquent Models, it is common to tap into the events dispatched through the Models lifecycle. There are a few different ways you can do this, and in this tutorial, I will walk through them and explain the benefits and drawbacks of each one.
@@ -31,7 +31,7 @@ class Office extends Model
 {
 	public static function boot(): void
 	{
-		static::creating(fn (Model $model) => 
+		static::creating(fn (Model $model) =>
 			$model->uuid = Str::uuid(),
 		);
 	}
@@ -54,7 +54,7 @@ trait HasUuid
 {
 	public static function bootHasUuid(): void
 	{
-		static::creating(fn (Model $model) => 
+		static::creating(fn (Model $model) =>
 			$model->uuid = Str::uuid(),
 		);
 	}
@@ -102,7 +102,7 @@ class Office extends Model
 }
 ```
 
-The `SetModelUuid` will be instantiated during the lifecycle of the Eloquent model and is your chance to add behavior and properties to the model. 
+The `SetModelUuid` will be instantiated during the lifecycle of the Eloquent model and is your chance to add behavior and properties to the model.
 
 ```php
 declare(strict_types=1);
@@ -123,7 +123,7 @@ class SetModelUuid
 
 This approach is one of the cleanest and easiest to understand, as there is plenty of visibility on the model, and you can easily share this class across models. The biggest issue you will face is if you need to trigger multiple actions on a model event.
 
-In conclusion, in all honesty, there is no right way to do this. You can choose any of the above methods, and they will work, but you should choose the one that is right for you and your specific use case. I would like to see more options around this particular functionality. 
+In conclusion, in all honesty, there is no right way to do this. You can choose any of the above methods, and they will work, but you should choose the one that is right for you and your specific use case. I would like to see more options around this particular functionality.
 
 For example, an observer is a good option if you need to add multiple properties to a model on model events. However, is it the best option? How about if we used the dispatch events property to run a custom pipeline for that model?
 

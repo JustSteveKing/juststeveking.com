@@ -3,7 +3,7 @@ title: Nuxt and why you should be using it
 description: Discover the power of Nuxt.js for building modern web applications. Learn why you should consider using it for your next project.
 category: Frontend
 pubDate: 2025-06-05
-image: "/images/articles/nuxt.png"
+image: '/images/articles/nuxt.png'
 minRead: 14
 sponsor:
   name: Sevalla
@@ -14,7 +14,7 @@ author:
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["nuxtjs", "vuejs", "web-frameworks", "frontend-development"]
+tags: ['nuxtjs', 'vuejs', 'web-frameworks', 'frontend-development']
 ---
 
 I've been working with Vue.js frameworks for years now, and I can honestly say that watching Nuxt evolve has been one of the most exciting journeys in modern web development. When I first started using Nuxt 2, it was already impressive-but what the team has accomplished with Nuxt 3 and the upcoming Nuxt 4 is nothing short of revolutionary.
@@ -36,14 +36,14 @@ What blows my mind is the 5ms cold start times. Let me put that in perspective: 
 ```typescript
 // nuxt.config.ts - This is all you need for edge deployment
 export default defineNuxtConfig({
-  nitro: {
-    preset: 'cloudflare-pages', // Deploy to edge in one line
-    routeRules: {
-      '/api/**': { cors: true, cache: { maxAge: 60 } },
-      '/admin/**': { ssr: false }
-    }
-  }
-})
+	nitro: {
+		preset: 'cloudflare-pages', // Deploy to edge in one line
+		routeRules: {
+			'/api/**': { cors: true, cache: { maxAge: 60 } },
+			'/admin/**': { ssr: false },
+		},
+	},
+});
 ```
 
 And creating API routes? It's embarrassingly simple:
@@ -51,17 +51,17 @@ And creating API routes? It's embarrassingly simple:
 ```typescript
 // server/api/users/[id].ts
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, 'id')
-  
-  if (!id) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'ID parameter is required'
-    })
-  }
-  
-  return { user: await getUserById(id) }
-})
+	const id = getRouterParam(event, 'id');
+
+	if (!id) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'ID parameter is required',
+		});
+	}
+
+	return { user: await getUserById(id) };
+});
 ```
 
 I used to spend hours configuring Express servers and wrestling with middleware. Now? I drop a file in the `server/api` directory and it just works. The TypeScript inference is automatic, the error handling is elegant, and deployment is a breeze.
@@ -72,28 +72,28 @@ You know what I love most about Nuxt's approach to routing? It mirrors how I nat
 
 ```md
 pages/
-├── index.vue                   # becomes /
-├── about.vue                   # becomes /about
+├── index.vue # becomes /
+├── about.vue # becomes /about
 ├── blog/
-│   ├── index.vue              # becomes /blog
-│   ├── [slug].vue             # becomes /blog/:slug
-│   └── [...comments].vue      # becomes /blog/*/comments/*
+│ ├── index.vue # becomes /blog
+│ ├── [slug].vue # becomes /blog/:slug
+│ └── [...comments].vue # becomes /blog/_/comments/_
 ├── user-[id]/
-│   └── profile.vue            # becomes /user-:id/profile
-└── [[optional]].vue           # becomes / or /:optional
+│ └── profile.vue # becomes /user-:id/profile
+└── [[optional]].vue # becomes / or /:optional
 ```
 
 But here's where it gets really powerful. You can mix and match rendering strategies per route:
 
 ```typescript
 export default defineNuxtConfig({
-  routeRules: {
-    '/': { prerender: true },           // Static homepage for speed
-    '/blog/**': { swr: 3600 },          // Blog with smart caching
-    '/admin/**': { ssr: false },        // SPA for admin panel
-    '/api/**': { cors: true }           // API configuration
-  }
-})
+	routeRules: {
+		'/': { prerender: true }, // Static homepage for speed
+		'/blog/**': { swr: 3600 }, // Blog with smart caching
+		'/admin/**': { ssr: false }, // SPA for admin panel
+		'/api/**': { cors: true }, // API configuration
+	},
+});
 ```
 
 I remember building a client project where the marketing pages needed to be lightning-fast (pre-rendered), the blog needed fresh content but could tolerate some staleness (SWR), and the admin panel worked better as a SPA. With traditional setups, this would have meant multiple applications or complex configuration. With Nuxt? Just a few lines in the config.
@@ -105,18 +105,18 @@ I'll be honest-when I first heard about auto-imports, I was skeptical. It sounde
 ```vue
 <script setup lang="ts">
 // Look ma, no imports!
-const count = ref(0) // Vue reactive ref
-const { data } = await useFetch('/api/data') // Nuxt composable
-const config = useRuntimeConfig() // Another Nuxt composable
+const count = ref(0); // Vue reactive ref
+const { data } = await useFetch('/api/data'); // Nuxt composable
+const config = useRuntimeConfig(); // Another Nuxt composable
 
 // Even your custom components from components/ directory
 </script>
 
 <template>
-  <div>
-    <MyButton @click="increment">{{ count }}</MyButton>
-    <FormsInputField v-model="email" name="email" />
-  </div>
+	<div>
+		<MyButton @click="increment">{{ count }}</MyButton>
+		<FormsInputField v-model="email" name="email" />
+	</div>
 </template>
 ```
 
@@ -130,24 +130,24 @@ Nuxt 3's hybrid rendering lets me be pragmatic:
 
 ```typescript
 export default defineNuxtConfig({
-  routeRules: {
-    // Marketing pages: prerender for maximum speed and SEO
-    '/': { prerender: true },
-    '/pricing': { prerender: true },
-    
-    // Blog: stale-while-revalidate for fresh content with fallback
-    '/blog/**': { swr: 3600 },
-    
-    // User dashboard: client-side only for rich interactions
-    '/dashboard/**': { ssr: false },
-    
-    // API: proper caching and CORS
-    '/api/**': { 
-      cors: true,
-      cache: { maxAge: 3600 }
-    }
-  }
-})
+	routeRules: {
+		// Marketing pages: prerender for maximum speed and SEO
+		'/': { prerender: true },
+		'/pricing': { prerender: true },
+
+		// Blog: stale-while-revalidate for fresh content with fallback
+		'/blog/**': { swr: 3600 },
+
+		// User dashboard: client-side only for rich interactions
+		'/dashboard/**': { ssr: false },
+
+		// API: proper caching and CORS
+		'/api/**': {
+			cors: true,
+			cache: { maxAge: 3600 },
+		},
+	},
+});
 ```
 
 Each route gets exactly the rendering strategy it needs. It's like having multiple applications, but with the simplicity of a single codebase.
@@ -161,11 +161,11 @@ Zero configuration TypeScript means I get this for free:
 ```typescript
 // server/api/users.get.ts - automatically typed
 export default defineEventHandler(async (event) => {
-  return { users: [{ id: 1, name: 'John' }] }
-})
+	return { users: [{ id: 1, name: 'John' }] };
+});
 
 // In my components, data is typed as { users: User[] }
-const { data } = await $fetch('/api/users')
+const { data } = await $fetch('/api/users');
 ```
 
 The type inference across the full stack is honestly impressive. API responses are typed, route parameters are typed, even my auto-imported composables maintain their type signatures. It's the kind of developer experience that spoils you for other frameworks.
@@ -176,25 +176,14 @@ I've spent countless hours optimizing bundle sizes, implementing code splitting,
 
 ```vue
 <template>
-  <!-- Only loads when needed -->
-  <LazyHeavyComponent v-if="showComponent" />
-  
-  <!-- Optimized images with modern formats -->
-  <NuxtImg
-    src="/hero.jpg"
-    alt="Hero image"
-    width="800"
-    height="600"
-    format="webp"
-    loading="lazy"
-  />
-  
-  <!-- Responsive images with automatic srcset -->
-  <NuxtPicture
-    src="/hero.jpg"
-    format="avif,webp"
-    sizes="sm:100vw md:50vw lg:400px"
-  />
+	<!-- Only loads when needed -->
+	<LazyHeavyComponent v-if="showComponent" />
+
+	<!-- Optimized images with modern formats -->
+	<NuxtImg src="/hero.jpg" alt="Hero image" width="800" height="600" format="webp" loading="lazy" />
+
+	<!-- Responsive images with automatic srcset -->
+	<NuxtPicture src="/hero.jpg" format="avif,webp" sizes="sm:100vw md:50vw lg:400px" />
 </template>
 ```
 
@@ -207,7 +196,7 @@ With over 200 modules available, there's probably already a solution for whateve
 ```vue
 <!-- pages/blog/[...slug].vue -->
 <template>
-  <ContentDoc />
+	<ContentDoc />
 </template>
 
 <script setup lang="ts">
@@ -221,13 +210,13 @@ Authentication? `@sidebase/nuxt-auth` has you covered:
 ```typescript
 // server/api/auth/[...].ts
 export default NuxtAuthHandler({
-  providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    })
-  ]
-})
+	providers: [
+		GithubProvider({
+			clientId: process.env.GITHUB_CLIENT_ID,
+			clientSecret: process.env.GITHUB_CLIENT_SECRET,
+		}),
+	],
+});
 ```
 
 I've built production applications using these modules, and they feel like natural extensions of the framework rather than awkward third-party add-ons.
@@ -253,13 +242,13 @@ The universal deployment capabilities mean I can start with simple hosting and s
 
 I get asked about this comparison a lot. Having built production applications with both frameworks, here's my honest take:
 
-|Aspect|Nuxt.js|Next.js|
-|---|---|---|
-|**Learning Curve**|Gentler, more intuitive|Steeper but more flexible|
-|**Configuration**|Convention-based, minimal setup|More options, more complexity|
-|**Auto-imports**|Components, composables, utilities|Limited auto-imports|
-|**TypeScript**|Zero-config with auto-generation|Good support, manual setup|
-|**Bundle Size**|Consistently smaller|Varies by implementation|
+| Aspect             | Nuxt.js                            | Next.js                       |
+| ------------------ | ---------------------------------- | ----------------------------- |
+| **Learning Curve** | Gentler, more intuitive            | Steeper but more flexible     |
+| **Configuration**  | Convention-based, minimal setup    | More options, more complexity |
+| **Auto-imports**   | Components, composables, utilities | Limited auto-imports          |
+| **TypeScript**     | Zero-config with auto-generation   | Good support, manual setup    |
+| **Bundle Size**    | Consistently smaller               | Varies by implementation      |
 
 Choose Nuxt when you want to move fast, prefer conventions over configuration, and your team knows Vue. Choose Next.js when you need maximum flexibility, have React expertise, or require extensive third-party integrations.
 

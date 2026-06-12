@@ -1,21 +1,22 @@
 ---
-name: "juststeveking/laravel-business-process"
-description: "Laravel Business Process is a simple and clean way to run business process using a Laravel Pipeline, in a structured and type-safe way."
-packagist: "https://packagist.org/packages/juststeveking/laravel-business-process"
-github: "https://github.com/JustSteveKing/laravel-business-process"
-link: "https://github.com/JustSteveKing/laravel-business-process"
-tech: ["PHP"]
+name: 'juststeveking/laravel-business-process'
+description: 'Laravel Business Process is a simple and clean way to run business process using a Laravel Pipeline, in a structured and type-safe way.'
+packagist: 'https://packagist.org/packages/juststeveking/laravel-business-process'
+github: 'https://github.com/JustSteveKing/laravel-business-process'
+link: 'https://github.com/JustSteveKing/laravel-business-process'
+tech: ['PHP']
 featured: false
 downloads: 3670
 monthlyDownloads: 56
 stars: 66
-version: "dev-main"
-updatedAt: "2026-06-10"
+version: 'dev-main'
+updatedAt: '2026-06-10'
 ---
 
 # Laravel Business Process
 
 <!-- BADGES_START -->
+
 [![Latest Version][badge-release]][packagist]
 [![Software License][badge-license]][license]
 [](https://github.com/JustSteveKing/laravel-business-process/actions/workflows/tests.yml)
@@ -26,11 +27,11 @@ updatedAt: "2026-06-10"
 [badge-license]: https://img.shields.io/packagist/l/juststeveking/laravel-business-process.svg?style=flat-square
 [badge-php]: https://img.shields.io/packagist/php-v/juststeveking/laravel-business-process.svg?style=flat-square
 [badge-downloads]: https://img.shields.io/packagist/dt/juststeveking/laravel-business-process.svg?style=flat-square&colorB=mediumvioletred
-
 [packagist]: https://packagist.org/packages/juststeveking/laravel-business-process
 [license]: https://github.com/juststeveking/laravel-business-process/blob/main/LICENSE
 [php]: https://php.net
 [downloads]: https://packagist.org/packages/juststeveking/laravel-business-process
+
 <!-- BADGES_END -->
 
 Laravel Business Process is a simple and clean way to run business process using a Laravel Pipeline, in a structured and type-safe way.
@@ -72,7 +73,7 @@ final class CheckStockLevel implements TaskContract
     public function __invoke(ProcessPayload $payload, Closure $next): mixed
     {
         // perform your logic here with the passed in payload.
-        
+
         return $next($payload);
     }
 }
@@ -104,7 +105,7 @@ final class PurchaseController
      public function __construct(
         private readonly PurchaseProduct $process,
      ) {}
-     
+
      public function __invoke(PurchaseRequest $request, int $product): JsonResponse
      {
         try {
@@ -114,11 +115,12 @@ final class PurchaseController
         } catch (Throwable $exception) {
             // Handle exception
         }
-        
+
         // return response.
      }
 }
 ```
+
 ## Testing
 
 To run the test:
@@ -135,5 +137,3 @@ composer run test
 ## LICENSE
 
 The MIT License (MIT). Please see [License File](./LICENSE) for more information.
-
-

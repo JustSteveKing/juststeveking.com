@@ -7,7 +7,7 @@ import { formatDate } from '@/utils/format';
 
 export async function getStaticPaths() {
 	const packages = await getCollection('packages');
-	return packages.map(pkg => ({
+	return packages.map((pkg) => ({
 		params: { id: pkg.id },
 		props: { pkg },
 	}));
@@ -16,7 +16,8 @@ export async function getStaticPaths() {
 const { pkg } = Astro.props;
 const { Content } = await render(pkg);
 
-const { name, description, packagist, github, link, tech, downloads, stars, version, updatedAt } = pkg.data;
+const { name, description, packagist, github, link, tech, downloads, stars, version, updatedAt } =
+	pkg.data;
 
 const pageUrl = `${site.url}/projects/${pkg.id}`;
 
@@ -37,60 +38,98 @@ const packageSchema = {
 	softwareVersion: version,
 	author: { '@type': 'Person', name: site.author, url: site.url },
 	...(github ? { codeRepository: github } : {}),
-	...(downloads ? { interactionStatistic: { '@type': 'InteractionCounter', interactionType: 'https://schema.org/DownloadAction', userInteractionCount: downloads } } : {}),
+	...(downloads
+		? {
+				interactionStatistic: {
+					'@type': 'InteractionCounter',
+					interactionType: 'https://schema.org/DownloadAction',
+					userInteractionCount: downloads,
+				},
+			}
+		: {}),
 };
 ---
 
 <Layout {...pageMeta} jsonLd={packageSchema}>
 	<article>
 		<header class="px-section py-section border-b border-edge">
-			<Breadcrumb items={[
-				{ label: 'Packages', href: '/projects' },
-				{ label: name.split('/')[1] || name },
-			]} />
+			<Breadcrumb
+				items={[{ label: 'Packages', href: '/projects' }, { label: name.split('/')[1] || name }]}
+			/>
 
 			<h1 class="text-[28px] font-bold fg-strong leading-tight mb-4 max-w-[60ch]">{name}</h1>
 			<p class="text-base leading-[1.65] fg max-w-[60ch] mb-5">{description}</p>
 
 			<div class="flex items-center gap-3.5 flex-wrap mb-6">
-				{version && (
-					<span class="font-mono text-[11px] fg-weak border border-edge rounded-[3px] px-1.5 py-px">{version}</span>
-				)}
-				{stars !== undefined && (
-					<span class="font-mono text-[11px] fg-weak">★ {stars.toLocaleString()} stars</span>
-				)}
-				{downloads !== undefined && (
-					<span class="font-mono text-[11px] fg-weak">↓ {downloads.toLocaleString()} downloads</span>
-				)}
-				{updatedAt && (
-					<time class="font-mono text-[11px] fg-weak" datetime={updatedAt instanceof Date ? updatedAt.toISOString() : updatedAt}>
-						Updated {formatDate(updatedAt)}
-					</time>
-				)}
+				{
+					version && (
+						<span class="font-mono text-[11px] fg-weak border border-edge rounded-[3px] px-1.5 py-px">
+							{version}
+						</span>
+					)
+				}
+				{
+					stars !== undefined && (
+						<span class="font-mono text-[11px] fg-weak">★ {stars.toLocaleString()} stars</span>
+					)
+				}
+				{
+					downloads !== undefined && (
+						<span class="font-mono text-[11px] fg-weak">
+							↓ {downloads.toLocaleString()} downloads
+						</span>
+					)
+				}
+				{
+					updatedAt && (
+						<time
+							class="font-mono text-[11px] fg-weak"
+							datetime={updatedAt instanceof Date ? updatedAt.toISOString() : updatedAt}
+						>
+							Updated {formatDate(updatedAt)}
+						</time>
+					)
+				}
 			</div>
 
-			{tech && tech.length > 0 && (
-				<div class="flex flex-wrap gap-1.5" aria-label="Technologies">
-					{tech.map(t => (
-						<Tag>{t}</Tag>
-					))}
-				</div>
-			)}
+			{
+				tech && tech.length > 0 && (
+					<div class="flex flex-wrap gap-1.5" aria-label="Technologies">
+						{tech.map((t) => (
+							<Tag>{t}</Tag>
+						))}
+					</div>
+				)
+			}
 		</header>
 
 		<div class="px-section py-8 border-b border-edge bg-surface-weak">
 			<div class="flex flex-wrap items-center gap-4">
 				<div class="flex items-center gap-3">
-					{packagist && (
-						<a href={packagist} target="_blank" rel="noopener noreferrer" class="font-mono text-[12px] fg-accent no-underline hover:underline">
-							Packagist <span aria-hidden="true">↗</span>
-						</a>
-					)}
-					{github && (
-						<a href={github} target="_blank" rel="noopener noreferrer" class="font-mono text-[12px] fg-accent no-underline hover:underline">
-							GitHub <span aria-hidden="true">↗</span>
-						</a>
-					)}
+					{
+						packagist && (
+							<a
+								href={packagist}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="font-mono text-[12px] fg-accent no-underline hover:underline"
+							>
+								Packagist <span aria-hidden="true">↗</span>
+							</a>
+						)
+					}
+					{
+						github && (
+							<a
+								href={github}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="font-mono text-[12px] fg-accent no-underline hover:underline"
+							>
+								GitHub <span aria-hidden="true">↗</span>
+							</a>
+						)
+					}
 				</div>
 			</div>
 		</div>
@@ -103,7 +142,8 @@ const packageSchema = {
 	<section class="px-section py-section border-t border-edge" aria-label="Work with me">
 		<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-4">Work with me</p>
 		<p class="text-[16px] fg leading-relaxed max-w-[52ch] mb-6">
-			I help SaaS teams build and maintain high-quality APIs. If you need help with your PHP or Laravel project, let's talk.
+			I help SaaS teams build and maintain high-quality APIs. If you need help with your PHP or
+			Laravel project, let's talk.
 		</p>
 		<div class="flex flex-wrap items-center gap-3">
 			<a
@@ -119,4 +159,40 @@ const packageSchema = {
 			</a>
 		</div>
 	</section>
+
+	<script is:inline define:vars={{ name, tech, github, packagist }}>
+		document.addEventListener('DOMContentLoaded', () => {
+			window.posthog?.capture('project_viewed', {
+				project_name: name,
+				project_tech: tech ?? [],
+			});
+
+			if (github) {
+				document.querySelector(`a[href="${github}"]`)?.addEventListener('click', () => {
+					window.posthog?.capture('project_link_clicked', {
+						project_name: name,
+						link_type: 'github',
+					});
+				});
+			}
+
+			if (packagist) {
+				document.querySelector(`a[href="${packagist}"]`)?.addEventListener('click', () => {
+					window.posthog?.capture('project_link_clicked', {
+						project_name: name,
+						link_type: 'packagist',
+					});
+				});
+			}
+
+			document.querySelectorAll('a[href="https://juststeveking.link"]').forEach((el) => {
+				el.addEventListener('click', () => {
+					window.posthog?.capture('discovery_call_clicked', {
+						location: 'project',
+						project_name: name,
+					});
+				});
+			});
+		});
+	</script>
 </Layout>

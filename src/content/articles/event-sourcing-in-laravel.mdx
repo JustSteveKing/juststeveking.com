@@ -3,19 +3,19 @@ title: Event Sourcing in Laravel
 description: Master Event Sourcing in Laravel with this comprehensive guide, perfect for enhancing PHP projects with advanced data tracking and state management techniques.
 category: Laravel
 pubDate: 2022-08-12
-image: "/images/articles/event-sourcing-in-laravel.png"
+image: '/images/articles/event-sourcing-in-laravel.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "event-sourcing", "php", "domain-driven-design"]
+tags: ['laravel', 'event-sourcing', 'php', 'domain-driven-design']
 ---
 
-Event Sourcing is a term that has been getting more popular in the PHP community over the last few years, but it still remains a mystery to many developers. The questions are always how and why, and it is understandable. This tutorial is designed to help you understand not only what Event Sourcing is, in a practical way, but know when you might want to use it. 
+Event Sourcing is a term that has been getting more popular in the PHP community over the last few years, but it still remains a mystery to many developers. The questions are always how and why, and it is understandable. This tutorial is designed to help you understand not only what Event Sourcing is, in a practical way, but know when you might want to use it.
 
-In a traditional application, our application state is directly represented in the database we are connected to. We do not fully understand how it got there. All we know is that it is. There are ways in which we might understand this a little more, using tools for auditing model changes so that we can see what was changed and by who. This, again, is a step in the right direction. However, we still don't understand the critical question. 
+In a traditional application, our application state is directly represented in the database we are connected to. We do not fully understand how it got there. All we know is that it is. There are ways in which we might understand this a little more, using tools for auditing model changes so that we can see what was changed and by who. This, again, is a step in the right direction. However, we still don't understand the critical question.
 
 Why? Why did this model change? What is the purpose of this change?
 
@@ -150,6 +150,7 @@ The first step is to create a model and migration, as you will need a way to que
 ```bash
 php artisan make:model CelebrationStoredEvent -m
 ```
+
 The following code is what you will need in your up method for the migration:
 
 ```php

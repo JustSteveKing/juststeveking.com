@@ -6,7 +6,7 @@ import { site } from '@/config';
 
 export async function getStaticPaths() {
 	const guides = await getCollection('apiGuides');
-	return guides.map(guide => ({
+	return guides.map((guide) => ({
 		params: { id: guide.data.slug ?? guide.id },
 		props: { guide },
 	}));
@@ -15,7 +15,8 @@ export async function getStaticPaths() {
 const { guide } = Astro.props;
 const { Content } = await render(guide);
 
-const { title, description, complexity, category, tags, apiStyles, useWhen, avoidWhen } = guide.data;
+const { title, description, complexity, category, tags, apiStyles, useWhen, avoidWhen } =
+	guide.data;
 const pageUrl = `${site.url}/api-guides/${guide.data.slug ?? guide.id}`;
 
 const guideSchema = {
@@ -30,34 +31,46 @@ const guideSchema = {
 };
 ---
 
-<Layout title={title} description={description} ogImage={`/og/api-guides/${guide.id}.webp`} jsonLd={guideSchema}>
+<Layout
+	title={title}
+	description={description}
+	ogImage={`/og/api-guides/${guide.id}.webp`}
+	jsonLd={guideSchema}
+>
 	<article>
 		<header class="px-section py-section border-b border-edge">
-			<Breadcrumb items={[
-				{ label: 'API Guides', href: '/api-guides' },
-				{ label: category },
-			]} />
+			<Breadcrumb items={[{ label: 'API Guides', href: '/api-guides' }, { label: category }]} />
 
 			<h1 class="text-[28px] font-bold fg-strong leading-tight mb-4 max-w-[60ch]">{title}</h1>
 			<p class="text-base fg leading-relaxed max-w-[60ch] mb-5">{description}</p>
 
 			<div class="flex items-center gap-3 flex-wrap mb-6">
-				<span class={`font-mono text-[11px] uppercase tracking-[0.06em] font-semibold ${complexity === 'intro' ? 'fg-success' : complexity === 'advanced' ? 'fg-accent' : 'fg-weak'}`}>
+				<span
+					class={`font-mono text-[11px] uppercase tracking-[0.06em] font-semibold ${complexity === 'intro' ? 'fg-success' : complexity === 'advanced' ? 'fg-accent' : 'fg-weak'}`}
+				>
 					{complexity}
 				</span>
 				<span class="font-mono text-[11px] fg-weak">{category}</span>
-				{apiStyles.map(s => (
-					<span class="font-mono text-[11px] fg-weak border border-edge-weak rounded-[3px] px-2 py-0.5">{s}</span>
-				))}
+				{
+					apiStyles.map((s) => (
+						<span class="font-mono text-[11px] fg-weak border border-edge-weak rounded-[3px] px-2 py-0.5">
+							{s}
+						</span>
+					))
+				}
 			</div>
 
 			<div class="grid gap-4 sm:grid-cols-2 max-w-[72ch]">
 				<div class="p-4 rounded-xl border border-edge bg-surface-weak">
-					<p class="font-mono text-[10px] uppercase tracking-widest fg-success font-semibold mb-2">Use when</p>
+					<p class="font-mono text-[10px] uppercase tracking-widest fg-success font-semibold mb-2">
+						Use when
+					</p>
 					<p class="text-[13px] fg leading-relaxed">{useWhen}</p>
 				</div>
 				<div class="p-4 rounded-xl border border-edge bg-surface-weak">
-					<p class="font-mono text-[10px] uppercase tracking-widest fg-weak font-semibold mb-2">Avoid when</p>
+					<p class="font-mono text-[10px] uppercase tracking-widest fg-weak font-semibold mb-2">
+						Avoid when
+					</p>
 					<p class="text-[13px] fg leading-relaxed">{avoidWhen}</p>
 				</div>
 			</div>
@@ -72,7 +85,8 @@ const guideSchema = {
 	<section class="px-section py-section border-t border-edge" aria-label="Work with me">
 		<p class="font-mono text-[11px] uppercase tracking-widest fg-weak mb-4">Need hands-on help?</p>
 		<p class="text-[16px] fg leading-relaxed max-w-[52ch] mb-6">
-			If your API has design problems like these in production, an audit can surface the highest-risk issues in a week.
+			If your API has design problems like these in production, an audit can surface the
+			highest-risk issues in a week.
 		</p>
 		<div class="flex flex-wrap items-center gap-3">
 			<a
@@ -87,3 +101,14 @@ const guideSchema = {
 		</div>
 	</section>
 </Layout>
+
+<script is:inline define:vars={{ title, category, complexity, apiStyles }}>
+	document.addEventListener('DOMContentLoaded', () => {
+		window.posthog?.capture('api_guide_read', {
+			guide_title: title,
+			guide_category: category,
+			guide_complexity: complexity,
+			guide_api_styles: apiStyles,
+		});
+	});
+</script>

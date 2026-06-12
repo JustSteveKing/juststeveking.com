@@ -1,14 +1,14 @@
 ---
-title: "Idempotency keys for safe retries"
-slug: "idempotency-keys-for-safe-retries"
-description: "Let clients safely retry non-idempotent calls without accidentally creating duplicates. Essential for payments and critical operations."
-category: "writing-data"
-complexity: "intro"
-apiStyles: ["rest"]
-useWhen: "Clients may retry requests and you want to avoid duplicate side effects."
-avoidWhen: "The operation is naturally idempotent or read-only."
-tags: ["idempotency", "retries", "reliability"]
-related: ["bulk-updates-via-async-jobs"]
+title: 'Idempotency keys for safe retries'
+slug: 'idempotency-keys-for-safe-retries'
+description: 'Let clients safely retry non-idempotent calls without accidentally creating duplicates. Essential for payments and critical operations.'
+category: 'writing-data'
+complexity: 'intro'
+apiStyles: ['rest']
+useWhen: 'Clients may retry requests and you want to avoid duplicate side effects.'
+avoidWhen: 'The operation is naturally idempotent or read-only.'
+tags: ['idempotency', 'retries', 'reliability']
+related: ['bulk-updates-via-async-jobs']
 ---
 
 Idempotency keys let clients safely retry non‑idempotent calls (like `POST /charges`) without accidentally creating duplicates. The client sends an `Idempotency-Key` header that uniquely identifies “this logical operation”. Your API stores the result keyed by that value and returns the same response for subsequent attempts.

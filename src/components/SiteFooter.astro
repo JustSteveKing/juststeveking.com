@@ -1,32 +1,50 @@
 ---
-import { footerGroups } from "@/config";
+import { footerGroups } from '@/config';
 ---
 
-<footer role="contentinfo" aria-label="Site footer" class="border-t border-edge px-section py-section">
+<footer
+	role="contentinfo"
+	aria-label="Site footer"
+	class="border-t border-edge px-section py-section"
+>
 	<div class="grid grid-cols-2 gap-8 sm:grid-cols-4">
-		{footerGroups.map(group => (
-			<div class="flex flex-col gap-3">
-				<p class="font-mono text-[10px] uppercase tracking-widest fg-weak font-semibold">{group.label}</p>
-				<ul class="list-none p-0 m-0 flex flex-col gap-2">
-					{group.links.map(link => (
-						<li>
-							<a
-								href={link.href}
-								class="text-[13px] fg no-underline transition-colors hover:fg-accent"
-								{...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-							>
-								{link.label}
-								{link.external && <span class="visually-hidden">(opens in new tab)</span>}
-							</a>
-						</li>
-					))}
-				</ul>
-			</div>
-		))}
+		{
+			footerGroups.map((group) => (
+				<div class="flex flex-col gap-3">
+					<p class="font-mono text-[10px] uppercase tracking-widest fg-weak font-semibold">
+						{group.label}
+					</p>
+					<ul class="list-none p-0 m-0 flex flex-col gap-2">
+						{group.links.map((link) => (
+							<li>
+								<a
+									href={link.href}
+									class="text-[13px] fg no-underline transition-colors hover:fg-accent"
+									{...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+								>
+									{link.label}
+									{link.external && <span class="visually-hidden">(opens in new tab)</span>}
+								</a>
+							</li>
+						))}
+					</ul>
+				</div>
+			))
+		}
 	</div>
 
-	<div class="mt-10 pt-6 border-t border-edge-weak flex items-center justify-between gap-4 flex-wrap">
-		<span class="font-mono text-[12px] fg-weak">&copy; {new Date().getFullYear()} <a href="/" class="fg-weak transition-colors hover:fg-strong no-underline">Steve McDougall</a></span>
-		<a href="/rss.xml" class="font-mono text-[11px] fg-weak border border-edge-weak rounded-[3px] px-2 py-1 no-underline transition-colors hover:border-accent hover:fg-accent">RSS</a>
+	<div
+		class="mt-10 pt-6 border-t border-edge-weak flex items-center justify-between gap-4 flex-wrap"
+	>
+		<span class="font-mono text-[12px] fg-weak"
+			>&copy; {new Date().getFullYear()}
+			<a href="/" class="fg-weak transition-colors hover:fg-strong no-underline">Steve McDougall</a
+			></span
+		>
+		<a
+			href="/rss.xml"
+			class="font-mono text-[11px] fg-weak border border-edge-weak rounded-[3px] px-2 py-1 no-underline transition-colors hover:border-accent hover:fg-accent"
+			>RSS</a
+		>
 	</div>
 </footer>

@@ -1,16 +1,16 @@
 ---
-name: "juststeveking/parameterbag"
-description: "A flexible parameter bag in place of standard arrays on PHP classes"
-packagist: "https://packagist.org/packages/juststeveking/parameterbag"
-github: "https://github.com/JustSteveKing/ParameterBag"
-link: "https://github.com/JustSteveKing/ParameterBag"
-tech: ["PHP"]
+name: 'juststeveking/parameterbag'
+description: 'A flexible parameter bag in place of standard arrays on PHP classes'
+packagist: 'https://packagist.org/packages/juststeveking/parameterbag'
+github: 'https://github.com/JustSteveKing/ParameterBag'
+link: 'https://github.com/JustSteveKing/ParameterBag'
+tech: ['PHP']
 featured: false
 downloads: 305499
 monthlyDownloads: 3859
 stars: 4
-version: "v1.2.0"
-updatedAt: "2026-06-10"
+version: 'v1.2.0'
+updatedAt: '2026-06-10'
 ---
 
 # Parameter Bag
@@ -20,7 +20,6 @@ updatedAt: "2026-06-10"
 [![Total Downloads][ico-downloads]][link-downloads]
 
 A flexible parameter bag in place of standard arrays on PHP classes
-
 
 ## Install
 
@@ -39,13 +38,11 @@ $parameters = ['foo' => 'bar'];
 $bag = new \JustSteveKing\ParameterBag($parameters);
 ```
 
-
 Create a parameter bag from a query string, please note by default the delimeter is `&` but this can be overridden as the second arguement should you want to use another method.
 
 ```php
 $query = \JustSteveKing\ParameterBag::fromString($request->getQuery());
 ```
-
 
 A more useful example:
 
@@ -66,12 +63,8 @@ class Config
 }
 ```
 
-
 [ico-version]: https://img.shields.io/packagist/v/juststeveking/parameterbag.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/juststeveking/parameterbag.svg?style=flat-square
-
-
 [link-packagist]: https://packagist.org/packages/juststeveking/parameterbag
 [link-downloads]: https://packagist.org/packages/juststeveking/parameterbag
 [link-author]: https://github.com/JustSteveKing
-

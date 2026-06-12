@@ -1,14 +1,14 @@
 ---
-title: "Deferred writes with the Outbox Pattern"
-slug: "deferred-writes-with-the-outbox-pattern"
-description: "Write events to your database inside the same transaction as your state changes, then publish them reliably with a background worker."
-category: "writing-data"
-complexity: "intermediate"
-apiStyles: ["rest", "event-driven"]
-useWhen: "You need reliable event emission to external systems and a missed event means real data loss or inconsistency downstream."
+title: 'Deferred writes with the Outbox Pattern'
+slug: 'deferred-writes-with-the-outbox-pattern'
+description: 'Write events to your database inside the same transaction as your state changes, then publish them reliably with a background worker.'
+category: 'writing-data'
+complexity: 'intermediate'
+apiStyles: ['rest', 'event-driven']
+useWhen: 'You need reliable event emission to external systems and a missed event means real data loss or inconsistency downstream.'
 avoidWhen: "Events are low-stakes, occasional loss is acceptable, or your system doesn't emit events to external consumers."
-tags: ["outbox-pattern", "events", "reliability", "transactions", "queues"]
-related: ["cursor-based-pagination-for-stable-lists", "bulk-updates-via-async-jobs"]
+tags: ['outbox-pattern', 'events', 'reliability', 'transactions', 'queues']
+related: ['cursor-based-pagination-for-stable-lists', 'bulk-updates-via-async-jobs']
 ---
 
 # Deferred Writes with the Outbox Pattern

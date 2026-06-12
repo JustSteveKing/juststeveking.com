@@ -9,7 +9,7 @@ author:
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["api-design", "production", "observability", "kit", "backend"]
+tags: ['api-design', 'production', 'observability', 'kit', 'backend']
 ---
 
 Most API projects don't fail because the team couldn't build endpoints. They fail because the same avoidable problems keep showing up, sprint after sprint.
@@ -116,20 +116,20 @@ Route::prefix('v1')
 
 The full auth endpoint table for v1:
 
-|Method|Path|Auth Required|Purpose|
-|---|---|---|---|
-|POST|`/v1/auth/register`|No|Register and receive a token|
-|POST|`/v1/auth/login`|No|Login and receive a token|
-|GET|`/v1/auth/me`|Bearer|Current authenticated user|
-|POST|`/v1/auth/logout`|Bearer|Revoke the current token|
-|POST|`/v1/auth/email/verification-notification`|Bearer|Send or resend a verification email|
-|GET|`/v1/auth/email/verify/{id}/{hash}`|Signed URL|Verify email address|
-|POST|`/v1/auth/password/forgot`|No|Request a password reset email|
-|GET|`/v1/auth/password/reset/{token}`|No|Return reset payload for API clients|
-|POST|`/v1/auth/password/reset`|No|Complete the password reset|
-|GET|`/v1/auth/tokens`|Bearer|List all tokens for this user|
-|DELETE|`/v1/auth/tokens/{token_id}`|Bearer|Revoke a specific token|
-|DELETE|`/v1/auth/tokens`|Bearer|Revoke all tokens|
+| Method | Path                                       | Auth Required | Purpose                              |
+| ------ | ------------------------------------------ | ------------- | ------------------------------------ |
+| POST   | `/v1/auth/register`                        | No            | Register and receive a token         |
+| POST   | `/v1/auth/login`                           | No            | Login and receive a token            |
+| GET    | `/v1/auth/me`                              | Bearer        | Current authenticated user           |
+| POST   | `/v1/auth/logout`                          | Bearer        | Revoke the current token             |
+| POST   | `/v1/auth/email/verification-notification` | Bearer        | Send or resend a verification email  |
+| GET    | `/v1/auth/email/verify/{id}/{hash}`        | Signed URL    | Verify email address                 |
+| POST   | `/v1/auth/password/forgot`                 | No            | Request a password reset email       |
+| GET    | `/v1/auth/password/reset/{token}`          | No            | Return reset payload for API clients |
+| POST   | `/v1/auth/password/reset`                  | No            | Complete the password reset          |
+| GET    | `/v1/auth/tokens`                          | Bearer        | List all tokens for this user        |
+| DELETE | `/v1/auth/tokens/{token_id}`               | Bearer        | Revoke a specific token              |
+| DELETE | `/v1/auth/tokens`                          | Bearer        | Revoke all tokens                    |
 
 Notice that the token management endpoints exist as first-class routes, not as an afterthought. That's something most starters skip entirely.
 
@@ -193,20 +193,20 @@ A successful response looks like this:
 
 ```json
 {
-  "data": {
-    "type": "users",
-    "id": "01j...",
-    "attributes": {
-      "name": "Jane Doe",
-      "email": "jane@example.com",
-      "email_verified_at": null,
-      "created_at": "2026-02-24T12:00:00.000000Z"
-    }
-  },
-  "meta": {
-    "token": "1|abc123...",
-    "expires_at": "2026-02-24T14:00:00.000000Z"
-  }
+	"data": {
+		"type": "users",
+		"id": "01j...",
+		"attributes": {
+			"name": "Jane Doe",
+			"email": "jane@example.com",
+			"email_verified_at": null,
+			"created_at": "2026-02-24T12:00:00.000000Z"
+		}
+	},
+	"meta": {
+		"token": "1|abc123...",
+		"expires_at": "2026-02-24T14:00:00.000000Z"
+	}
 }
 ```
 

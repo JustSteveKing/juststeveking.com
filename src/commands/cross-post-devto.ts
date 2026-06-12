@@ -5,244 +5,250 @@ import { BaseCommand } from './base-command';
 import type { CrustCommandContext } from '@crustjs/core';
 
 type CrossPostArticle = {
-  path: string;
-  slug: string;
-  title: string;
-  description: string;
-  body: string;
-  tags: string[];
-  canonical: string;
-  series?: string;
-  order?: number;
-  pubDate: Date;
-  sourceIndex: number;
+	path: string;
+	slug: string;
+	title: string;
+	description: string;
+	body: string;
+	tags: string[];
+	canonical: string;
+	series?: string;
+	order?: number;
+	pubDate: Date;
+	sourceIndex: number;
 };
 
 export class CrossPostDevtoCommand extends BaseCommand<any, any, any> {
-  public name = 'cross-post:devto';
-  public description = 'Cross-post articles to dev.to';
+	public name = 'cross-post:devto';
+	public description = 'Cross-post articles to dev.to';
 
-  public override flags = {
-    'dry-run': { type: 'boolean', description: 'No API calls will be made.' },
-  } as const;
+	public override flags = {
+		'dry-run': { type: 'boolean', description: 'No API calls will be made.' },
+	} as const;
 
-  private readonly API_KEY = process.env.DEVTO_API_KEY;
-  private readonly ARTICLES_DIR = join(process.cwd(), 'src', 'content', 'articles');
-  private readonly REQUEST_DELAY_MS = parseInt(process.env.DEVTO_REQUEST_DELAY_MS ?? '1000');
-  private readonly MAX_RETRIES = parseInt(process.env.DEVTO_MAX_RETRIES ?? '5');
+	private readonly API_KEY = process.env.DEVTO_API_KEY;
+	private readonly ARTICLES_DIR = join(process.cwd(), 'src', 'content', 'articles');
+	private readonly REQUEST_DELAY_MS = parseInt(process.env.DEVTO_REQUEST_DELAY_MS ?? '1000');
+	private readonly MAX_RETRIES = parseInt(process.env.DEVTO_MAX_RETRIES ?? '5');
 
-  public async handle(ctx: CrustCommandContext<any, typeof this.flags>) {
-    const { flags } = ctx;
-    const DRY_RUN = flags['dry-run'];
+	public async handle(ctx: CrustCommandContext<any, typeof this.flags>) {
+		const { flags } = ctx;
+		const DRY_RUN = flags['dry-run'];
 
-    if (!this.API_KEY && !DRY_RUN) {
-      console.error('Error: DEVTO_API_KEY environment variable is required.');
-      process.exit(1);
-    }
+		if (!this.API_KEY && !DRY_RUN) {
+			console.error('Error: DEVTO_API_KEY environment variable is required.');
+			process.exit(1);
+		}
 
-    if (DRY_RUN) console.log('[dry-run] No API calls will be made.\n');
+		if (DRY_RUN) console.log('[dry-run] No API calls will be made.\n');
 
-    const articles = await this.getArticlesToCrossPost();
+		const articles = await this.getArticlesToCrossPost();
 
-    if (articles.length === 0) {
-      console.log('No articles found with shouldCrossPost: true.');
-      return;
-    }
+		if (articles.length === 0) {
+			console.log('No articles found with shouldCrossPost: true.');
+			return;
+		}
 
-    console.log(`Found ${articles.length} article(s) to cross-post.\n`);
+		console.log(`Found ${articles.length} article(s) to cross-post.\n`);
 
-    for (const article of articles) {
-      console.log(`🚀 Processing: ${article.title}`);
-      
-      if (DRY_RUN) {
-        console.log(`   [dry-run] Would cross-post to dev.to`);
-        continue;
-      }
+		for (const article of articles) {
+			console.log(`🚀 Processing: ${article.title}`);
 
-      try {
-        const res = await this.postToDevto(article);
-        const devToUrl = res.url;
+			if (DRY_RUN) {
+				console.log(`   [dry-run] Would cross-post to dev.to`);
+				continue;
+			}
 
-        let content = await Bun.file(article.path).text();
-        
-        content = content
-          .replace(/^shouldCrossPost:\s*true\s*$/m, `devTo: "${devToUrl}"`)
-          .replace(/^shouldCrossPost:\s*"true"\s*$/m, `devTo: "${devToUrl}"`);
+			try {
+				const res = await this.postToDevto(article);
+				const devToUrl = res.url;
 
-        await Bun.write(article.path, content);
-        console.log(`   ✅ Successfully cross-posted to ${devToUrl}`);
-      } catch (e: any) {
-        console.error(`   ❌ Error: ${e.message}`);
-      }
+				let content = await Bun.file(article.path).text();
 
-      if (this.REQUEST_DELAY_MS > 0) {
-        await this.sleep(this.REQUEST_DELAY_MS);
-      }
-    }
+				content = content
+					.replace(/^shouldCrossPost:\s*true\s*$/m, `devTo: "${devToUrl}"`)
+					.replace(/^shouldCrossPost:\s*"true"\s*$/m, `devTo: "${devToUrl}"`);
 
-    console.log('\nDone.');
-  }
+				await Bun.write(article.path, content);
+				console.log(`   ✅ Successfully cross-posted to ${devToUrl}`);
+			} catch (e: any) {
+				console.error(`   ❌ Error: ${e.message}`);
+			}
 
-  private async getArticlesToCrossPost() {
-    const glob = new Glob('*.mdx');
-    const articles: CrossPostArticle[] = [];
-    let sourceIndex = 0;
+			if (this.REQUEST_DELAY_MS > 0) {
+				await this.sleep(this.REQUEST_DELAY_MS);
+			}
+		}
 
-    for await (const file of glob.scan(this.ARTICLES_DIR)) {
-      const path = join(this.ARTICLES_DIR, file);
-      const content = await Bun.file(path).text();
-      const { data, content: body } = matter(content);
+		console.log('\nDone.');
+	}
 
-      if (data.shouldCrossPost === true && !data.devTo) {
-        articles.push({
-          path,
-          slug: file.replace(/\.mdx$/, ''),
-          title: data.title,
-          description: data.description,
-          body,
-          tags: data.tags ?? [],
-          canonical: data.canonical ?? `https://www.juststeveking.com/articles/${file.replace(/\.mdx$/, '')}`,
-          series: data.series,
-          order: this.normalizeNumber(data.order),
-          pubDate: this.normalizeDate(data.pubDate),
-          sourceIndex: sourceIndex++,
-        });
-      }
-    }
+	private async getArticlesToCrossPost() {
+		const glob = new Glob('*.mdx');
+		const articles: CrossPostArticle[] = [];
+		let sourceIndex = 0;
 
-    return articles.sort((left, right) => this.compareArticlesForPosting(left, right));
-  }
+		for await (const file of glob.scan(this.ARTICLES_DIR)) {
+			const path = join(this.ARTICLES_DIR, file);
+			const content = await Bun.file(path).text();
+			const { data, content: body } = matter(content);
 
-  private compareArticlesForPosting(left: CrossPostArticle, right: CrossPostArticle): number {
-    if (left.series && right.series && left.series === right.series) {
-      const orderComparison = this.compareSeriesOrder(left, right);
-      if (orderComparison !== 0) return orderComparison;
+			if (data.shouldCrossPost === true && !data.devTo) {
+				articles.push({
+					path,
+					slug: file.replace(/\.mdx$/, ''),
+					title: data.title,
+					description: data.description,
+					body,
+					tags: data.tags ?? [],
+					canonical:
+						data.canonical ??
+						`https://www.juststeveking.com/articles/${file.replace(/\.mdx$/, '')}`,
+					series: data.series,
+					order: this.normalizeNumber(data.order),
+					pubDate: this.normalizeDate(data.pubDate),
+					sourceIndex: sourceIndex++,
+				});
+			}
+		}
 
-      const dateComparison = left.pubDate.getTime() - right.pubDate.getTime();
-      if (dateComparison !== 0) return dateComparison;
+		return articles.sort((left, right) => this.compareArticlesForPosting(left, right));
+	}
 
-      const titleComparison = left.title.localeCompare(right.title);
-      if (titleComparison !== 0) return titleComparison;
-    }
+	private compareArticlesForPosting(left: CrossPostArticle, right: CrossPostArticle): number {
+		if (left.series && right.series && left.series === right.series) {
+			const orderComparison = this.compareSeriesOrder(left, right);
+			if (orderComparison !== 0) return orderComparison;
 
-    return left.sourceIndex - right.sourceIndex;
-  }
+			const dateComparison = left.pubDate.getTime() - right.pubDate.getTime();
+			if (dateComparison !== 0) return dateComparison;
 
-  private compareSeriesOrder(left: CrossPostArticle, right: CrossPostArticle): number {
-    const leftHasOrder = Number.isFinite(left.order);
-    const rightHasOrder = Number.isFinite(right.order);
+			const titleComparison = left.title.localeCompare(right.title);
+			if (titleComparison !== 0) return titleComparison;
+		}
 
-    if (leftHasOrder && rightHasOrder) {
-      const orderComparison = (left.order ?? 0) - (right.order ?? 0);
-      if (orderComparison !== 0) return orderComparison;
-    }
+		return left.sourceIndex - right.sourceIndex;
+	}
 
-    if (leftHasOrder !== rightHasOrder) {
-      return leftHasOrder ? -1 : 1;
-    }
+	private compareSeriesOrder(left: CrossPostArticle, right: CrossPostArticle): number {
+		const leftHasOrder = Number.isFinite(left.order);
+		const rightHasOrder = Number.isFinite(right.order);
 
-    return 0;
-  }
+		if (leftHasOrder && rightHasOrder) {
+			const orderComparison = (left.order ?? 0) - (right.order ?? 0);
+			if (orderComparison !== 0) return orderComparison;
+		}
 
-  private normalizeNumber(value: unknown): number | undefined {
-    if (typeof value === 'number' && Number.isFinite(value)) {
-      return value;
-    }
+		if (leftHasOrder !== rightHasOrder) {
+			return leftHasOrder ? -1 : 1;
+		}
 
-    if (typeof value === 'string' && value.trim() !== '') {
-      const parsed = Number(value);
-      if (Number.isFinite(parsed)) {
-        return parsed;
-      }
-    }
+		return 0;
+	}
 
-    return undefined;
-  }
+	private normalizeNumber(value: unknown): number | undefined {
+		if (typeof value === 'number' && Number.isFinite(value)) {
+			return value;
+		}
 
-  private normalizeDate(value: unknown): Date {
-    if (value instanceof Date) {
-      return value;
-    }
+		if (typeof value === 'string' && value.trim() !== '') {
+			const parsed = Number(value);
+			if (Number.isFinite(parsed)) {
+				return parsed;
+			}
+		}
 
-    if (typeof value === 'string' || typeof value === 'number') {
-      const parsed = new Date(value);
-      if (!Number.isNaN(parsed.getTime())) {
-        return parsed;
-      }
-    }
+		return undefined;
+	}
 
-    return new Date(0);
-  }
+	private normalizeDate(value: unknown): Date {
+		if (value instanceof Date) {
+			return value;
+		}
 
-  private async postToDevto(article: any) {
-    const lines = article.body.trim().split('\n');
-    if (lines[0] && lines[0].startsWith('# ')) {
-      lines.shift();
-    }
-    const body = lines.join('\n').trim();
+		if (typeof value === 'string' || typeof value === 'number') {
+			const parsed = new Date(value);
+			if (!Number.isNaN(parsed.getTime())) {
+				return parsed;
+			}
+		}
 
-    const payload: any = {
-      article: {
-        title: article.title,
-        published: true,
-        body_markdown: body,
-        tags: article.tags.slice(0, 4).map((t: string) => t.toLowerCase().replace(/[^a-z0-9]/g, '')),
-        canonical_url: article.canonical,
-        description: article.description,
-      },
-    };
+		return new Date(0);
+	}
 
-    if (article.series && typeof article.series === 'string') {
-      payload.article.series = article.series;
-    }
+	private async postToDevto(article: any) {
+		const lines = article.body.trim().split('\n');
+		if (lines[0] && lines[0].startsWith('# ')) {
+			lines.shift();
+		}
+		const body = lines.join('\n').trim();
 
-    for (let attempt = 1; attempt <= this.MAX_RETRIES; attempt++) {
-      const res = await fetch('https://dev.to/api/articles', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'api-key': this.API_KEY!,
-        },
-        body: JSON.stringify(payload),
-      });
+		const payload: any = {
+			article: {
+				title: article.title,
+				published: true,
+				body_markdown: body,
+				tags: article.tags
+					.slice(0, 4)
+					.map((t: string) => t.toLowerCase().replace(/[^a-z0-9]/g, '')),
+				canonical_url: article.canonical,
+				description: article.description,
+			},
+		};
 
-      if (res.ok) {
-        return res.json();
-      }
+		if (article.series && typeof article.series === 'string') {
+			payload.article.series = article.series;
+		}
 
-      const bodyText = await res.text();
+		for (let attempt = 1; attempt <= this.MAX_RETRIES; attempt++) {
+			const res = await fetch('https://dev.to/api/articles', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'api-key': this.API_KEY!,
+				},
+				body: JSON.stringify(payload),
+			});
 
-      if (res.status !== 429 || attempt === this.MAX_RETRIES) {
-        throw new Error(`dev.to API ${res.status}: ${bodyText}`);
-      }
+			if (res.ok) {
+				return res.json();
+			}
 
-      const retryAfterMs = this.parseRetryAfterMs(res.headers.get('retry-after'));
-      const backoffMs = Math.max(retryAfterMs, 1000 * Math.pow(2, attempt - 1));
+			const bodyText = await res.text();
 
-      console.warn(`   ⏳ Rate limited by dev.to, retrying in ${Math.ceil(backoffMs / 1000)}s (attempt ${attempt}/${this.MAX_RETRIES})`);
-      await this.sleep(backoffMs);
-    }
+			if (res.status !== 429 || attempt === this.MAX_RETRIES) {
+				throw new Error(`dev.to API ${res.status}: ${bodyText}`);
+			}
 
-    throw new Error('dev.to API request failed after retries.');
-  }
+			const retryAfterMs = this.parseRetryAfterMs(res.headers.get('retry-after'));
+			const backoffMs = Math.max(retryAfterMs, 1000 * Math.pow(2, attempt - 1));
 
-  private parseRetryAfterMs(value: string | null): number {
-    if (!value) return 0;
+			console.warn(
+				`   ⏳ Rate limited by dev.to, retrying in ${Math.ceil(backoffMs / 1000)}s (attempt ${attempt}/${this.MAX_RETRIES})`,
+			);
+			await this.sleep(backoffMs);
+		}
 
-    const seconds = Number(value);
-    if (!Number.isNaN(seconds)) {
-      return Math.max(0, seconds * 1000);
-    }
+		throw new Error('dev.to API request failed after retries.');
+	}
 
-    const retryAfterDate = Date.parse(value);
-    if (!Number.isNaN(retryAfterDate)) {
-      return Math.max(0, retryAfterDate - Date.now());
-    }
+	private parseRetryAfterMs(value: string | null): number {
+		if (!value) return 0;
 
-    return 0;
-  }
+		const seconds = Number(value);
+		if (!Number.isNaN(seconds)) {
+			return Math.max(0, seconds * 1000);
+		}
 
-  private async sleep(ms: number) {
-    await new Promise(resolve => setTimeout(resolve, ms));
-  }
+		const retryAfterDate = Date.parse(value);
+		if (!Number.isNaN(retryAfterDate)) {
+			return Math.max(0, retryAfterDate - Date.now());
+		}
+
+		return 0;
+	}
+
+	private async sleep(ms: number) {
+		await new Promise((resolve) => setTimeout(resolve, ms));
+	}
 }

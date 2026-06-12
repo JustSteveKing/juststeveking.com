@@ -3,19 +3,19 @@ title: Learn how to upload files in Laravel like a Pro
 description: Learn expert Laravel file uploads; validate, store, and optimize with UploadService and Livewire integration.
 category: Laravel
 pubDate: 2022-10-17
-image: "/images/social/articles/laravel-file-uploads.png"
+image: '/images/social/articles/laravel-file-uploads.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "file-uploads", "media-management", "livewire"]
+tags: ['laravel', 'file-uploads', 'media-management', 'livewire']
 ---
 
 One of the things that I see many people struggling with is file uploads. How do we upload a file in Laravel? What is the best way to upload a file? In this tutorial, I will walk through from a basic version using blade and routes, getting more advanced, and then how we might handle it in Livewire too.
 
-To begin with, let's look at how we might do this in standard Laravel and [Blade](https://laravel-news.com/tag/blade). There are a few packages that you can use for this - however, I am not a fan of installing a package for something as simple as uploading a file. However, suppose you want to upload a file and associate it with a model and have different media collections for your model. In that case, Spatie has a great package called [MediaLibrary](https://spatie.be/docs/laravel-medialibrary/v10/introduction) and [MediaLibrary Pro](https://medialibrary.pro/), which takes a lot of the hassle out of this process for you. 
+To begin with, let's look at how we might do this in standard Laravel and [Blade](https://laravel-news.com/tag/blade). There are a few packages that you can use for this - however, I am not a fan of installing a package for something as simple as uploading a file. However, suppose you want to upload a file and associate it with a model and have different media collections for your model. In that case, Spatie has a great package called [MediaLibrary](https://spatie.be/docs/laravel-medialibrary/v10/introduction) and [MediaLibrary Pro](https://medialibrary.pro/), which takes a lot of the hassle out of this process for you.
 
 Let's assume we want to do this ourselves and not lean on a package for this. We will want to create a form that allows us to upload a file and submit it - and a controller will accept this form, validate the input and handle the upload.
 
@@ -27,7 +27,7 @@ Let's create this first using the following artisan command:
 php artisan make:model Media -m
 ```
 
-This will create the model and migration for us to get started. Let's take a look at the up method on the migration so we can understand what we will want to store and understand: 
+This will create the model and migration for us to get started. Let's take a look at the up method on the migration so we can understand what we will want to store and understand:
 
 ```php
 Schema::create('media', function (Blueprint $table) {
@@ -95,9 +95,9 @@ class UserUploadValidator
 
 Once you have your [validation](https://laravel-news.com/tag/validation) in place, you can handle this in your controller however you need to. Assume that I am using a Form Request and injecting this into my controller, though. Now we have validated, we need to process. My general approach to controllers is:
 
-* Validate
-* Process
-* Respond
+- Validate
+- Process
+- Respond
 
 In an API, I process in the background, which usually means dispatching a job - but on the web, that isn't always convenient. Let's look at how we might process a file upload.
 
@@ -345,7 +345,7 @@ final class UploadForm extends Component
     {
         $this->validate();
     }
-    
+
     public function rules(): array
     {
         return (new UserUploadValidator())->avatars();
@@ -396,7 +396,7 @@ final class UploadForm extends Component
 }
 ```
 
-We need minimal changes to how our logic works - we can move it almost straight into place, and it will work. 
+We need minimal changes to how our logic works - we can move it almost straight into place, and it will work.
 
 This is how I find uploading files works for me; there are, of course, many ways to do this same thing - and some/most of them are a little simpler. It wouldn't be a Steve tutorial if I didn't go a little opinionated and overboard, right?
 

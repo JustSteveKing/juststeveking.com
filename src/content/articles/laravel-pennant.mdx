@@ -3,17 +3,17 @@ title: Laravel Pennant
 description: Laravel Pennant in Laravel 10; Manage Feature Flags easily. Perfect for A/B testing, incremental rollouts, and more.
 category: Laravel
 pubDate: 2023-02-10
-image: "/images/articles/laravel-pennant.png"
+image: '/images/articles/laravel-pennant.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "feature-flags", "laravel-10", "ab-testing"]
+tags: ['laravel', 'feature-flags', 'laravel-10', 'ab-testing']
 ---
 
-Laravel Pennant is a package created by the Laravel team that will arrive with [Laravel 10](https://laravel-news.com/laravel-10) provides Feature Flags for your applications. 
+Laravel Pennant is a package created by the Laravel team that will arrive with [Laravel 10](https://laravel-news.com/laravel-10) provides Feature Flags for your applications.
 
 > Feature flags enable you to incrementally roll out new application features with confidence, A/B test new interface designs, compliment a trunk-based development strategy, and much more.
 
@@ -60,7 +60,7 @@ class PodcastController
             fn () => $this->resolveLegacyApiResponse($request),
         );
     }
-} 
+}
 ```
 
 Moving forward, this works well for a versioned API - you can control where the request is meant to go based on whether the user has access. Let's expand upon this example.

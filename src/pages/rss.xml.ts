@@ -11,7 +11,7 @@ export async function GET(context: APIContext) {
 		title: `${site.author} — Articles`,
 		description: site.description,
 		site: context.site!,
-		items: sorted.map(article => ({
+		items: sorted.map((article) => ({
 			title: article.data.title,
 			pubDate: article.data.pubDate,
 			description: article.data.description,

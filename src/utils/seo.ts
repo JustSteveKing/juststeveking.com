@@ -12,7 +12,7 @@ export function getSeoMetadata(props: SEOProps) {
 
 	const pageTitle = title ? `${title} — ${site.name}` : site.title;
 	const canonical = canonicalUrl ?? ''; // Layout will handle full URL if needed, or we can resolve it here
-	
+
 	return {
 		pageTitle,
 		description,

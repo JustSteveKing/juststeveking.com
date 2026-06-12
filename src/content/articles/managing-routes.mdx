@@ -3,17 +3,17 @@ title: Managing Routes in a large Laravel Application
 description: Learn strategies like Route Service Provider, File Requires, and Route Groups for managing routes in a large Laravel application.
 category: Laravel
 pubDate: 2023-02-17
-image: "/images/articles/laravel-routing.png"
+image: '/images/articles/laravel-routing.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "routing","code-organisation", "scalability"]
+tags: ['laravel', 'routing', 'code-organisation', 'scalability']
 ---
 
-Laravels routes files can get pretty busy. Before you know it, you have to search within the routes file to find anything. How do you combat this, though? 
+Laravels routes files can get pretty busy. Before you know it, you have to search within the routes file to find anything. How do you combat this, though?
 
 You can approach this in many ways, depending on how you would prefer to approach it. In this tutorial, I will walk through a few of the options I have seen and then finish on how I approach this and why I approach it this way.
 
@@ -92,7 +92,7 @@ require __DIR__ . '/resource/deliveries.php';
 
 This, to me, is an improvement on the Service Provider approach, as you are likely to have better visibility in your application when going through the route files. However, requiring the files is something that I hate seeing. It just feels messy and lazy.
 
-The benefits are that you can see things required to load in all of the routes in one simple place where you expect to see routes. The downside, however, is that it is just a required method that loads the file when this script is executed. 
+The benefits are that you can see things required to load in all of the routes in one simple place where you expect to see routes. The downside, however, is that it is just a required method that loads the file when this script is executed.
 
 To me, this can be improved upon quite a bit. There is no information here saying what the URL structure might be like or any additional middleware you know is being applied to all routes.
 

@@ -3,14 +3,14 @@ title: Routing within our Domain
 description: Learn how to manage routes in Laravel DDD by creating domain-specific route files and using service providers for cleaner and more organized code.
 category: Laravel
 pubDate: 2022-05-04
-image: "/images/articles/laravel-routing.png"
+image: '/images/articles/laravel-routing.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "domain-driven-design", "routing", "api-development"]
+tags: ['laravel', 'domain-driven-design', 'routing', 'api-development']
 ---
 
 In a normal Laravel application we store all of our routes within `web.php` or `api.php` typically, however how does this work with our Domain Driven Design approach? Do we create a `routes/{domain}.php` file, or do we want to put this somewhere else?
@@ -77,14 +77,14 @@ class BloggingServiceProvider extends ServiceProvider
 What we can do is start to add more routes inside the `registerRoutes` method as and when we need to add them. If we run `php artisan route:list` then we will see the following route listed:
 
 ```markdown
-GET|HEAD   api/v1/posts .................................................................. api:v1:posts:index › API\V1\Posts\IndexHandler
+GET|HEAD api/v1/posts .................................................................. api:v1:posts:index › API\V1\Posts\IndexHandler
 ```
 
 If we disable the `BloggingServiceProvider` inside `config/app.php` then we will no longer see this route registered. This allows us to have a really clean way to register and deregister our domains.
 
 The logic for this Request Handler is very similar to what we did in a previous blog post, however I will walk through it again for the purpose of understanding the entire workflow.
 
-To begin with, as usual we create an interface/contract for the query we want to perform: 
+To begin with, as usual we create an interface/contract for the query we want to perform:
 
 ```php
 <?php

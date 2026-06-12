@@ -1,9 +1,22 @@
 ---
-title: "Building your first MCP server with Laravel"
-description: "Learn how to build a Laravel MCP server for task management with tools, resources, prompts, Sanctum auth, Pest testing, and Claude integration."
+title: 'Building your first MCP server with Laravel'
+description: 'Learn how to build a Laravel MCP server for task management with tools, resources, prompts, Sanctum auth, Pest testing, and Claude integration.'
 category: Laravel
 pubDate: 2025-10-09
-tags: ["laravel", "mcp", "model context protocol", "ai", "claude", "sanctum", "authentication", "pest", "testing", "api", "sevalla"]
+tags:
+  [
+    'laravel',
+    'mcp',
+    'model context protocol',
+    'ai',
+    'claude',
+    'sanctum',
+    'authentication',
+    'pest',
+    'testing',
+    'api',
+    'sevalla',
+  ]
 draft: false
 sponsor:
   name: Sevalla
@@ -11,10 +24,10 @@ sponsor:
   logo: https://github.com/sevalla-hosting.png
 featured: true
 readingTime: 14
-canonical: "https://sevalla.com/blog/scaffolding-go-services-with-blueprint/"
+canonical: 'https://sevalla.com/blog/scaffolding-go-services-with-blueprint/'
 crossPost:
-  originalUrl: "https://sevalla.com/blog/scaffolding-go-services-with-blueprint/"
-  originalSite: "Sevalla Blog"
+  originalUrl: 'https://sevalla.com/blog/scaffolding-go-services-with-blueprint/'
+  originalSite: 'Sevalla Blog'
   publishedDate: 2025-10-09
   permission: true
 ---
@@ -24,8 +37,11 @@ crossPost:
 I'll be honest - when I first heard about the Model Context Protocol (MCP), I was skeptical. Another protocol? Another way for AI to interact with our apps? But after building my first MCP server, something clicked. This isn't just another API standard. It's a fundamentally different way to think about how AI assistants interact with your data.
 
 Here's the thing: we've all been building REST APIs, GraphQL endpoints, webhooks. But MCP is different. It's specifically designed for AI agents to discover and use your app's capabilities. Instead of writing documentation that an AI might misinterpret, you're giving the AI structured tools it can confidently call. It's like the difference between giving someone written directions versus giving them a GPS.
+
 ### What We're Building
+
 In this tutorial, we're going to build a Task Management MCP server. Why tasks? Because it's something everyone understands, but it also demonstrates all the key MCP concepts:
+
 - **Tools** - Actions the AI can perform (create tasks, mark them complete)
 - **Resources** - Data the AI can read (task statistics, reports)
 - **Prompts** - Templates that help the AI interact more effectively
@@ -33,8 +49,11 @@ In this tutorial, we're going to build a Task Management MCP server. Why tasks? 
 By the end, you'll have a working MCP server that lets Claude (or any MCP client) manage your tasks conversationally. Imagine saying "Create a task to review the Q4 report" and having it just happen. That's what we're building.
 
 Let's dive in.
+
 ## Part 1: Setup
+
 ### Installing Laravel
+
 First, let's get a fresh Laravel project up and running. I'm assuming you have Composer installed already:
 
 ```bash
@@ -43,6 +62,7 @@ cd task-mcp-server
 ```
 
 ### Installing Laravel MCP
+
 Now comes the magic. Laravel's MCP package makes this whole process remarkably elegant:
 
 ```bash
@@ -58,6 +78,7 @@ php artisan vendor:publish --tag=ai-routes
 This creates a `routes/ai.php` file - think of it like your `routes/web.php` but specifically for AI interactions. Cool, right?
 
 ### Database Setup
+
 We need somewhere to store our tasks. Update your `.env` file with your database credentials:
 
 ```dotenv
@@ -67,6 +88,7 @@ DB_CONNECTION=sqlite
 For this tutorial, I'm using SQLite to keep things simple, but any database Laravel supports will work fine.
 
 ### Creating the Task Model and Migration
+
 Let's create our Task model with a migration:
 
 ```bash
@@ -295,9 +317,11 @@ Task::forUser($userId)
 It's more readable, more maintainable, and easier to test. Plus, if we ever need to change how we filter by priority or what "incomplete" means, we change it in one place.
 
 Now we're cooking. We have a Laravel app with a Task model and a powerful custom builder. Let's build our MCP server.
+
 ## Part 2: Creating Your First MCP Server
 
 ### Generate the Server
+
 Laravel MCP provides an Artisan command to scaffold a server:
 
 ```bash
@@ -349,6 +373,7 @@ That's it. Your MCP server is now accessible at `/mcp/tasks`. When an AI client 
 Here's where it gets interesting. Tools are the actions an AI can perform through your server. Let's start with the most fundamental one: creating a task.
 
 ### Generate the CreateTask Tool
+
 ```bash
 php artisan make:mcp-tool CreateTaskTool
 ```
@@ -508,7 +533,7 @@ test('creates task with default priority when not specified', function () {
     ]);
 
     $response->assertOk();
-    
+
     expect(Task::first())
         ->priority->toBe('medium');
 });
@@ -523,9 +548,11 @@ php artisan test
 ```
 
 If everything's green, congratulations! You've just built your first functional MCP tool. An AI can now create tasks in your system with full validation and error handling.
+
 ## Part 4: Adding More Tools
 
 One tool is cool, but a task manager needs more. Let's add tools for completing tasks and searching through them.
+
 ### CompleteTaskTool
 
 ```bash
@@ -644,17 +671,17 @@ class SearchTasksTool extends Tool
         foreach ($tasks as $task) {
             $status = $task->completed ? '✅' : '⏳';
             $output .= "{$status} **[{$task->id}]** {$task->title}\n";
-            
+
             if ($task->description) {
                 $output .= "   {$task->description}\n";
             }
-            
+
             $output .= "   Priority: {$task->priority}";
-            
+
             if ($task->completed) {
                 $output .= " | Completed: {$task->completed_at->format('M j, Y')}";
             }
-            
+
             $output .= "\n\n";
         }
 
@@ -738,7 +765,7 @@ use Laravel\Mcp\Server\Resource;
 class TaskStatsResource extends Resource
 {
     protected string $description = 'Provides statistical overview of all tasks including completion rates and priority breakdown.';
-    
+
     protected string $uri = 'tasks://stats';
 
     public function handle(Request $request): Response
@@ -749,8 +776,8 @@ class TaskStatsResource extends Resource
         $totalTasks = Task::forUser($userId)->count();
         $completedTasks = Task::forUser($userId)->completed()->count();
         $incompleteTasks = Task::forUser($userId)->incomplete()->count();
-        
-        $completionRate = $totalTasks > 0 
+
+        $completionRate = $totalTasks > 0
             ? round(($completedTasks / $totalTasks) * 100, 1)
             : 0;
 
@@ -766,7 +793,7 @@ class TaskStatsResource extends Resource
         $stats .= "**Completed:** {$completedTasks}\n";
         $stats .= "**Incomplete:** {$incompleteTasks}\n";
         $stats .= "**Completion Rate:** {$completionRate}%\n\n";
-        
+
         if (!empty($priorityBreakdown)) {
             $stats .= "## Incomplete Tasks by Priority\n";
             foreach (['high', 'medium', 'low'] as $priority) {
@@ -799,7 +826,7 @@ use Laravel\Mcp\Server\Resource;
 class RecentCompletedTasksResource extends Resource
 {
     protected string $description = 'Shows the 20 most recently completed tasks with completion dates.';
-    
+
     protected string $uri = 'tasks://completed/recent';
 
     public function handle(Request $request): Response
@@ -903,11 +930,11 @@ class ProductivityReportPrompt extends Prompt
         $completedInPeriod = Task::forUser($userId)
             ->recentlyCompleted($days)
             ->count();
-            
+
         $createdInPeriod = Task::forUser($userId)
             ->createdInPeriod($days)
             ->count();
-        
+
         $stillIncomplete = Task::forUser($userId)
             ->incomplete()
             ->createdInPeriod($days)
@@ -938,7 +965,7 @@ class ProductivityReportPrompt extends Prompt
                 "provide insights about the user's productivity. {$toneInstructions}\n\n" .
                 "{$context}"
             )->asAssistant(),
-            
+
             Response::text(
                 "Please analyze my productivity over the last {$days} days and give me insights."
             ),
@@ -1251,6 +1278,7 @@ Do the same for other tools and resources - always scope queries with `Task::for
 Let's write comprehensive tests for everything we've built.
 
 ### Update Your Tests
+
 Update `tests/Feature/TaskMcpTest.php` with the full test suite:
 
 ```php
@@ -1615,20 +1643,18 @@ php artisan serve
 ```
 
 2. Open your Claude Desktop settings (or any MCP client)
-    
 3. Add your server configuration:
-    
 
 ```json
 {
-  "mcpServers": {
-    "tasks": {
-      "url": "http://localhost:8000/mcp/tasks",
-      "headers": {
-        "Authorization": "Bearer YOUR_TOKEN_HERE"
-      }
-    }
-  }
+	"mcpServers": {
+		"tasks": {
+			"url": "http://localhost:8000/mcp/tasks",
+			"headers": {
+				"Authorization": "Bearer YOUR_TOKEN_HERE"
+			}
+		}
+	}
 }
 ```
 
@@ -1652,16 +1678,17 @@ Once connected, you can have conversations like:
 > **Claude:** _[Calls CompleteTaskTool with task_id=1]_ ✅ Task completed!
 > **Review the Q4 budget report** Completed: Oct 7, 2025 at 2:30 PM
 
->**You:** "How productive have I been this week?"
->**Claude:** _[Calls ProductivityReportPrompt]_ Based on your task data over the last 7 days:
+> **You:** "How productive have I been this week?"
+> **Claude:** _[Calls ProductivityReportPrompt]_ Based on your task data over the last 7 days:
 >
->You've completed 5 tasks while creating 8 new ones. You're staying on top of things! You have 3 incomplete tasks, with 1 high-priority item still pending. That budget review completion was great timing - high-priority items like that can really impact your week.
+> You've completed 5 tasks while creating 8 new ones. You're staying on top of things! You have 3 incomplete tasks, with 1 high-priority item still pending. That budget review completion was great timing - high-priority items like that can really impact your week.
 >
->Focus suggestion: Tackle that supplier call next while the budget details are fresh in your mind.
+> Focus suggestion: Tackle that supplier call next while the budget details are fresh in your mind.
 
 ## Wrapping Up: What You've Built
 
 Let's take a step back and appreciate what we created here. You now have a fully functional MCP server that:
+
 - ✅ **Exposes three tools** for creating, completing, and searching tasks
 - ✅ **Provides two resources** for statistical overviews and recent activity
 - ✅ **Includes a prompt** for productivity analysis
@@ -1673,20 +1700,24 @@ Let's take a step back and appreciate what we created here. You now have a fully
 But more importantly, you understand the MCP mindset. This isn't just about building APIs - it's about building interfaces that AI can truly understand and use effectively.
 
 ### What's Next?
+
 Some ideas to extend this:
 
 #### **Add More Tools:**
+
 - UpdateTaskTool for editing existing tasks
 - DeleteTaskTool with confirmation
 - SetTaskDueDateTool for deadline management
 - BulkCompleteTasksTool for batch operations
 
 #### **Enhance Resources:**
+
 - UpcomingDeadlinesResource
 - TasksByProjectResource (if you add projects)
 - TimeTrackingResource (if you track time spent)
 
 #### **Advanced Features:**
+
 - Task tags and categories
 - Subtasks and dependencies
 - Notifications when tasks are due
@@ -1694,11 +1725,13 @@ Some ideas to extend this:
 - Natural language due date parsing
 
 #### **Better Prompts:**
+
 - DailyPlanningPrompt for morning task planning
 - WeeklyReviewPrompt for retrospectives
 - FocusTimePrompt to suggest deep work sessions
 
 ### Resources
+
 - [Laravel MCP Documentation](https://laravel.com/docs/12.x/mcp)
 - [Model Context Protocol Specification](https://modelcontextprotocol.io/)
 - [Laravel Sanctum](https://laravel.com/docs/12.x/sanctum)
@@ -1715,4 +1748,3 @@ That's pretty exciting.
 Now go build something awesome with MCP. I can't wait to see what you create.
 
 _Happy coding! 🚀_
-

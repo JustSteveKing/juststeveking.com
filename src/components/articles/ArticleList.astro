@@ -11,30 +11,35 @@ const { articles } = Astro.props;
 ---
 
 <ul class="list-none p-0 m-0" role="list">
-	{articles.map(article => (
-		<li class="border-b border-edge last:border-b-0">
-			<div class="flex flex-col gap-2 px-section py-6 transition-colors hover:[background-color:var(--color-bg-weak)] sm:flex-row sm:justify-between sm:items-start sm:gap-6">
-				<div class="flex flex-col gap-1.5 min-w-0">
-					<a
-						href={`/articles/${article.id}`}
-						class="text-[15px] font-medium fg-strong leading-snug no-underline transition-colors hover:[color:var(--color-accent)]"
-					>
-						{article.data.title}
-					</a>
-					<span class="text-[13px] fg leading-snug line-clamp-2">{article.data.description}</span>
+	{
+		articles.map((article) => (
+			<li class="border-b border-edge last:border-b-0">
+				<div class="flex flex-col gap-2 px-section py-6 transition-colors hover:[background-color:var(--color-bg-weak)] sm:flex-row sm:justify-between sm:items-start sm:gap-6">
+					<div class="flex flex-col gap-1.5 min-w-0">
+						<a
+							href={`/articles/${article.id}`}
+							class="text-[15px] font-medium fg-strong leading-snug no-underline transition-colors hover:[color:var(--color-accent)]"
+						>
+							{article.data.title}
+						</a>
+						<span class="text-[13px] fg leading-snug line-clamp-2">{article.data.description}</span>
+					</div>
+					<div class="flex flex-row items-center gap-1.5 shrink-0 sm:flex-col sm:items-end">
+						<a
+							href={`/articles/category/${slugify(article.data.category)}`}
+							class="font-mono text-[11px] fg-accent uppercase tracking-[0.06em] font-semibold whitespace-nowrap no-underline hover:underline"
+						>
+							{article.data.category}
+						</a>
+						<time
+							class="font-mono text-[12px] fg-weak whitespace-nowrap"
+							datetime={article.data.pubDate.toISOString()}
+						>
+							{formatDate(article.data.pubDate)}
+						</time>
+					</div>
 				</div>
-				<div class="flex flex-row items-center gap-1.5 shrink-0 sm:flex-col sm:items-end">
-					<a
-						href={`/articles/category/${slugify(article.data.category)}`}
-						class="font-mono text-[11px] fg-accent uppercase tracking-[0.06em] font-semibold whitespace-nowrap no-underline hover:underline"
-					>
-						{article.data.category}
-					</a>
-					<time class="font-mono text-[12px] fg-weak whitespace-nowrap" datetime={article.data.pubDate.toISOString()}>
-						{formatDate(article.data.pubDate)}
-					</time>
-				</div>
-			</div>
-		</li>
-	))}
+			</li>
+		))
+	}
 </ul>

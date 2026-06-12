@@ -8,7 +8,7 @@ import { formatDate } from '@/utils/format';
 
 export async function getStaticPaths() {
 	const allSeries = await getCollection('series');
-	return allSeries.map(s => ({
+	return allSeries.map((s) => ({
 		params: { slug: s.id },
 	}));
 }
@@ -25,7 +25,7 @@ const allVideos = await getCollection('videos', ({ data }) => data.series?.id ==
 
 // Combine and sort by order property, then by date as fallback
 const items = [
-	...allArticles.map(a => ({
+	...allArticles.map((a) => ({
 		type: 'article' as const,
 		order: a.data.order,
 		date: a.data.pubDate,
@@ -34,7 +34,7 @@ const items = [
 		url: `/articles/${a.id}`,
 		data: a,
 	})),
-	...allVideos.map(v => ({
+	...allVideos.map((v) => ({
 		type: 'video' as const,
 		order: v.data.order,
 		date: v.data.publishedDate,
@@ -75,7 +75,6 @@ const pageMeta = {
 ---
 
 <Layout {...pageMeta} jsonLd={seriesSchema}>
-
 	<PageHeader
 		prompt={`$ series view --id ${slug}`}
 		title={series.data.title}
@@ -84,36 +83,41 @@ const pageMeta = {
 
 	<section aria-label="Series content" class="px-section py-10 border-b border-edge">
 		<div class="flex flex-col gap-8 max-w-200">
-			{items.map(item => (
-				<article class="flex flex-col gap-2 group">
-					<div class="flex items-center gap-3">
-						<span class="font-mono text-[10px] uppercase tracking-[0.08em] fg-accent font-semibold px-2 py-0.5 border border-accent rounded">
-							{item.type}
-						</span>
-						<time class="font-mono text-[12px] fg-weak" datetime={item.date.toISOString()}>
-							{formatDate(item.date)}
-						</time>
-					</div>
-					<h2 class="text-[20px] font-bold fg-strong leading-snug group-hover:fg-accent transition-colors">
-						<a href={item.url} class="no-underline">
-							{item.title}
-						</a>
-					</h2>
-					<p class="text-[15px] fg leading-relaxed">
-						{item.description}
-					</p>
-					<div class="pt-2">
-						<a href={item.url} class="inline-flex items-center gap-1.5 font-mono text-[12px] font-semibold fg-strong no-underline hover:fg-accent">
-							Read {item.type} 
-							<span aria-hidden="true">→</span>
-						</a>
-					</div>
-				</article>
-			))}
-			
-			{items.length === 0 && (
-				<p class="text-[15px] fg-weak italic">No items found in this series yet.</p>
-			)}
+			{
+				items.map((item) => (
+					<article class="flex flex-col gap-2 group">
+						<div class="flex items-center gap-3">
+							<span class="font-mono text-[10px] uppercase tracking-[0.08em] fg-accent font-semibold px-2 py-0.5 border border-accent rounded">
+								{item.type}
+							</span>
+							<time class="font-mono text-[12px] fg-weak" datetime={item.date.toISOString()}>
+								{formatDate(item.date)}
+							</time>
+						</div>
+						<h2 class="text-[20px] font-bold fg-strong leading-snug group-hover:fg-accent transition-colors">
+							<a href={item.url} class="no-underline">
+								{item.title}
+							</a>
+						</h2>
+						<p class="text-[15px] fg leading-relaxed">{item.description}</p>
+						<div class="pt-2">
+							<a
+								href={item.url}
+								class="inline-flex items-center gap-1.5 font-mono text-[12px] font-semibold fg-strong no-underline hover:fg-accent"
+							>
+								Read {item.type}
+								<span aria-hidden="true">→</span>
+							</a>
+						</div>
+					</article>
+				))
+			}
+
+			{
+				items.length === 0 && (
+					<p class="text-[15px] fg-weak italic">No items found in this series yet.</p>
+				)
+			}
 		</div>
 	</section>
 

@@ -31,53 +31,82 @@ const projectsSchema = {
 
 	<section aria-label="Open source packages">
 		<ul class="list-none p-0 m-0" role="list">
-			{sorted.map(pkg => (
-				<li class="border-b border-edge last:border-b-0">
-					<div class="flex flex-col gap-3 px-section py-7 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
-						<div class="flex flex-col gap-2 min-w-0">
-							<div class="flex items-center gap-2 flex-wrap">
-								<a href={`/projects/${pkg.id}`} class="font-mono text-[14px] font-semibold fg-strong no-underline hover:fg-accent transition-colors">
-									{pkg.data.name}
-								</a>
-								{pkg.data.featured && (
-									<span class="font-mono text-[10px] font-bold fg-accent border border-accent rounded-[3px] px-1.5 py-0.5 uppercase tracking-[0.08em]">Featured</span>
-								)}
-								{pkg.data.version && (
-									<span class="font-mono text-[11px] fg-weak border border-edge-weak rounded-[3px] px-1.5 py-0.5">{pkg.data.version}</span>
-								)}
-							</div>
-							<p class="text-[14px] fg leading-relaxed">{pkg.data.description}</p>
-							<a href={`/projects/${pkg.id}`} class="inline-flex self-start items-center font-mono text-[12px] fg-weak bg-surface-weak border border-edge rounded-sm px-3 py-1.5 no-underline hover:bg-surface-weak-hover transition-colors">
-								View details <span aria-hidden="true" class="ml-1.5">→</span>
-							</a>
-						</div>
-						<div class="flex items-center gap-3 sm:flex-col sm:items-end sm:gap-2 shrink-0">
-							{(pkg.data.stars !== undefined || pkg.data.downloads !== undefined) && (
-								<div class="flex items-center gap-3 sm:flex-col sm:items-end sm:gap-1">
-									{pkg.data.stars !== undefined && (
-										<span class="font-mono text-[12px] fg-weak" title="GitHub stars">★ {pkg.data.stars.toLocaleString()}</span>
+			{
+				sorted.map((pkg) => (
+					<li class="border-b border-edge last:border-b-0">
+						<div class="flex flex-col gap-3 px-section py-7 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
+							<div class="flex flex-col gap-2 min-w-0">
+								<div class="flex items-center gap-2 flex-wrap">
+									<a
+										href={`/projects/${pkg.id}`}
+										class="font-mono text-[14px] font-semibold fg-strong no-underline hover:fg-accent transition-colors"
+									>
+										{pkg.data.name}
+									</a>
+									{pkg.data.featured && (
+										<span class="font-mono text-[10px] font-bold fg-accent border border-accent rounded-[3px] px-1.5 py-0.5 uppercase tracking-[0.08em]">
+											Featured
+										</span>
 									)}
-									{pkg.data.downloads !== undefined && (
-										<span class="font-mono text-[12px] fg-weak" title="Total downloads">↓ {pkg.data.downloads.toLocaleString()}</span>
+									{pkg.data.version && (
+										<span class="font-mono text-[11px] fg-weak border border-edge-weak rounded-[3px] px-1.5 py-0.5">
+											{pkg.data.version}
+										</span>
 									)}
 								</div>
-							)}
-							<div class="flex items-center gap-2">
-								{pkg.data.packagist && (
-									<a href={pkg.data.packagist} target="_blank" rel="noopener noreferrer" class="font-mono text-[11px] fg-weak border border-edge-weak rounded-[3px] px-2 py-1 no-underline transition-colors hover:border-accent hover:fg-accent">
-										Packagist
-									</a>
+								<p class="text-[14px] fg leading-relaxed">{pkg.data.description}</p>
+								<a
+									href={`/projects/${pkg.id}`}
+									class="inline-flex self-start items-center font-mono text-[12px] fg-weak bg-surface-weak border border-edge rounded-sm px-3 py-1.5 no-underline hover:bg-surface-weak-hover transition-colors"
+								>
+									View details{' '}
+									<span aria-hidden="true" class="ml-1.5">
+										→
+									</span>
+								</a>
+							</div>
+							<div class="flex items-center gap-3 sm:flex-col sm:items-end sm:gap-2 shrink-0">
+								{(pkg.data.stars !== undefined || pkg.data.downloads !== undefined) && (
+									<div class="flex items-center gap-3 sm:flex-col sm:items-end sm:gap-1">
+										{pkg.data.stars !== undefined && (
+											<span class="font-mono text-[12px] fg-weak" title="GitHub stars">
+												★ {pkg.data.stars.toLocaleString()}
+											</span>
+										)}
+										{pkg.data.downloads !== undefined && (
+											<span class="font-mono text-[12px] fg-weak" title="Total downloads">
+												↓ {pkg.data.downloads.toLocaleString()}
+											</span>
+										)}
+									</div>
 								)}
-								{pkg.data.github && (
-									<a href={pkg.data.github} target="_blank" rel="noopener noreferrer" class="font-mono text-[11px] fg-weak border border-edge-weak rounded-[3px] px-2 py-1 no-underline transition-colors hover:border-accent hover:fg-accent">
-										GitHub
-									</a>
-								)}
+								<div class="flex items-center gap-2">
+									{pkg.data.packagist && (
+										<a
+											href={pkg.data.packagist}
+											target="_blank"
+											rel="noopener noreferrer"
+											class="font-mono text-[11px] fg-weak border border-edge-weak rounded-[3px] px-2 py-1 no-underline transition-colors hover:border-accent hover:fg-accent"
+										>
+											Packagist
+										</a>
+									)}
+									{pkg.data.github && (
+										<a
+											href={pkg.data.github}
+											target="_blank"
+											rel="noopener noreferrer"
+											class="font-mono text-[11px] fg-weak border border-edge-weak rounded-[3px] px-2 py-1 no-underline transition-colors hover:border-accent hover:fg-accent"
+										>
+											GitHub
+										</a>
+									)}
+								</div>
 							</div>
 						</div>
-					</div>
-				</li>
-			))}
+					</li>
+				))
+			}
 		</ul>
 	</section>
 </Layout>

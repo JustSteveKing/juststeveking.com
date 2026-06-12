@@ -1,16 +1,28 @@
 ---
-title: "API-First Laravel Projects"
-description: "Beginner-friendly, API-first Laravel path: 10 progressive projects covering resources, auth, search, multi-tenancy, webhooks, rate limits, and GraphQL."
+title: 'API-First Laravel Projects'
+description: 'Beginner-friendly, API-first Laravel path: 10 progressive projects covering resources, auth, search, multi-tenancy, webhooks, rate limits, and GraphQL.'
 category: Laravel
 pubDate: 2025-11-18
-image: "/images/articles/laravel.png"
+image: '/images/articles/laravel.png'
 minRead: 6
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "api-development", "beginner-friendly", "authentication", "authorization", "eloquent", "multi-tenancy", "webhooks", "rate-limiting", "graphql"]
+tags:
+  [
+    'laravel',
+    'api-development',
+    'beginner-friendly',
+    'authentication',
+    'authorization',
+    'eloquent',
+    'multi-tenancy',
+    'webhooks',
+    'rate-limiting',
+    'graphql',
+  ]
 ---
 
 I've been building APIs with Laravel for years now, and one thing has become clear: the way we learn Laravel hasn't caught up with how we actually use it. Most beginner tutorials still focus on full-stack applications with Blade views, authentication scaffolding, and server-rendered pages. That's fine for understanding Laravel's fundamentals, but the reality of modern development is different.
@@ -133,7 +145,7 @@ Then use it in your controller:
 public function store(StoreTaskRequest $request)
 {
     $task = Task::create($request->validated());
-    
+
     return new TaskResource($task);
 }
 ```
@@ -204,7 +216,7 @@ class Post extends Model
     {
         return $this->belongsTo(Category::class);
     }
-    
+
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -228,7 +240,7 @@ Here's a controller that looks fine but will kill your database:
 public function index()
 {
     $posts = Post::all();
-    
+
     return PostResource::collection($posts);
 }
 ```
@@ -241,7 +253,7 @@ The fix is eager loading:
 public function index()
 {
     $posts = Post::with(['category', 'author'])->get();
-    
+
     return PostResource::collection($posts);
 }
 ```
@@ -266,21 +278,21 @@ Real APIs need filtering. Users want posts from a specific category, or publishe
 public function index(Request $request)
 {
     $query = Post::with(['category', 'author']);
-    
+
     if ($request->has('category')) {
         $query->whereHas('category', function ($q) use ($request) {
             $q->where('slug', $request->category);
         });
     }
-    
+
     if ($request->has('author')) {
         $query->where('user_id', $request->author);
     }
-    
+
     if ($request->boolean('published')) {
         $query->whereNotNull('published_at');
     }
-    
+
     return PostResource::collection(
         $query->latest()->paginate(15)
     );
@@ -359,15 +371,15 @@ public function register(Request $request)
         'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
         'password' => ['required', 'string', 'min:8', 'confirmed'],
     ]);
-    
+
     $user = User::create([
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
     ]);
-    
+
     $token = $user->createToken('auth-token')->plainTextToken;
-    
+
     return response()->json([
         'user' => new UserResource($user),
         'token' => $token,
@@ -384,16 +396,16 @@ public function login(Request $request)
         'email' => ['required', 'email'],
         'password' => ['required'],
     ]);
-    
+
     if (!Auth::attempt($request->only('email', 'password'))) {
         return response()->json([
             'message' => 'Invalid credentials'
         ], 401);
     }
-    
+
     $user = User::where('email', $request->email)->firstOrFail();
     $token = $user->createToken('auth-token')->plainTextToken;
-    
+
     return response()->json([
         'user' => new UserResource($user),
         'token' => $token,
@@ -436,7 +448,7 @@ public function store(Request $request)
     $bookmark = $request->user()->bookmarks()->create(
         $request->validated()
     );
-    
+
     return new BookmarkResource($bookmark);
 }
 ```
@@ -449,9 +461,9 @@ For update and delete operations, you need authorization policies:
 public function update(Request $request, Bookmark $bookmark)
 {
     $this->authorize('update', $bookmark);
-    
+
     $bookmark->update($request->validated());
-    
+
     return new BookmarkResource($bookmark);
 }
 ```
@@ -518,15 +530,15 @@ Don't do this:
 public function index(Request $request)
 {
     $query = Recipe::query();
-    
+
     if ($request->has('cuisine')) {
         $query->where('cuisine', $request->cuisine);
     }
-    
+
     if ($request->has('max_time')) {
         $query->where(DB::raw('prep_time + cook_time'), '<=', $request->max_time);
     }
-    
+
     if ($request->has('dietary')) {
         $dietary = json_decode($request->dietary);
         $query->where(function ($q) use ($dietary) {
@@ -535,7 +547,7 @@ public function index(Request $request)
             }
         });
     }
-    
+
     if ($request->has('search')) {
         $search = $request->search;
         $query->where(function ($q) use ($search) {
@@ -543,7 +555,7 @@ public function index(Request $request)
               ->orWhere('description', 'like', "%{$search}%");
         });
     }
-    
+
     return RecipeResource::collection($query->paginate());
 }
 ```
@@ -557,21 +569,21 @@ class Recipe extends Model
     {
         return $query->where('cuisine', $cuisine);
     }
-    
+
     public function scopeMaxTotalTime($query, $minutes)
     {
         return $query->whereRaw('(prep_time + cook_time) <= ?', [$minutes]);
     }
-    
+
     public function scopeDietary($query, array $requirements)
     {
         foreach ($requirements as $requirement) {
             $query->whereJsonContains('dietary_info', $requirement);
         }
-        
+
         return $query;
     }
-    
+
     public function scopeSearch($query, $term)
     {
         return $query->where(function ($q) use ($term) {
@@ -579,7 +591,7 @@ class Recipe extends Model
               ->orWhere('description', 'like', "%{$term}%");
         });
     }
-    
+
     public function scopeWithIngredient($query, $ingredientId)
     {
         return $query->whereHas('ingredients', function ($q) use ($ingredientId) {
@@ -595,27 +607,27 @@ Now your controller is readable:
 public function index(Request $request)
 {
     $query = Recipe::with(['user', 'ingredients']);
-    
+
     if ($request->filled('cuisine')) {
         $query->cuisine($request->cuisine);
     }
-    
+
     if ($request->filled('max_time')) {
         $query->maxTotalTime($request->max_time);
     }
-    
+
     if ($request->filled('dietary')) {
         $query->dietary($request->dietary);
     }
-    
+
     if ($request->filled('search')) {
         $query->search($request->search);
     }
-    
+
     if ($request->filled('ingredient')) {
         $query->withIngredient($request->ingredient);
     }
-    
+
     return RecipeResource::collection(
         $query->latest()->paginate()
     );
@@ -641,7 +653,7 @@ use Laravel\Scout\Searchable;
 class Recipe extends Model
 {
     use Searchable;
-    
+
     public function toSearchableArray()
     {
         return [
@@ -714,7 +726,7 @@ public function categoryTotals(Request $request)
         ->groupBy('category_id')
         ->with('category:id,name,color')
         ->get();
-    
+
     return response()->json([
         'data' => $totals->map(fn ($item) => [
             'category' => [
@@ -739,13 +751,13 @@ public function summary(Request $request)
         'start_date' => ['required', 'date'],
         'end_date' => ['required', 'date', 'after_or_equal:start_date'],
     ]);
-    
+
     $expenses = $request->user()
         ->expenses()
         ->whereBetween('date', [$request->start_date, $request->end_date])
         ->with('category')
         ->get();
-    
+
     return response()->json([
         'period' => [
             'start' => $request->start_date,
@@ -779,11 +791,11 @@ public function monthlyReport(Request $request, int $year)
         ->groupBy('month')
         ->orderBy('month')
         ->get();
-    
+
     // Fill in missing months with zeros
     $months = collect(range(1, 12))->map(function ($month) use ($expenses) {
         $data = $expenses->firstWhere('month', $month);
-        
+
         return [
             'month' => $month,
             'month_name' => Carbon::create()->month($month)->format('F'),
@@ -791,7 +803,7 @@ public function monthlyReport(Request $request, int $year)
             'count' => $data ? $data->count : 0,
         ];
     });
-    
+
     return response()->json([
         'year' => $year,
         'months' => $months,
@@ -836,7 +848,7 @@ Schema::create('event_user', function (Blueprint $table) {
     $table->enum('status', ['going', 'maybe', 'not_going']);
     $table->text('note')->nullable();
     $table->timestamps();
-    
+
     $table->unique(['event_id', 'user_id']);
 });
 ```
@@ -850,19 +862,19 @@ class Event extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    
+
     public function attendees(): BelongsToMany
     {
         return $this->belongsToMany(User::class)
             ->withPivot('status', 'note')
             ->withTimestamps();
     }
-    
+
     public function confirmed(): BelongsToMany
     {
         return $this->attendees()->wherePivot('status', 'going');
     }
-    
+
     public function maybe(): BelongsToMany
     {
         return $this->attendees()->wherePivot('status', 'maybe');
@@ -877,7 +889,7 @@ class User extends Model
             ->withPivot('status', 'note')
             ->withTimestamps();
     }
-    
+
     public function createdEvents(): HasMany
     {
         return $this->hasMany(Event::class);
@@ -896,18 +908,18 @@ public function rsvp(Request $request, Event $event)
         'status' => ['required', 'in:going,maybe,not_going'],
         'note' => ['nullable', 'string', 'max:500'],
     ]);
-    
+
     // Check capacity if they're marking as "going"
     if ($request->status === 'going' && $event->capacity) {
         $confirmed = $event->confirmed()->count();
-        
+
         if ($confirmed >= $event->capacity) {
             return response()->json([
                 'message' => 'This event is at capacity'
             ], 422);
         }
     }
-    
+
     // Attach or update the RSVP
     $event->attendees()->syncWithoutDetaching([
         $request->user()->id => [
@@ -915,7 +927,7 @@ public function rsvp(Request $request, Event $event)
             'note' => $request->note,
         ]
     ]);
-    
+
     return response()->json([
         'message' => 'RSVP updated successfully',
         'status' => $request->status,
@@ -952,7 +964,7 @@ class EventResource extends JsonResource
             'starts_at' => $this->starts_at->toISOString(),
             'capacity' => $this->capacity,
             'attendee_count' => $this->confirmed()->count(),
-            'spots_remaining' => $this->capacity 
+            'spots_remaining' => $this->capacity
                 ? max(0, $this->capacity - $this->confirmed()->count())
                 : null,
             'attendees' => $this->whenLoaded('attendees', function () {
@@ -1000,7 +1012,7 @@ Schema::create('team_user', function (Blueprint $table) {
     $table->foreignId('user_id')->constrained()->onDelete('cascade');
     $table->string('role')->default('member');
     $table->timestamps();
-    
+
     $table->primary(['team_id', 'user_id']);
 });
 
@@ -1032,7 +1044,7 @@ class TeamScope implements Scope
             $builder->where("{$model->getTable()}.team_id", $teamId);
         }
     }
-    
+
     protected function getCurrentTeamId(): ?int
     {
         return auth()->user()?->currentTeam?->id;
@@ -1065,20 +1077,20 @@ class User extends Model
     {
         return $this->belongsTo(Team::class, 'current_team_id');
     }
-    
+
     public function teams(): BelongsToMany
     {
         return $this->belongsToMany(Team::class)
             ->withPivot('role')
             ->withTimestamps();
     }
-    
+
     public function switchTeam(Team $team): void
     {
         if (!$this->teams->contains($team->id)) {
             throw new \Exception('User does not belong to this team');
         }
-        
+
         $this->current_team_id = $team->id;
         $this->save();
     }
@@ -1091,7 +1103,7 @@ The switch endpoint:
 public function switch(Request $request, Team $team)
 {
     $request->user()->switchTeam($team);
-    
+
     return response()->json([
         'message' => 'Switched to team: ' . $team->name,
         'current_team' => new TeamResource($team),
@@ -1188,7 +1200,7 @@ use Illuminate\Queue\SerializesModels;
 class ProjectCreated
 {
     use Dispatchable, SerializesModels;
-    
+
     public function __construct(
         public Project $project
     ) {}
@@ -1212,7 +1224,7 @@ class SendProjectWebhooks
             ->where('user_id', $event->project->user_id)
             ->whereJsonContains('events', 'project.created')
             ->get();
-        
+
         foreach ($webhooks as $webhook) {
             SendWebhookJob::dispatch($webhook, [
                 'event' => 'project.created',
@@ -1244,26 +1256,26 @@ use Illuminate\Support\Facades\Http;
 class SendWebhookJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    
+
     public $tries = 3;
     public $backoff = [60, 300, 900]; // 1 min, 5 min, 15 min
-    
+
     public function __construct(
         public Webhook $webhook,
         public array $payload
     ) {}
-    
+
     public function handle(): void
     {
         $signature = hash_hmac('sha256', json_encode($this->payload), $this->webhook->secret);
-        
+
         $response = Http::timeout(10)
             ->withHeaders([
                 'X-Webhook-Signature' => $signature,
                 'Content-Type' => 'application/json',
             ])
             ->post($this->webhook->url, $this->payload);
-        
+
         WebhookCall::create([
             'webhook_id' => $this->webhook->id,
             'event' => $this->payload['event'],
@@ -1273,7 +1285,7 @@ class SendWebhookJob implements ShouldQueue
             'attempt' => $this->attempts(),
             'delivered_at' => $response->successful() ? now() : null,
         ]);
-        
+
         if (!$response->successful()) {
             throw new \Exception('Webhook delivery failed: ' . $response->status());
         }
@@ -1282,6 +1294,7 @@ class SendWebhookJob implements ShouldQueue
 ```
 
 This job:
+
 - Sends the webhook with a signature header
 - Logs every attempt
 - Retries with backoff if it fails
@@ -1340,7 +1353,7 @@ Schema::create('api_key_usages', function (Blueprint $table) {
     $table->timestamp('requested_at');
     $table->integer('response_status');
     $table->integer('response_time_ms');
-    
+
     $table->index(['api_key_id', 'requested_at']);
 });
 ```
@@ -1353,13 +1366,13 @@ public function create(Request $request)
     $request->validate([
         'name' => ['required', 'string', 'max:255'],
     ]);
-    
+
     $apiKey = $request->user()->apiKeys()->create([
         'name' => $request->name,
         'key' => 'sk_' . bin2hex(random_bytes(32)),
         'tier' => 'free',
     ]);
-    
+
     return response()->json([
         'key' => $apiKey->key,
         'name' => $apiKey->name,
@@ -1378,11 +1391,11 @@ Laravel's built-in rate limiting is powerful:
 // In RouteServiceProvider
 RateLimiter::for('api', function (Request $request) {
     $apiKey = ApiKey::where('key', $request->bearerToken())->first();
-    
+
     if (!$apiKey) {
         return Limit::perMinute(10); // Unauthenticated: 10/min
     }
-    
+
     return match ($apiKey->tier) {
         'free' => Limit::perMinute(60)->by($apiKey->id),
         'pro' => Limit::perMinute(300)->by($apiKey->id),
@@ -1415,26 +1428,26 @@ class AuthenticateApiKey
     public function handle(Request $request, Closure $next)
     {
         $key = $request->bearerToken();
-        
+
         if (!$key) {
             return response()->json([
                 'error' => 'API key required'
             ], 401);
         }
-        
+
         $apiKey = ApiKey::where('key', $key)
             ->where('active', true)
             ->first();
-        
+
         if (!$apiKey) {
             return response()->json([
                 'error' => 'Invalid API key'
             ], 401);
         }
-        
+
         $apiKey->update(['last_used_at' => now()]);
         $request->merge(['api_key' => $apiKey]);
-        
+
         return $next($request);
     }
 }
@@ -1458,7 +1471,7 @@ class TrackApiUsage
         $startTime = microtime(true);
         $response = $next($request);
         $duration = (microtime(true) - $startTime) * 1000;
-        
+
         if ($apiKey = $request->get('api_key')) {
             ApiKeyUsage::create([
                 'api_key_id' => $apiKey->id,
@@ -1468,13 +1481,14 @@ class TrackApiUsage
                 'response_time_ms' => round($duration),
             ]);
         }
-        
+
         return $response;
     }
 }
 ```
 
 This data lets you:
+
 - Show users their usage
 - Bill based on consumption
 - Identify slow endpoints
@@ -1486,15 +1500,15 @@ This data lets you:
 public function usage(Request $request)
 {
     $apiKey = $request->get('api_key');
-    
+
     $today = $apiKey->usages()
         ->whereDate('requested_at', today())
         ->count();
-    
+
     $thisMonth = $apiKey->usages()
         ->whereMonth('requested_at', now()->month)
         ->count();
-    
+
     $byEndpoint = $apiKey->usages()
         ->whereMonth('requested_at', now()->month)
         ->groupBy('endpoint')
@@ -1502,7 +1516,7 @@ public function usage(Request $request)
         ->orderByDesc('count')
         ->limit(10)
         ->get();
-    
+
     return response()->json([
         'today' => $today,
         'this_month' => $thisMonth,
@@ -1539,34 +1553,34 @@ GraphQL starts with a schema that defines your entire API:
 
 ```graphql
 type Query {
-  posts(first: Int! @paginate): [Post!]! @paginate
-  post(id: ID! @eq): Post @find
-  me: User @auth
+	posts(first: Int! @paginate): [Post!]! @paginate
+	post(id: ID! @eq): Post @find
+	me: User @auth
 }
 
 type Post {
-  id: ID!
-  title: String!
-  content: String!
-  author: User! @belongsTo
-  comments: [Comment!]! @hasMany
-  created_at: DateTime!
-  updated_at: DateTime!
+	id: ID!
+	title: String!
+	content: String!
+	author: User! @belongsTo
+	comments: [Comment!]! @hasMany
+	created_at: DateTime!
+	updated_at: DateTime!
 }
 
 type User {
-  id: ID!
-  name: String!
-  email: String!
-  posts: [Post!]! @hasMany
+	id: ID!
+	name: String!
+	email: String!
+	posts: [Post!]! @hasMany
 }
 
 type Comment {
-  id: ID!
-  content: String!
-  post: Post! @belongsTo
-  author: User! @belongsTo
-  created_at: DateTime!
+	id: ID!
+	content: String!
+	post: Post! @belongsTo
+	author: User! @belongsTo
+	created_at: DateTime!
 }
 ```
 
@@ -1578,25 +1592,26 @@ Because Lighthouse understands Laravel, you get free queries:
 
 ```graphql
 query {
-  posts(first: 10) {
-    data {
-      id
-      title
-      author {
-        name
-      }
-      comments {
-        content
-        author {
-          name
-        }
-      }
-    }
-  }
+	posts(first: 10) {
+		data {
+			id
+			title
+			author {
+				name
+			}
+			comments {
+				content
+				author {
+					name
+				}
+			}
+		}
+	}
 }
 ```
 
 Lighthouse automatically:
+
 - Paginates results
 - Eager loads relationships to prevent N+1
 - Transforms models to match the schema
@@ -1624,9 +1639,9 @@ Reference it in your schema:
 
 ```graphql
 type Query {
-  postsByTag(tag: String!, first: Int!): [Post!]! 
-    @paginate 
-    @field(resolver: "App\\GraphQL\\Queries\\PostsByTag")
+	postsByTag(tag: String!, first: Int!): [Post!]!
+		@paginate
+		@field(resolver: "App\\GraphQL\\Queries\\PostsByTag")
 }
 ```
 
@@ -1636,23 +1651,17 @@ GraphQL mutations are like POST/PUT/DELETE in REST:
 
 ```graphql
 type Mutation {
-  createPost(input: CreatePostInput! @spread): Post 
-    @create 
-    @guard
-  
-  updatePost(id: ID!, input: UpdatePostInput! @spread): Post 
-    @update 
-    @guard
-  
-  deletePost(id: ID!): Post 
-    @delete 
-    @guard
+	createPost(input: CreatePostInput! @spread): Post @create @guard
+
+	updatePost(id: ID!, input: UpdatePostInput! @spread): Post @update @guard
+
+	deletePost(id: ID!): Post @delete @guard
 }
 
 input CreatePostInput {
-  title: String! @rules(apply: ["required", "max:255"])
-  content: String! @rules(apply: ["required"])
-  category_id: ID!
+	title: String! @rules(apply: ["required", "max:255"])
+	content: String! @rules(apply: ["required"])
+	category_id: ID!
 }
 ```
 
@@ -1673,20 +1682,25 @@ With GraphQL, one query:
 
 ```graphql
 query {
-  post(id: 1) {
-    title
-    author { name }
-    comments {
-      content
-      author { name }
-    }
-  }
+	post(id: 1) {
+		title
+		author {
+			name
+		}
+		comments {
+			content
+			author {
+				name
+			}
+		}
+	}
 }
 ```
 
 The client asks for exactly what it needs. No more, no less.
 
 But GraphQL has costs:
+
 - More complex to implement
 - Harder to cache (no URL-based caching)
 - Query complexity can be hard to limit
@@ -1709,15 +1723,15 @@ Every endpoint needs tests. Use Pest or PHPUnit:
 ```php
 test('authenticated users can create posts', function () {
     $user = User::factory()->create();
-    
+
     $response = $this->actingAs($user)->postJson('/api/posts', [
         'title' => 'Test Post',
         'content' => 'Content here',
     ]);
-    
+
     $response->assertCreated()
         ->assertJsonStructure(['data' => ['id', 'title', 'content']]);
-    
+
     $this->assertDatabaseHas('posts', [
         'title' => 'Test Post',
         'user_id' => $user->id,
@@ -1742,12 +1756,12 @@ Scribe reads your routes, controllers, and Form Requests to generate documentati
 ```php
 /**
  * Create a new post
- * 
+ *
  * Creates a new post for the authenticated user.
- * 
+ *
  * @bodyParam title string required The post title. Example: My First Post
  * @bodyParam content string required The post content. Example: This is the content.
- * 
+ *
  * @response 201 {"data":{"id":1,"title":"My First Post"}}
  */
 public function store(StorePostRequest $request)
@@ -1795,19 +1809,19 @@ class Handler extends ExceptionHandler
                     'message' => 'Resource not found'
                 ], 404);
             }
-            
+
             if ($e instanceof ValidationException) {
                 return response()->json([
                     'message' => 'Validation failed',
                     'errors' => $e->errors()
                 ], 422);
             }
-            
+
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);
         }
-        
+
         return parent::render($request, $e);
     }
 }

@@ -13,7 +13,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
 
 	for (const tag of tags) {
 		const slug = slugify(tag);
-		const articles = allArticles.filter(a => a.data.tags.some(t => slugify(t) === slug));
+		const articles = allArticles.filter((a) => a.data.tags.some((t) => slugify(t) === slug));
 		const totalPages = Math.ceil(articles.length / PAGE_SIZE);
 
 		for (let pageNum = 2; pageNum <= totalPages; pageNum++) {
@@ -45,12 +45,9 @@ interface Props {
 const { tagName, articles, currentPage, totalPages, total } = Astro.props;
 const { tag } = Astro.params;
 
-const prevHref = currentPage === 2
-	? `/articles/tag/${tag}`
-	: `/articles/tag/${tag}/page/${currentPage - 1}`;
-const nextHref = currentPage < totalPages
-	? `/articles/tag/${tag}/page/${currentPage + 1}`
-	: null;
+const prevHref =
+	currentPage === 2 ? `/articles/tag/${tag}` : `/articles/tag/${tag}/page/${currentPage - 1}`;
+const nextHref = currentPage < totalPages ? `/articles/tag/${tag}/page/${currentPage + 1}` : null;
 
 const pageMeta = {
 	title: `#${tagName} — Articles — Page ${currentPage}`,
@@ -74,10 +71,13 @@ const tagSchema = {
 		subtitle={`${total} article${total === 1 ? '' : 's'} with this tag`}
 	/>
 
-	<Breadcrumb variant="filter" items={[
-		{ label: 'All articles', href: '/articles' },
-		{ label: `#${tagName}`, href: `/articles/tag/${tag}` },
-	]} />
+	<Breadcrumb
+		variant="filter"
+		items={[
+			{ label: 'All articles', href: '/articles' },
+			{ label: `#${tagName}`, href: `/articles/tag/${tag}` },
+		]}
+	/>
 
 	<section aria-label={`Articles tagged ${tagName}`}>
 		<ArticleList articles={articles} />

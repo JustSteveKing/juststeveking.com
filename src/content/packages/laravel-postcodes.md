@@ -1,21 +1,19 @@
 ---
-name: "juststeveking/laravel-postcodes"
-description: "A service wrapper around postcodes.io"
-packagist: "https://packagist.org/packages/juststeveking/laravel-postcodes"
-github: "https://github.com/JustSteveKing/LaravelPostcodes"
-link: "https://github.com/JustSteveKing/LaravelPostcodes"
-tech: ["PHP", "Laravel"]
+name: 'juststeveking/laravel-postcodes'
+description: 'A service wrapper around postcodes.io'
+packagist: 'https://packagist.org/packages/juststeveking/laravel-postcodes'
+github: 'https://github.com/JustSteveKing/LaravelPostcodes'
+link: 'https://github.com/JustSteveKing/LaravelPostcodes'
+tech: ['PHP', 'Laravel']
 featured: false
 downloads: 131250
 monthlyDownloads: 6382
 stars: 81
-version: "V1.5.0"
-updatedAt: "2026-06-10"
+version: 'V1.5.0'
+updatedAt: '2026-06-10'
 ---
 
 <p align="center">
-
-
 
 </p>
 
@@ -58,12 +56,11 @@ If, for some reason, this doesn't work please use the following steps:
 
 - Add `POSTCODES_URL` to your `.env` file and add `https://api.postcodes.io/` as the value.
 
-
 ## Basic Usage
 
 You can use the validation rule:
 
-``` php
+```php
 <?php
 
 $this->validate($request, [
@@ -90,7 +87,7 @@ $this->validate($request, [
 If you want to interact with the service itself:
 
 ```php
-<?php 
+<?php
 
 use JustSteveKing\LaravelPostcodes\Service\PostcodeService;
 
@@ -114,7 +111,7 @@ class SomeController extends Controller
 Or use the facade:
 
 ```php
-<?php 
+<?php
 
 class SomeController extends Controller
 {
@@ -164,7 +161,6 @@ $service->getPostcode('AB10 1AB');
 // You can also use the facade:
 Postcode::getPostcode('AB10 1AB');
 ```
-
 
 ### Bulk Lookup Postcodes
 
@@ -311,7 +307,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 ## Testing
 
-``` bash
+```bash
 $ composer test
 ```
 
@@ -339,7 +335,6 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/JustSteveKing/LaravelPostcodes.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/JustSteveKing/LaravelPostcodes.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/juststeveking/laravel-postcodes.svg?style=flat-square
-
 [link-packagist]: https://packagist.org/packages/juststeveking/laravel-postcodes
 [link-github-action]: https://github.com/JustSteveKing/LaravelPostcodes/actions
 [link-scrutinizer]: https://scrutinizer-ci.com/g/JustSteveKing/LaravelPostcodes/code-structure
@@ -347,4 +342,3 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [link-downloads]: https://packagist.org/packages/juststeveking/laravel-postcodes
 [link-author]: https://github.com/JustSteveKing
 [link-contributors]: ../../contributors
-

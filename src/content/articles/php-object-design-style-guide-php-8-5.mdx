@@ -1,5 +1,5 @@
 ---
-title: "The Object Design Style Guide for PHP 8.5 - Discipline without friction"
+title: 'The Object Design Style Guide for PHP 8.5 - Discipline without friction'
 description: "How PHP 8.5 absorbs Noback's Object Design Style Guide patterns directly into syntax, eliminating ceremony."
 category: PHP
 pubDate: 2026-02-16
@@ -12,7 +12,7 @@ author:
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["php", "object-design", "clean-code", "oop"]
+tags: ['php', 'object-design', 'clean-code', 'oop']
 crossPost:
   originalUrl: https://sevalla.com/blog/php-object-design-style-guide/
   originalSite: Sevalla
@@ -20,7 +20,7 @@ crossPost:
   permission: true
 ---
 
-Matthias Noback's *Object Design Style Guide* arrived in 2019 as something different. It wasn't another framework tutorial or architectural pattern cookbook. It was a book about how to think about objects themselves. Their responsibilities, boundaries, and contracts.
+Matthias Noback's _Object Design Style Guide_ arrived in 2019 as something different. It wasn't another framework tutorial or architectural pattern cookbook. It was a book about how to think about objects themselves. Their responsibilities, boundaries, and contracts.
 
 The principles Noback outlined were sound. They still are. But here's the reality: every pattern he advocated required significant ceremony in PHP 7.3. The gap between "what you should do" and "what the language lets you express cleanly" was wide.
 
@@ -659,9 +659,10 @@ readonly final class OrderService
     }
 }
 ```
+
 ## The fundamental shift
 
-The *Object Design Style Guide* taught a generation of PHP developers how to think about objects. The principles were always sound. What's changed is the cost of implementing them.
+The _Object Design Style Guide_ taught a generation of PHP developers how to think about objects. The principles were always sound. What's changed is the cost of implementing them.
 
 In PHP 7.3, good design meant writing substantial code. Getters for encapsulation. Validation duplicated across methods. Manual cloning for immutability. Withers for every property. The patterns were correct, but the ceremony was significant.
 

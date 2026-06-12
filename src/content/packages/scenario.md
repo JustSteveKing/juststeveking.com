@@ -1,16 +1,16 @@
 ---
-name: "juststeveking/scenario"
-description: "A strictly typed, railway-oriented business logic orchestration engine for PHP and Laravel."
-packagist: "https://packagist.org/packages/juststeveking/scenario"
-github: "https://github.com/JustSteveKing/scenario"
-link: "https://github.com/JustSteveKing/scenario"
-tech: ["PHP"]
+name: 'juststeveking/scenario'
+description: 'A strictly typed, railway-oriented business logic orchestration engine for PHP and Laravel.'
+packagist: 'https://packagist.org/packages/juststeveking/scenario'
+github: 'https://github.com/JustSteveKing/scenario'
+link: 'https://github.com/JustSteveKing/scenario'
+tech: ['PHP']
 featured: false
 downloads: 2
 monthlyDownloads: 0
 stars: 4
-version: "dev-main"
-updatedAt: "2026-05-09"
+version: 'dev-main'
+updatedAt: '2026-05-09'
 ---
 
 # Scenario: Type-Safe Business Orchestration
@@ -61,6 +61,7 @@ The commands will automatically resolve the correct namespaces and create the di
 ## Getting Started
 
 ### 1. Define your Input Data
+
 Create a readonly DTO to represent the starting payload of your scenario.
 
 ```php
@@ -71,6 +72,7 @@ readonly class RegisterUserData
 ```
 
 ### 2. Create an Action
+
 Implement the `Action` contract. Business logic goes in `handle()`, rollback logic goes in `compensate()`.
 
 ```php
@@ -96,6 +98,7 @@ class CreateUser implements Action
 ```
 
 ### 3. Define the Scenario
+
 Implement the `Scenario` contract and define the steps in order.
 
 ```php
@@ -113,6 +116,7 @@ class RegistrationScenario implements Scenario
 ```
 
 ### 4. Run it
+
 Execute the scenario from a controller or service.
 
 ```php
@@ -283,6 +287,7 @@ Scenario::for(CheckoutScenario::class)
 ```
 
 Key behaviours:
+
 - Fires for every action, including actions inside sub-scenarios.
 - On **success**: fires after the action's return value is recorded in context.
 - On **failure**: fires before saga compensation begins.
@@ -367,6 +372,7 @@ if ($pending->result()->isSuccess()) {
 ```
 
 Note the callback signatures:
+
 - `onSuccess(fn(Context $context): void)` — context holds all objects recorded during the run.
 - `onFailure(fn(string $error, Context $context): void)` — error is the message from `Result::failure(...)`, context holds objects recorded before the failure.
 
@@ -377,6 +383,7 @@ Note the callback signatures:
 The library includes built-in test helpers to make asserting against your workflows fluent and clean.
 
 ### 1. Faking Scenarios
+
 If you're writing a controller test and want to assert that a scenario was triggered without actually executing all of its actions, you can use `Scenario::fake()`.
 
 ```php
@@ -398,12 +405,13 @@ public function test_it_dispatches_registration_scenario()
     Scenario::assertRan(RegistrationScenario::class, function ($input) {
         return $input->email === 'john@example.com';
     });
-    
+
     Scenario::assertNotRan(DeleteUserScenario::class);
 }
 ```
 
 ### 2. Fluent Assertions
+
 When you are unit testing a specific scenario, you can use the fluent assertions to verify the outcome and the final state of the `Context`.
 
 ```php
@@ -425,6 +433,7 @@ public function test_registration_scenario_fails_on_duplicate_email()
 ```
 
 ### 3. Action Mocking (Partial Fakes)
+
 Sometimes you want to test the full orchestration of a scenario, but mock out a single step that talks to an external API (like a Payment Gateway). You can use the `mock()` method to force a specific `Result` for an action.
 
 ```php
@@ -448,4 +457,3 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-

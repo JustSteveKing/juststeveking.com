@@ -3,14 +3,14 @@ title: Your first Laravel 9 Application
 description: If you have never built a Laravel application, let me take a walk-through with you from scratch - with no perceived knowledge. Follow along to learn Laravel.
 category: Laravel
 pubDate: 2022-11-22
-image: "/images/social/articles/your-first-laravel-app.png"
+image: '/images/social/articles/your-first-laravel-app.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "beginner-friendly", "tutorial", "web-application"]
+tags: ['laravel', 'beginner-friendly', 'tutorial', 'web-application']
 ---
 
 If you have never built a Laravel application, let me take a walk-through with you from scratch - with no perceived knowledge. In this tutorial, I am going to walk through creating a new Laravel application, something of a refresh of [this article](https://laravel-news.com/your-first-laravel-application), which was posted mid-2021.
@@ -40,11 +40,11 @@ php artisan serve
 
 This will give you a URL to view, so click on it and open it in your browser. This should be the default Laravel screen. Congratulations, you have taken your first step with Laravel! Next, we can move on to how our application works.
 
-Laravel will load all of your web routes from `routes/web.php`, and you have a few options when it comes to routing. You can load a view directly by using `Route::view()` when you don't need to pass data to the view. You can use a callable|Closure|function by calling `Route::get('route', fn () => view('home'))` where `get` is the HTTP verb. you want to use. You can also use controllers so that you can isolate the logic inside a single class `Route::get('route', App\Http\Controllers\SomeRouteController::class)`. 
+Laravel will load all of your web routes from `routes/web.php`, and you have a few options when it comes to routing. You can load a view directly by using `Route::view()` when you don't need to pass data to the view. You can use a callable|Closure|function by calling `Route::get('route', fn () => view('home'))` where `get` is the HTTP verb. you want to use. You can also use controllers so that you can isolate the logic inside a single class `Route::get('route', App\Http\Controllers\SomeRouteController::class)`.
 
 Regarding loading routes through controllers, there are also options. You can declare them as strings and point to specific methods `Route::get('route', 'App\Http\Controllers\SomeController@methodName')`. You can declare route resources, where Laravel will assume a standard `Route::resource('route', 'App\Http\Controllers\SomeController')`, which will give you `index`, `create`, `store`,`show`, `edit`, `update`, `destroy` methods. These are explained very well [in the documentation](https://laravel.com/docs/9.x/controllers#actions-handled-by-resource-controller). You can also use invokable controllers, which is a single class with an `__invoke()` method which is treated like a Closure `Route::get('route', App\Http\Controllers\SomeController::clas)`.
 
-For this tutorial, I will use invokable controllers, as they are what I like using - so feel free to follow along. I like using these because it keeps my routes clean, are friendly for my IDE to click through, and encapsulate each route in a single class. 
+For this tutorial, I will use invokable controllers, as they are what I like using - so feel free to follow along. I like using these because it keeps my routes clean, are friendly for my IDE to click through, and encapsulate each route in a single class.
 
 When starting any new project, you must consider what you want it to do. As we already said, we are building a bookmarking application, so we can assume what we want this application to do. Let's write a couple of requirements:
 
@@ -67,11 +67,11 @@ Then we need to open our `.env` file and modify our database block, so our appli
 Currently you will have a block in your `env` that looks like the following:
 
 ```dotenv
-DB_CONNECTION=mysql  
-DB_HOST=127.0.0.1  
-DB_PORT=3306  
-DB_DATABASE=laravel  
-DB_USERNAME=root  
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=root
 DB_PASSWORD=
 ```
 
@@ -290,7 +290,7 @@ Let's fill this migration in to see how it is different, again focusing on the `
 ```php
 Schema::create('bookmark_tag', static function (Blueprint $table): void {
     $table->foreignId('bookmark_id')->index()->constrained()->cascadeOnDelete();
-    $table->foreignId('tag_id')->index()->constrained()->cascadeOnDelete(); 
+    $table->foreignId('tag_id')->index()->constrained()->cascadeOnDelete();
 });
 ```
 
@@ -404,17 +404,17 @@ php artisan make:controller DashboardController --invokable
 Now let's refactor this routes file, so it is a little cleaner:
 
 ```php
-declare(strict_types=1);  
-  
-use Illuminate\Support\Facades\Route;  
-  
-Route::view('/', 'welcome')->name('home');  
-  
-Route::get(  
-    '/dashboard',  
-    App\Http\Controllers\DashboardController::class  
-)->middleware(['auth'])->name('dashboard');  
-  
+declare(strict_types=1);
+
+use Illuminate\Support\Facades\Route;
+
+Route::view('/', 'welcome')->name('home');
+
+Route::get(
+    '/dashboard',
+    App\Http\Controllers\DashboardController::class
+)->middleware(['auth'])->name('dashboard');
+
 require __DIR__.'/auth.php';
 ```
 
@@ -433,10 +433,10 @@ class DashboardController extends Controller
 {
     public function __invoke(Request $request): View
     {
-        return view('dashboard', [  
-    		'bookmarks' => Bookmark::query()  
-        		->where('user_id', auth()->id())  
-        		->get()  
+        return view('dashboard', [
+    		'bookmarks' => Bookmark::query()
+        		->where('user_id', auth()->id())
+        		->get()
 		]);
     }
 }
@@ -466,19 +466,19 @@ Then inside of our `resources/views/dashboard.blade.php` we can refactor it to l
 
 ```html
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-heading font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+	<x-slot name="header">
+		<h2 class="font-heading font-semibold text-xl text-gray-800 leading-tight">
+			{{ __('Dashboard') }}
+		</h2>
+	</x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <x-bookmarks.form :bookmarks="$bookmarks" />
-            </div>
-        </div>
-    </div>
+	<div class="py-12">
+		<div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+			<div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+				<x-bookmarks.form :bookmarks="$bookmarks" />
+			</div>
+		</div>
+	</div>
 </x-app-layout>
 ```
 
@@ -487,150 +487,167 @@ We load our blade component by calling `<x-bookmarks.form />`, and the way this 
 ```html
 @props(['bookmarks'])
 
-<div>  
-    <div x-data="{ open: true }" class="overflow-hidden">
-        <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
-            <div class="-ml-4 -mt-2 flex items-center justify-between flex-wrap sm:flex-nowrap">
-                <div class="ml-4 mt-2">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">
-                        Your Bookmarks
-                    </h3>
-                </div>
-                <div class="ml-4 mt-2 shrink-0">
-                    <a x-on:click.prevent="open = ! open" class="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        <span x-show="! open" x-cloak>Show Form</span>
-                        <span x-show="open" x-cloak>Hide Form</span>
-                    </a>
-                </div>
-            </div>
-        </div>
+<div>
+	<div x-data="{ open: true }" class="overflow-hidden">
+		<div class="px-4 py-5 border-b border-gray-200 sm:px-6">
+			<div class="-ml-4 -mt-2 flex items-center justify-between flex-wrap sm:flex-nowrap">
+				<div class="ml-4 mt-2">
+					<h3 class="text-lg leading-6 font-medium text-gray-900">Your Bookmarks</h3>
+				</div>
+				<div class="ml-4 mt-2 shrink-0">
+					<a
+						x-on:click.prevent="open = ! open"
+						class="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+					>
+						<span x-show="! open" x-cloak>Show Form</span>
+						<span x-show="open" x-cloak>Hide Form</span>
+					</a>
+				</div>
+			</div>
+		</div>
 
-        <div x-show="open" x-cloak class="divide-y divide-gray-200 py-4 px-4">
-            <div class="pt-8">
-                <div>
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">
-                        Create a new bookmark.
-                    </h3>
-                    <p class="mt-1 text-sm text-gray-500">
-                        Add information about the bookmark to make it easier to understand later.
-                    </p>
-                </div>
-                <form id="bookmark_form" method="POST" action="{{ route('bookmarks.store') }}" class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                    @csrf
+		<div x-show="open" x-cloak class="divide-y divide-gray-200 py-4 px-4">
+			<div class="pt-8">
+				<div>
+					<h3 class="text-lg leading-6 font-medium text-gray-900">Create a new bookmark.</h3>
+					<p class="mt-1 text-sm text-gray-500">
+						Add information about the bookmark to make it easier to understand later.
+					</p>
+				</div>
+				<form
+					id="bookmark_form"
+					method="POST"
+					action="{{ route('bookmarks.store') }}"
+					class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6"
+				>
+					@csrf
 
-                    <div class="sm:col-span-3">
-                        <label for="name" class="block text-sm font-medium text-gray-700">
-                            Name
-                        </label>
-                        <div class="mt-1">
-                            <input type="text" name="name" id="name" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
-                        </div>
-                        @error('name')
-                        <p class="mt-2 text-sm text-red-500">
-                            {{ $message }}
-                        </p>
-                        @enderror
-                    </div>
+					<div class="sm:col-span-3">
+						<label for="name" class="block text-sm font-medium text-gray-700"> Name </label>
+						<div class="mt-1">
+							<input
+								type="text"
+								name="name"
+								id="name"
+								class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+							/>
+						</div>
+						@error('name')
+						<p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+						@enderror
+					</div>
 
-                    <div class="sm:col-span-3">
-                        <label for="url" class="block text-sm font-medium text-gray-700">
-                            URL
-                        </label>
-                        <div class="mt-1">
-                            <input type="text" name="url" id="url" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
-                        </div>
-                        @error('url')
-                        <p class="mt-2 text-sm text-red-500">
-                            {{ $message }}
-                        </p>
-                        @enderror
-                    </div>
+					<div class="sm:col-span-3">
+						<label for="url" class="block text-sm font-medium text-gray-700"> URL </label>
+						<div class="mt-1">
+							<input
+								type="text"
+								name="url"
+								id="url"
+								class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+							/>
+						</div>
+						@error('url')
+						<p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+						@enderror
+					</div>
 
-                    <div class="sm:col-span-6">
-                        <label for="description" class="block text-sm font-medium text-gray-700">
-                            Description
-                        </label>
-                        <div class="mt-1">
-                            <textarea id="description" name="description" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md"></textarea>
-                        </div>
-                        <p class="mt-2 text-sm text-gray-500">
-                            Write any notes about this bookmark.
-                        </p>
-                        @error('description')
-                        <p class="mt-2 text-sm text-red-500">
-                            {{ $message }}
-                        </p>
-                        @enderror
-                    </div>
+					<div class="sm:col-span-6">
+						<label for="description" class="block text-sm font-medium text-gray-700">
+							Description
+						</label>
+						<div class="mt-1">
+							<textarea
+								id="description"
+								name="description"
+								rows="3"
+								class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md"
+							></textarea>
+						</div>
+						<p class="mt-2 text-sm text-gray-500">Write any notes about this bookmark.</p>
+						@error('description')
+						<p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+						@enderror
+					</div>
 
-                    <div class="sm:col-span-6">
-                        <label for="tags" class="block text-sm font-medium text-gray-700">
-                            Tags
-                        </label>
-                        <div class="mt-1">
-                            <input
-                                type="text"
-                                name="tags"
-                                id="tags"
-                                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                            />
-                            <p class="mt-2 text-sm text-gray-500">
-                                Add a comma separated list of tags.
-                            </p>
-                            @error('tag')
-                            <p class="mt-2 text-sm text-red-500">
-                                {{ $message }}
-                            </p>
-                            @enderror
-                        </div>
-                    </div>
+					<div class="sm:col-span-6">
+						<label for="tags" class="block text-sm font-medium text-gray-700"> Tags </label>
+						<div class="mt-1">
+							<input
+								type="text"
+								name="tags"
+								id="tags"
+								class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+							/>
+							<p class="mt-2 text-sm text-gray-500">Add a comma separated list of tags.</p>
+							@error('tag')
+							<p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+							@enderror
+						</div>
+					</div>
 
-                    <div class="sm:col-span-6">
-                        <div class="pt-5">
-                            <div class="flex justify-end">
-                                <a x-on:click.prevent="document.getElementById('bookmark_form').reset();" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">  
-                                    Cancel
-                                </a>
-                                <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                    Save
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+					<div class="sm:col-span-6">
+						<div class="pt-5">
+							<div class="flex justify-end">
+								<a
+									x-on:click.prevent="document.getElementById('bookmark_form').reset();"
+									class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+								>
+									Cancel
+								</a>
+								<button
+									type="submit"
+									class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+								>
+									Save
+								</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 
-    @forelse ($bookmarks as $bookmark)
-        <div>
-            <a href="#" class="block hover:bg-gray-50">
-                <div class="px-4 py-4 sm:px-6">
-                    <div class="flex items-center justify-between">
-                        <p class="text-sm font-medium text-indigo-600 truncate">
-                            {{ $bookmark->name }}
-                        </p>
-                    </div>
-                    <div class="mt-2 sm:flex sm:justify-between">
-                        <div class="flex space-x-4">
-                            @foreach ($bookmark->tags as $tag)
-                                <p class="flex items-center text-sm text-gray-500">
-                                    {{ $tag->name }}
-                                </p>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-    @empty
-        <a href="#" class="relative block w-full border-2 border-gray-300 border-dashed rounded-lg p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
-            <span class="mt-2 block text-sm font-medium text-gray-900">
-                Create a new bookmark
-            </span>
-        </a>
-    @endforelse
+	@forelse ($bookmarks as $bookmark)
+	<div>
+		<a href="#" class="block hover:bg-gray-50">
+			<div class="px-4 py-4 sm:px-6">
+				<div class="flex items-center justify-between">
+					<p class="text-sm font-medium text-indigo-600 truncate">{{ $bookmark->name }}</p>
+				</div>
+				<div class="mt-2 sm:flex sm:justify-between">
+					<div class="flex space-x-4">
+						@foreach ($bookmark->tags as $tag)
+						<p class="flex items-center text-sm text-gray-500">{{ $tag->name }}</p>
+						@endforeach
+					</div>
+				</div>
+			</div>
+		</a>
+	</div>
+	@empty
+	<a
+		href="#"
+		class="relative block w-full border-2 border-gray-300 border-dashed rounded-lg p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+	>
+		<svg
+			class="mx-auto h-12 w-12 text-gray-400"
+			fill="none"
+			stroke="currentColor"
+			viewBox="0 0 24 24"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<path
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				stroke-width="2"
+				d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+			></path>
+		</svg>
+		<span class="mt-2 block text-sm font-medium text-gray-900"> Create a new bookmark </span>
+	</a>
+	@endforelse
 </div>
 ```
 
@@ -700,7 +717,7 @@ class StoreController extends Controller
             $tag = Tag::query()->firstOrCreate(
                 ['name' => trim(strtolower($tag))],
             );
-  
+
             $bookmark->tags()->attach($tag->id);
         }
 
@@ -772,34 +789,34 @@ public function __invoke(StoreRequest $request): RedirectResponse
 Not the validation will happen for us. So we can remove the requirement to extend the base controller from Laravel and remove the manual validation:
 
 ```php
-declare(strict_types=1);  
-  
-namespace App\Http\Controllers\Bookmarks;  
-   
-use App\Http\Requests\Bookmarks\StoreRequest;  
-use App\Models\Tag;  
-use Illuminate\Http\RedirectResponse;  
-  
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Bookmarks;
+
+use App\Http\Requests\Bookmarks\StoreRequest;
+use App\Models\Tag;
+use Illuminate\Http\RedirectResponse;
+
 class StoreController
-{  
-    public function __invoke(StoreRequest $request): RedirectResponse  
-    {  
-        $bookmark = auth()->user()->bookmarks()->create([  
-            'name' => $request->get('name'),  
-            'url' => $request->get('url'),  
-            'description' => $request->get('description'),  
-        ]);  
-  
-        foreach (explode(',', $request->get('tags')) as $tag) {  
-            $tag = Tag::query()->firstOrCreate(  
-                ['name' => trim(strtolower($tag))],  
-            );  
-  
-            $bookmark->tags()->attach($tag->id);  
-        }  
-  
-        return redirect()->route('dashboard');  
-    }  
+{
+    public function __invoke(StoreRequest $request): RedirectResponse
+    {
+        $bookmark = auth()->user()->bookmarks()->create([
+            'name' => $request->get('name'),
+            'url' => $request->get('url'),
+            'description' => $request->get('description'),
+        ]);
+
+        foreach (explode(',', $request->get('tags')) as $tag) {
+            $tag = Tag::query()->firstOrCreate(
+                ['name' => trim(strtolower($tag))],
+            );
+
+            $bookmark->tags()->attach($tag->id);
+        }
+
+        return redirect()->route('dashboard');
+    }
 }
 ```
 
@@ -814,18 +831,18 @@ declare(strict_types=1);
 
 namespace App\Actions\Bookmarks;
 
-use App\Models\Bookmark;  
+use App\Models\Bookmark;
 use App\Models\Tag;
 
 class CreateBookmarkAndTags
 {
     public function handle(array $request, int $id): void
     {
-		$bookmark = Bookmark::query()->create([  
-			'name' => $request['name'],  
-			'url' => $request['url'],  
-			'description' => $request['description'],  
-			'user_id' => $id,  
+		$bookmark = Bookmark::query()->create([
+			'name' => $request['name'],
+			'url' => $request['url'],
+			'description' => $request['description'],
+			'user_id' => $id,
 		]);
 
 		if ($request['tags'] !== null) {
@@ -846,54 +863,54 @@ We have a single `handle` method that accepts the request data and an ID that we
 So now we can refactor our controller even further:
 
 ```php
-declare(strict_types=1);  
-  
-namespace App\Http\Controllers\Bookmarks;  
-  
-use App\Actions\Bookmarks\CreateBookmarkAndTags;  
-use App\Http\Requests\Bookmarks\StoreRequest;  
-use Illuminate\Http\RedirectResponse;  
-  
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Bookmarks;
+
+use App\Actions\Bookmarks\CreateBookmarkAndTags;
+use App\Http\Requests\Bookmarks\StoreRequest;
+use Illuminate\Http\RedirectResponse;
+
 class StoreController
-{  
-    public function __invoke(StoreRequest $request): RedirectResponse  
-    {  
-        (new CreateBookmarkAndTags())->handle(  
-            request: $request->all(),  
-            id: auth()->id(),  
-        );  
-  
-        return redirect()->route('dashboard');  
-    }  
+{
+    public function __invoke(StoreRequest $request): RedirectResponse
+    {
+        (new CreateBookmarkAndTags())->handle(
+            request: $request->all(),
+            id: auth()->id(),
+        );
+
+        return redirect()->route('dashboard');
+    }
 }
 ```
 
 Now we have a single action that we call inside our controller and then return a redirect. Much cleaner, and it is named well. We can, of course, take this further should we want to, by using the Laravel container to inject the action in the constructor - allowing us to call the action. This would look like the following:
 
 ```php
-declare(strict_types=1);  
-  
-namespace App\Http\Controllers\Bookmarks;  
-  
-use App\Actions\Bookmarks\CreateBookmarkAndTags;  
-use App\Http\Requests\Bookmarks\StoreRequest;  
-use Illuminate\Http\RedirectResponse;  
-  
-class StoreController 
-{  
-    public function __construct(  
-        protected CreateBookmarkAndTags $action,  
-    ) {}  
-  
-    public function __invoke(StoreRequest $request): RedirectResponse  
-    {  
-        $this->action->handle(  
-            request: $request->all(),  
-            id: auth()->id(),  
-        );  
-  
-        return redirect()->route('dashboard');  
-    }  
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Bookmarks;
+
+use App\Actions\Bookmarks\CreateBookmarkAndTags;
+use App\Http\Requests\Bookmarks\StoreRequest;
+use Illuminate\Http\RedirectResponse;
+
+class StoreController
+{
+    public function __construct(
+        protected CreateBookmarkAndTags $action,
+    ) {}
+
+    public function __invoke(StoreRequest $request): RedirectResponse
+    {
+        $this->action->handle(
+            request: $request->all(),
+            id: auth()->id(),
+        );
+
+        return redirect()->route('dashboard');
+    }
 }
 ```
 
@@ -910,74 +927,87 @@ php artisan make:controller Bookmarks/DeleteController --invokable
 Now we do not need an action for this as it is a one-liner, but if you want to provide multiple ways to delete a bookmark, follow the same steps as above, but this time to delete the bookmark instead of creating one. Add the following code to your controller:
 
 ```php
-declare(strict_types=1);  
-  
-namespace App\Http\Controllers\Bookmarks;  
-  
-use App\Models\Bookmark;  
-use Illuminate\Http\RedirectResponse;  
-use Illuminate\Http\Request;  
-  
-class DeleteController  
-{  
-    public function __invoke(Request $request, Bookmark $bookmark): RedirectResponse  
-    {  
-        $bookmark->delete();  
-  
-        return redirect()->route('dashboard');  
-    }  
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Bookmarks;
+
+use App\Models\Bookmark;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+
+class DeleteController
+{
+    public function __invoke(Request $request, Bookmark $bookmark): RedirectResponse
+    {
+        $bookmark->delete();
+
+        return redirect()->route('dashboard');
+    }
 }
 ```
 
 Here we accept the Bookmark model as an argument so that we can enable route model binding, where Laravel will look up the record for you and inject it into your method - if it fails it will throw a 404 exception. All we then need to do is call delete on the model and return a redirect. Add the route next:
 
 ```php
-Route::delete(  
-    'bookmarks/{bookmark}',  
-    App\Http\Controllers\Bookmarks\DeleteController::class,  
+Route::delete(
+    'bookmarks/{bookmark}',
+    App\Http\Controllers\Bookmarks\DeleteController::class,
 )->middleware(['auth'])->name('bookmarks.delete');
 ```
 
 Finally we can go back to our component, and add a button:
 
 ```html
-@forelse ($bookmarks as $bookmark)  
-    <div>  
-        <a href="#" class="block hover:bg-gray-50">  
-            <div class="px-4 py-4 sm:px-6">  
-                <div class="flex items-center justify-between">  
-                    <p class="text-sm font-medium text-indigo-600 truncate">  
-                        {{ $bookmark->name }}  
-                    </p>  
-                    <div class="ml-2 shrink-0 flex">  
-                        <form method="DELETE" action="{{ route('bookmarks.delete', $bookmark->id) }}">  
-                            @csrf  
-  
-                            <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-red-500 bg-gray-100 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">  
-                                Delete  
-                            </button>  
-                        </form>  
-                    </div>  
-                </div>  
-                <div class="mt-2 sm:flex sm:justify-between">  
-                    <div class="flex space-x-4">  
-                        @foreach ($bookmark->tags as $tag)  
-                            <p class="flex items-center text-sm text-gray-500">  
-                                {{ $tag->name }}  
-                            </p>  
-                        @endforeach  
-                    </div>  
-                </div>  
-            </div>  
-        </a>  
-    </div>  
-@empty  
-    <a href="#" class="relative block w-full border-2 border-gray-300 border-dashed rounded-lg p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">  
-        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>  
-        <span class="mt-2 block text-sm font-medium text-gray-900">  
-            Create a new bookmark  
-        </span>  
-    </a>  
+@forelse ($bookmarks as $bookmark)
+<div>
+	<a href="#" class="block hover:bg-gray-50">
+		<div class="px-4 py-4 sm:px-6">
+			<div class="flex items-center justify-between">
+				<p class="text-sm font-medium text-indigo-600 truncate">{{ $bookmark->name }}</p>
+				<div class="ml-2 shrink-0 flex">
+					<form method="DELETE" action="{{ route('bookmarks.delete', $bookmark->id) }}">
+						@csrf
+
+						<button
+							type="submit"
+							class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-red-500 bg-gray-100 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+						>
+							Delete
+						</button>
+					</form>
+				</div>
+			</div>
+			<div class="mt-2 sm:flex sm:justify-between">
+				<div class="flex space-x-4">
+					@foreach ($bookmark->tags as $tag)
+					<p class="flex items-center text-sm text-gray-500">{{ $tag->name }}</p>
+					@endforeach
+				</div>
+			</div>
+		</div>
+	</a>
+</div>
+@empty
+<a
+	href="#"
+	class="relative block w-full border-2 border-gray-300 border-dashed rounded-lg p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+>
+	<svg
+		class="mx-auto h-12 w-12 text-gray-400"
+		fill="none"
+		stroke="currentColor"
+		viewBox="0 0 24 24"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			stroke-width="2"
+			d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+		></path>
+	</svg>
+	<span class="mt-2 block text-sm font-medium text-gray-900"> Create a new bookmark </span>
+</a>
 @endforelse
 ```
 
@@ -992,74 +1022,75 @@ php artisan make:controller Bookmarks/RedirectController --invokable
 Now add this GET route:
 
 ```php
-Route::get(  
-    'bookmarks/{bookmark}',  
-    App\Http\Controllers\Bookmarks\RedirectController::class  
+Route::get(
+    'bookmarks/{bookmark}',
+    App\Http\Controllers\Bookmarks\RedirectController::class
 )->middleware(['auth'])->name('bookmarks.redirect');
 ```
 
 To manage building this URL, we could write it manually. However, I have previously created a library for these situations called `juststeveking/uri-builder`, which will let me build a URI and add extra parts fluently.
 
 ```php
-declare(strict_types=1);  
-  
-namespace App\Http\Controllers\Bookmarks;  
-  
-use App\Http\Controllers\Controller;  
-use App\Models\Bookmark;  
-use Illuminate\Http\Request;  
-use JustSteveKing\UriBuilder\Uri;  
-  
-class RedirectController extends Controller  
-{  
-    public function __invoke(Request $request, Bookmark $bookmark)  
-    {  
-        $url = Uri::fromString(  
-            uri: $bookmark->url,  
-        )->addQueryParam(  
-            key: 'utm_campaign',  
-            value: 'bookmarker_' . auth()->id(), 
-        )->addQueryParam(  
-            key: 'utm_source',  
-            value: 'Bookmarker App'  
-        )->addQueryParam(  
-            key: 'utm_medium',  
-            value: 'website',  
-        );  
-  
-        return redirect(  
-            $url->toString(),  
-        );  
-    }  
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Bookmarks;
+
+use App\Http\Controllers\Controller;
+use App\Models\Bookmark;
+use Illuminate\Http\Request;
+use JustSteveKing\UriBuilder\Uri;
+
+class RedirectController extends Controller
+{
+    public function __invoke(Request $request, Bookmark $bookmark)
+    {
+        $url = Uri::fromString(
+            uri: $bookmark->url,
+        )->addQueryParam(
+            key: 'utm_campaign',
+            value: 'bookmarker_' . auth()->id(),
+        )->addQueryParam(
+            key: 'utm_source',
+            value: 'Bookmarker App'
+        )->addQueryParam(
+            key: 'utm_medium',
+            value: 'website',
+        );
+
+        return redirect(
+            $url->toString(),
+        );
+    }
 }
 ```
 
 You do not need to go as in-depth as I have here - that part is up to you. Finally, we can just add a link to the UI, and away we go.
 
 ```html
-<div class="flex items-center justify-between">  
-    <p class="text-sm font-medium text-indigo-600 truncate">  
-        {{ $bookmark->name }}  
-    </p>  
-    <div class="ml-2 shrink-0 flex">  
-        <a  
-            href="{{ route('bookmarks.redirect', $bookmark->id) }}"  
-            target="__blank"  
-            rel="nofollow noopener"  
-            class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-indigo-600 bg-gray-100 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"  
-        >Visit</a>  
-        <form method="POST" action="{{ route('bookmarks.delete', $bookmark->id) }}">  
-            @csrf  
-            @method('DELETE')  
-  
-            <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-red-500 bg-gray-100 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">  
-                Delete  
-            </button>  
-        </form>  
-    </div>  
+<div class="flex items-center justify-between">
+	<p class="text-sm font-medium text-indigo-600 truncate">{{ $bookmark->name }}</p>
+	<div class="ml-2 shrink-0 flex">
+		<a
+			href="{{ route('bookmarks.redirect', $bookmark->id) }}"
+			target="__blank"
+			rel="nofollow noopener"
+			class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-indigo-600 bg-gray-100 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+			>Visit</a
+		>
+		<form method="POST" action="{{ route('bookmarks.delete', $bookmark->id) }}">
+			@csrf @method('DELETE')
+
+			<button
+				type="submit"
+				class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-red-500 bg-gray-100 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+			>
+				Delete
+			</button>
+		</form>
+	</div>
 </div>
 ```
 
-You could take this further by collecting stats of which bookmarks you viewed the most or anything else. You could even allow you to click on tags to view all of a certain tag - but I think this tutorial is enough to take in at once. 
+You could take this further by collecting stats of which bookmarks you viewed the most or anything else. You could even allow you to click on tags to view all of a certain tag - but I think this tutorial is enough to take in at once.
 
 How did you find this? Writing tutorials for people unfamiliar with Laravel can be tricky, and I hope I managed to explain it well enough and in enough detail for you to follow along. Let me know your thoughts on Twitter!

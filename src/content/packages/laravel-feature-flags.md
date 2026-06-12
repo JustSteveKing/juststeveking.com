@@ -1,16 +1,16 @@
 ---
-name: "juststeveking/laravel-feature-flags"
-description: "A simple to use Feature Flags package for Laravel"
-packagist: "https://packagist.org/packages/juststeveking/laravel-feature-flags"
-github: "https://github.com/JustSteveKing/laravel-feature-flags"
-link: "https://github.com/JustSteveKing/laravel-feature-flags"
-tech: ["PHP", "Laravel"]
+name: 'juststeveking/laravel-feature-flags'
+description: 'A simple to use Feature Flags package for Laravel'
+packagist: 'https://packagist.org/packages/juststeveking/laravel-feature-flags'
+github: 'https://github.com/JustSteveKing/laravel-feature-flags'
+link: 'https://github.com/JustSteveKing/laravel-feature-flags'
+tech: ['PHP', 'Laravel']
 featured: false
 downloads: 52764
 monthlyDownloads: 1159
 stars: 177
-version: "dev-main"
-updatedAt: "2026-06-10"
+version: 'dev-main'
+updatedAt: '2026-06-10'
 ---
 
 # Laravel Feature Flags
@@ -22,8 +22,6 @@ updatedAt: "2026-06-10"
 [![Total Downloads][ico-downloads]][link-downloads]
 
 <p align="center">
-
-
 
 </p>
 
@@ -62,9 +60,9 @@ return [
 
         'status_code' => 404,
     ],
-    
+
     'enable_time_bombs' => false,
-    
+
     'time_bomb_environments' => ['production']
 ];
 ```
@@ -79,9 +77,7 @@ php artisan migrate
 
 This package allows you to manage user features and feature groups in a database.
 
-
 **All Feature and Feature Group names will be normalised to lower case on save.**
-
 
 To use this package your User model needs to have the `HasFeatures` trait:
 
@@ -101,7 +97,7 @@ class User extends Authenticatable
 
 This will allow you to manage features and feature groups on your user model.
 
-A *User* can belong to many *Feature Groups*, but can also be assigned access to specific *Features*.
+A _User_ can belong to many _Feature Groups_, but can also be assigned access to specific _Features_.
 
 ### Working with Feature Groups
 
@@ -277,6 +273,7 @@ Route::middleware(['feature-group:beta-testers,internal,developer advocates'])->
 ## Artisan Commands
 
 There are a number of artisan commands available for interacting with feature flags.
+
 ```bash
   feature-flags:activate-feature           Activates a feature
   feature-flags:activate-feature-group     Activates a feature group
@@ -292,7 +289,7 @@ There are a number of artisan commands available for interacting with feature fl
 
 ## Testing
 
-``` bash
+```bash
 $ composer run test
 ```
 
@@ -316,10 +313,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-version]: https://img.shields.io/packagist/v/juststeveking/laravel-feature-flags.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/juststeveking/laravel-feature-flags.svg?style=flat-square
-
 [link-packagist]: https://packagist.org/packages/juststeveking/laravel-feature-flags
 [link-downloads]: https://packagist.org/packages/juststeveking/laravel-feature-flags
-
 [link-author]: https://github.com/JustSteveKing
 [link-contributors]: ../../contributors
-

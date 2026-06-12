@@ -2,20 +2,20 @@
 import type { HTMLTag, Polymorphic } from 'astro/types';
 
 type Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag }> & {
-  class?: string;
-  interactive?: boolean;
+	class?: string;
+	interactive?: boolean;
 };
 
 const { class: className, interactive = false, as: Element = 'div', ...props } = Astro.props;
 ---
 
 <Element
-  class:list={[
-    'rounded-2xl border border-edge bg-surface',
-    interactive && 'transition-transform duration-200 hover:-translate-y-0.5 cursor-pointer',
-    className
-  ]}
-  {...props}
+	class:list={[
+		'rounded-2xl border border-edge bg-surface',
+		interactive && 'transition-transform duration-200 hover:-translate-y-0.5 cursor-pointer',
+		className,
+	]}
+	{...props}
 >
-  <slot />
+	<slot />
 </Element>

@@ -1,47 +1,47 @@
 {
-  "meta": {
-    "title": "About",
-    "prompt": "$ gh profile view juststeveking",
-    "subtitle": "Technical Director, educator, and API consultant. Based in Wales, UK."
-  },
-  "bio": [
-    "I help SaaS teams fix slow, unreliable APIs without rewriting everything. My work sits at the intersection of API quality, architecture, and delivery -- the decisions that determine whether a team ships with confidence or spends half its time firefighting.",
-    "I have been building software professionally for over 15 years, with the last several focused on PHP, Laravel, and API systems at scale. I am a PHP-FIG Core Committee member, have delivered 30+ talks and workshops internationally, and have reached over 50,000 developers through writing, talks, and technical education.",
-    "Before software, I served in the Royal Tank Regiment from 2007 to 2011. That background shapes how I work: systematic diagnosis, calm under pressure, and a strong preference for durable solutions over short-term fixes.",
-    "My consulting approach runs in three stages: diagnose the actual failure points, stabilise the riskiest bottlenecks first, then scale by leaving behind patterns and habits the team can own without me."
-  ],
-  "stats": [
-    { "value": "15+", "label": "years building and leading software teams" },
-    { "value": "50K+", "label": "developers reached through writing and talks" },
-    { "value": "30+", "label": "talks and workshops delivered internationally" }
-  ],
-  "testimonials": [
-    {
-      "quote": "Steve is one of the most thorough and thoughtful educators I've seen.",
-      "author": "Aaron Francis",
-      "role": "Founder, Try Hard Studios"
-    },
-    {
-      "quote": "There are only a handful of people with the same passion for programming as Steve.",
-      "author": "Brent Roose",
-      "role": "Developer Advocate, JetBrains"
-    },
-    {
-      "quote": "Steve is the teacher you wish you had in school.",
-      "author": "Alex Six",
-      "role": "Senior Software Engineer, Zillow"
-    },
-    {
-      "quote": "His passion for APIs means we benefit from his aim for the best.",
-      "author": "Chris Miller",
-      "role": "Team Lead, PHP Architect"
-    }
-  ],
-  "links": [
-    { "label": "GitHub", "href": "https://github.com/JustSteveKing", "external": true },
-    { "label": "Twitter / X", "href": "https://twitter.com/JustSteveKing", "external": true },
-    { "label": "Bluesky", "href": "https://bsky.app/profile/juststeveking.com", "external": true },
-    { "label": "Mastodon", "href": "https://phpc.social/@juststeveking", "external": true },
-    { "label": "LinkedIn", "href": "https://www.linkedin.com/in/steve-mcdougall", "external": true }
-  ]
+	"meta": {
+		"title": "About",
+		"prompt": "$ gh profile view juststeveking",
+		"subtitle": "Technical Director, educator, and API consultant. Based in Wales, UK."
+	},
+	"bio": [
+		"I help SaaS teams fix slow, unreliable APIs without rewriting everything. My work sits at the intersection of API quality, architecture, and delivery -- the decisions that determine whether a team ships with confidence or spends half its time firefighting.",
+		"I have been building software professionally for over 15 years, with the last several focused on PHP, Laravel, and API systems at scale. I am a PHP-FIG Core Committee member, have delivered 30+ talks and workshops internationally, and have reached over 50,000 developers through writing, talks, and technical education.",
+		"Before software, I served in the Royal Tank Regiment from 2007 to 2011. That background shapes how I work: systematic diagnosis, calm under pressure, and a strong preference for durable solutions over short-term fixes.",
+		"My consulting approach runs in three stages: diagnose the actual failure points, stabilise the riskiest bottlenecks first, then scale by leaving behind patterns and habits the team can own without me."
+	],
+	"stats": [
+		{ "value": "15+", "label": "years building and leading software teams" },
+		{ "value": "50K+", "label": "developers reached through writing and talks" },
+		{ "value": "30+", "label": "talks and workshops delivered internationally" }
+	],
+	"testimonials": [
+		{
+			"quote": "Steve is one of the most thorough and thoughtful educators I've seen.",
+			"author": "Aaron Francis",
+			"role": "Founder, Try Hard Studios"
+		},
+		{
+			"quote": "There are only a handful of people with the same passion for programming as Steve.",
+			"author": "Brent Roose",
+			"role": "Developer Advocate, JetBrains"
+		},
+		{
+			"quote": "Steve is the teacher you wish you had in school.",
+			"author": "Alex Six",
+			"role": "Senior Software Engineer, Zillow"
+		},
+		{
+			"quote": "His passion for APIs means we benefit from his aim for the best.",
+			"author": "Chris Miller",
+			"role": "Team Lead, PHP Architect"
+		}
+	],
+	"links": [
+		{ "label": "GitHub", "href": "https://github.com/JustSteveKing", "external": true },
+		{ "label": "Twitter / X", "href": "https://twitter.com/JustSteveKing", "external": true },
+		{ "label": "Bluesky", "href": "https://bsky.app/profile/juststeveking.com", "external": true },
+		{ "label": "Mastodon", "href": "https://phpc.social/@juststeveking", "external": true },
+		{ "label": "LinkedIn", "href": "https://www.linkedin.com/in/steve-mcdougall", "external": true }
+	]
 }

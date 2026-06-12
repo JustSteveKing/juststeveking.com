@@ -1,16 +1,16 @@
 ---
-name: "juststeveking/eloquent-log-driver"
-description: "A Laravel Log Driver for Eloquent"
-packagist: "https://packagist.org/packages/juststeveking/eloquent-log-driver"
-github: "https://github.com/JustSteveKing/eloquent-log-driver"
-link: "https://github.com/JustSteveKing/eloquent-log-driver"
-tech: ["PHP", "Laravel"]
+name: 'juststeveking/eloquent-log-driver'
+description: 'A Laravel Log Driver for Eloquent'
+packagist: 'https://packagist.org/packages/juststeveking/eloquent-log-driver'
+github: 'https://github.com/JustSteveKing/eloquent-log-driver'
+link: 'https://github.com/JustSteveKing/eloquent-log-driver'
+tech: ['PHP', 'Laravel']
 featured: false
 downloads: 3239
 monthlyDownloads: 0
 stars: 7
-version: "1.2.0"
-updatedAt: "2026-05-10"
+version: '1.2.0'
+updatedAt: '2026-05-10'
 ---
 
 # Eloquent Log Driver
@@ -75,7 +75,7 @@ All of the above will return an instance of an Eloquent Builder, allowing you to
 
 ## Testing
 
-``` bash
+```bash
 $ composer run test
 ```
 
@@ -100,10 +100,8 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/JustSteveKing/eloquent-log-driver.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/juststeveking/eloquent-log-driver.svg?style=flat-square
-
 [link-packagist]: https://packagist.org/packages/juststeveking/eloquent-log-driver
 [link-code-quality]: https://scrutinizer-ci.com/g/JustSteveKing/eloquent-log-driver
 [link-downloads]: https://packagist.org/packages/juststeveking/eloquent-log-driver
 [link-author]: https://github.com/JustSteveKing
 [link-contributors]: ../../contributors
-

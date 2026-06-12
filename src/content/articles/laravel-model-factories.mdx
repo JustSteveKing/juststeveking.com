@@ -3,14 +3,14 @@ title: Using Laravel Model Factories in your tests
 description: Master the use of Laravel Model Factories for predictable test data. Learn how to define and modify states for various scenarios in your app.
 category: Laravel
 pubDate: 2022-07-28
-image: "/images/articles/laravel-model-factories.png"
+image: '/images/articles/laravel-model-factories.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "model-factories", "testing", "data-seeding"]
+tags: ['laravel', 'model-factories', 'testing', 'data-seeding']
 ---
 
 Laravel Model factories are one of the best features you can use in your application when it comes to testing. They provide a way to define data that is predictable and easy to replicate so that your tests are consistent and controlled.
@@ -41,6 +41,7 @@ class Post extends Model
 	];
 }
 ```
+
 As you can see here, we have an Enum for the status column, which we will design now. Using an enum here allows us to take advantage of PHP 8.1 features instead of plain strings, boolean flags, or messy database enums.
 
 ```php
@@ -107,6 +108,7 @@ it('can update a post', function () {
 	)->content->toEqual('test content');
 });
 ```
+
 A simple enough test, but what happens if we have business rules that say you can only update specific columns depending on post type? Let's refactor our test to make sure we can do this:
 
 ```php
@@ -268,6 +270,7 @@ it('can update a draft posts title', function () {
 	)->title->toEqual('new title')->slug->toEqual('new-title');
 });
 ```
+
 So we can control things in our test environment using factory states nicely, giving us as much control as we need. Doing this will ensure that we are consistently preparing our tests or would be a good reflection of the applications state at specific points.
 
 What do we do if we need to create many models for our tests? How can we do this? The easy answer would be to tell the factory:

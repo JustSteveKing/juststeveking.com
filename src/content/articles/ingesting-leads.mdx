@@ -1,9 +1,9 @@
 ---
-title: "Building Modern Laravel APIs: Ingesting Leads"
-description: "Implement lead ingestion in Laravel with Form Request validation, typed DTO payloads, Action classes, and JSON:API responses for POST /v1/leads."
+title: 'Building Modern Laravel APIs: Ingesting Leads'
+description: 'Implement lead ingestion in Laravel with Form Request validation, typed DTO payloads, Action classes, and JSON:API responses for POST /v1/leads.'
 category: Laravel
-series: "modern-laravel-apis"
-devTo: "https://dev.to/juststevemcd/building-modern-laravel-apis-ingesting-leads-4f28"
+series: 'modern-laravel-apis'
+devTo: 'https://dev.to/juststevemcd/building-modern-laravel-apis-ingesting-leads-4f28'
 pubDate: 2026-04-10
 minRead: 12
 author:
@@ -11,7 +11,7 @@ author:
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "api-design", "api-architecture", "rest-api"]
+tags: ['laravel', 'api-design', 'api-architecture', 'rest-api']
 ---
 
 This is where Pulse-Link starts to feel real. In the previous two articles we laid the foundation - project structure, routing, versioning, and Scribe for documentation. Now we are going to build the first actual feature: lead ingestion.
@@ -26,13 +26,13 @@ Before writing a single class, it is worth being clear about what a valid lead i
 
 ```json
 {
-    "email": "jane.smith@acme.io",
-    "first_name": "Jane",
-    "last_name": "Smith",
-    "company": "Acme Corp",
-    "job_title": "Head of Engineering",
-    "phone": "+441234567890",
-    "source": "web-form"
+	"email": "jane.smith@acme.io",
+	"first_name": "Jane",
+	"last_name": "Smith",
+	"company": "Acme Corp",
+	"job_title": "Head of Engineering",
+	"phone": "+441234567890",
+	"source": "web-form"
 }
 ```
 
@@ -223,23 +223,23 @@ The `toAttributes()` method replaces the old `toArray()` approach. It returns on
 
 ```json
 {
-    "data": {
-        "id": "01JMKP8R2NQZ9F0XVZYS7TDCHK",
-        "type": "leads",
-        "attributes": {
-            "email": "jane.smith@acme.io",
-            "first_name": "Jane",
-            "last_name": "Smith",
-            "company": "Acme Corp",
-            "job_title": null,
-            "phone": null,
-            "source": "web-form",
-            "score": 0,
-            "status": "pending",
-            "created_at": "2026-04-10T09:00:00.000000Z",
-            "updated_at": "2026-04-10T09:00:00.000000Z"
-        }
-    }
+	"data": {
+		"id": "01JMKP8R2NQZ9F0XVZYS7TDCHK",
+		"type": "leads",
+		"attributes": {
+			"email": "jane.smith@acme.io",
+			"first_name": "Jane",
+			"last_name": "Smith",
+			"company": "Acme Corp",
+			"job_title": null,
+			"phone": null,
+			"source": "web-form",
+			"score": 0,
+			"status": "pending",
+			"created_at": "2026-04-10T09:00:00.000000Z",
+			"updated_at": "2026-04-10T09:00:00.000000Z"
+		}
+	}
 }
 ```
 
@@ -454,23 +454,23 @@ You should get a 201 with the JSON:API formatted lead resource:
 
 ```json
 {
-    "data": {
-        "id": "01JMKP8R2NQZ9F0XVZYS7TDCHK",
-        "type": "leads",
-        "attributes": {
-            "email": "jane.smith@acme.io",
-            "first_name": "Jane",
-            "last_name": "Smith",
-            "company": "Acme Corp",
-            "job_title": null,
-            "phone": null,
-            "source": "web-form",
-            "score": 0,
-            "status": "pending",
-            "created_at": "2026-04-10T09:00:00.000000Z",
-            "updated_at": "2026-04-10T09:00:00.000000Z"
-        }
-    }
+	"data": {
+		"id": "01JMKP8R2NQZ9F0XVZYS7TDCHK",
+		"type": "leads",
+		"attributes": {
+			"email": "jane.smith@acme.io",
+			"first_name": "Jane",
+			"last_name": "Smith",
+			"company": "Acme Corp",
+			"job_title": null,
+			"phone": null,
+			"source": "web-form",
+			"score": 0,
+			"status": "pending",
+			"created_at": "2026-04-10T09:00:00.000000Z",
+			"updated_at": "2026-04-10T09:00:00.000000Z"
+		}
+	}
 }
 ```
 
@@ -496,4 +496,4 @@ In the next article we are going to add JWT authentication properly - registrati
 
 ---
 
-*Next: Authentication with JWT - implementing registration, login, and token refresh for Pulse-Link using php-open-source-saver/jwt-auth.*
+_Next: Authentication with JWT - implementing registration, login, and token refresh for Pulse-Link using php-open-source-saver/jwt-auth._

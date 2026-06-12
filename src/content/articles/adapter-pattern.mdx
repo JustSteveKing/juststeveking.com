@@ -3,14 +3,14 @@ title: Adapter Pattern
 description: Explore the adapter design pattern in coding through a practical example of building a versatile social poster class, adaptable for different social networks.
 category: PHP
 pubDate: 2022-05-12
-image: "/images/social/articles/adapter-pattern.png"
+image: '/images/social/articles/adapter-pattern.png'
 minRead: 6
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["design-patterns", "php", "software-architecture", "object-oriented-programming"]
+tags: ['design-patterns', 'php', 'software-architecture', 'object-oriented-programming']
 ---
 
 Of all of the design patterns you could use in your code, the adapter pattern is one of my all time favourites. It allows you to abstract the implementation to an adapter that implements an interface. so you can switch implementation simply by switching the adapter.
@@ -39,6 +39,7 @@ interface NetworkAdapterContract
     public function get(): array;
 }
 ```
+
 For now we will stick to the `mixed` type and `array` type to keep things super simple. Unless we do a lot of additional processing this is the minimum viable code we need, but we can make this stricter later if we need to by processing API responses and standardising them under things like `NetworkCollection` and `NetworkResource` interfaces/contracts. But that is going too deep into implementation instead of focusing on the pattern.
 
 Our first social network we want to integrate with is twitter, probably my most used social network. So we will build the twitter adapter using the `NetworkAdapterContract` contract/interface.
@@ -170,7 +171,7 @@ class PosterServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             abstract: TwitterSDK::class,
-            concrete: fn() => 
+            concrete: fn() =>
                 new TwitterSDK(
                     token: config('services.twitter.api_token'),
                 ),

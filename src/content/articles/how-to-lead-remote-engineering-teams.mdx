@@ -2,7 +2,7 @@
 title: How to Lead a Remote Engineering Team
 description: A practical guide to leading remote engineering teams—covering async rhythms, documentation, trust-building, and cross-timezone collaboration.
 category: Management
-series: "engineering-management"
+series: 'engineering-management'
 pubDate: 2026-03-24
 minRead: 12
 author:
@@ -10,7 +10,7 @@ author:
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["remote-work", "engineering-management", "leadership", "team-culture"]
+tags: ['remote-work', 'engineering-management', 'leadership', 'team-culture']
 ---
 
 Remote engineering leadership is not a soft skill. It is a systems problem.
@@ -38,6 +38,7 @@ The biggest mistake in remote engineering management is treating async as a less
 But async does not mean "respond whenever you feel like it." It means designing intentional rhythms so that the team stays aligned without being constantly interrupted.
 
 Here is the framework I recommend:
+
 - **Define response time expectations explicitly.** Not "reply promptly": that means different things to different people. Something like: Slack messages get a response within four hours during working hours. Anything urgent uses a dedicated channel or a direct ping with the word "urgent" in it. Anything that can wait for the next day goes into a thread or a document. When these norms are written down and agreed on, a lot of the ambient anxiety around "is this person ignoring me" disappears.
 - **Protect focus blocks.** Remote engineers are often more interrupted than office engineers, not less, because the barrier to sending a message is so low. Push back on this. Establish team-wide focus blocks where Slack notifications are off and meetings do not get scheduled. Two hours in the morning, two hours in the afternoon -- something like that. Treat these as seriously as you would treat a production incident.
 - **Run fewer, better meetings.** Every meeting on a remote team has a higher cost than it appears, because it requires people in different timezones and different focus states to synchronize at a specific moment. Before scheduling anything, ask: can this be an async update, a thread, or a document instead? If the answer is yes, do not schedule the meeting. When you do run meetings, have an agenda written in advance, assign a note-taker, and publish the notes publicly within an hour. Meetings that produce no written artifact are meetings that happened twice: once in real time, and again when people have to ask what was decided.
@@ -50,6 +51,7 @@ Documentation in most engineering orgs is treated as a chore; something you writ
 Think of documentation as infrastructure. It is the road network that lets information move. When the roads are bad, everything slows down. When the roads are good, everything flows.
 
 There are three categories of documentation that matter most for remote engineering teams:
+
 - **Decision records.** When your team makes a significant technical or product decision, write down the context, the options you considered, the tradeoffs, and what you chose. This does not have to be long; a few paragraphs is often enough. The value is that six months later, when someone asks "why did we do it this way," you have an answer that does not depend on someone's memory. Lightweight Architecture Decision Records (ADRs) are a good format for this. Keep them in the repo alongside the code they describe.
 - **Runbooks and operational guides.** Every repeatable operational task; deploying, running migrations, handling a specific class of incident, onboarding a new service - should have a written guide. Not a perfect guide, but a good-enough guide that someone can follow without asking five questions. Remote teams that lack runbooks create invisible dependencies on specific individuals, and those dependencies become serious bottlenecks.
 - **Onboarding documentation.** The quality of your onboarding docs tells you a lot about the overall health of your remote team's documentation culture. When a new engineer joins, can they get their environment set up, understand the architecture, and ship something meaningful in their first two weeks, mostly by following written guides? If not, you have documentation gaps that are slowing down your entire team, not just new hires.
@@ -63,6 +65,7 @@ Trust is harder to build at a distance, and it is worth understanding why. In an
 Remote teams do not have ambient signals. Trust has to be built deliberately, through consistent behavior over time and through enough human contact that people actually know each other.
 
 A few things that work:
+
 - **Show up consistently to the few meetings you do have.** In a remote context, meetings are often the primary venue where people see each other as humans rather than text on a screen. Being reliably present, engaged, and prepared signals that you take the relationship seriously.
 - **Create low-stakes social touchpoints.** Virtual coffee chats, optional Friday hangouts, a random channel in Slack for non-work things; these feel frivolous but they matter. People work harder for and communicate more openly with people they actually know. You do not need to force this, but you do need to create the infrastructure for it to happen. In my experience mentoring engineers who have moved between fully remote and hybrid roles, the ones who invest in these informal relationships consistently have an easier time navigating difficult work conversations later. The social foundation carries over.
 - **Give feedback frequently and specifically.** One of the most trust-eroding patterns in remote management is the feedback vacuum; where engineers go weeks without hearing whether their work is landing. Specific, timely feedback, even small amounts of it, communicates that you are paying attention. "That PR review you wrote last Thursday was really thorough, I appreciated it" takes ten seconds and has a disproportionate effect on someone's sense of being seen.
@@ -111,4 +114,4 @@ That is what good remote engineering management looks like: not doing more, but 
 
 Start with the thing that is most obviously broken in your current setup, build one system around it, and then move to the next. You do not need to implement everything at once. You just need to keep building.
 
-*If you found this useful, the next article in this series covers the transition from individual contributor to engineering manager; specifically how to let go of the work you love doing and build the habits that actually make you effective in a leadership role.*
+_If you found this useful, the next article in this series covers the transition from individual contributor to engineering manager; specifically how to let go of the work you love doing and build the habits that actually make you effective in a leadership role._

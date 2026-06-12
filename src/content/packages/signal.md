@@ -1,16 +1,16 @@
 ---
-name: "juststeveking/signal"
-description: ""
-packagist: "https://packagist.org/packages/juststeveking/signal"
-github: "https://github.com/JustSteveKing/signal"
-link: "https://github.com/JustSteveKing/signal"
-tech: ["PHP"]
+name: 'juststeveking/signal'
+description: ''
+packagist: 'https://packagist.org/packages/juststeveking/signal'
+github: 'https://github.com/JustSteveKing/signal'
+link: 'https://github.com/JustSteveKing/signal'
+tech: ['PHP']
 featured: false
 downloads: 0
 monthlyDownloads: 0
 stars: 9
-version: "v1.0.0"
-updatedAt: "2026-05-04"
+version: 'v1.0.0'
+updatedAt: '2026-05-04'
 ---
 
 # Signal
@@ -42,14 +42,12 @@ composer require juststeveking/signal
 
 ```json
 {
-    "input": "src/",
-    "output": {
-        "format": ["markdown", "json"],
-        "path": "docs/"
-    },
-    "exclude": [
-        "src/Attributes/"
-    ]
+	"input": "src/",
+	"output": {
+		"format": ["markdown", "json"],
+		"path": "docs/"
+	},
+	"exclude": ["src/Attributes/"]
 }
 ```
 
@@ -96,12 +94,12 @@ Signal scans your `src/` directory, reflects on every annotated class, and write
 
 ## Configuration
 
-| Key | Type | Description |
-|-----|------|-------------|
-| `input` | `string` | Directory to scan (relative to config file) |
+| Key             | Type       | Description                                 |
+| --------------- | ---------- | ------------------------------------------- |
+| `input`         | `string`   | Directory to scan (relative to config file) |
 | `output.format` | `string[]` | Output formats: `markdown`, `json`, or both |
-| `output.path` | `string` | Directory to write generated files |
-| `exclude` | `string[]` | Paths to skip during scanning |
+| `output.path`   | `string`   | Directory to write generated files          |
+| `exclude`       | `string[]` | Paths to skip during scanning               |
 
 ---
 
@@ -496,7 +494,7 @@ final class OrderController
 
 Running `php vendor/bin/signal generate` against this file produces:
 
-````markdown
+```markdown
 ## Controllers
 
 ### OrderController
@@ -509,10 +507,10 @@ RESTful API controller for managing customer orders
 
 **Dependencies:**
 
-| Class | Description |
-|-------|-------------|
-| `OrderService` | Handles order business logic |
-| `OrderRepository` | — |
+| Class             | Description                  |
+| ----------------- | ---------------------------- |
+| `OrderService`    | Handles order business logic |
+| `OrderRepository` | —                            |
 
 **Methods:**
 
@@ -524,9 +522,9 @@ Paginated list of orders
 
 **Requires Authorization:**
 
-| Ability | Description |
-|---------|-------------|
-| `orders.viewAny` | — |
+| Ability          | Description |
+| ---------------- | ----------- |
+| `orders.viewAny` | —           |
 
 **Cached:** TTL `60s`, key `orders.index.{page}`
 
@@ -538,39 +536,39 @@ Create a new order
 
 **Requires Authorization:**
 
-| Ability | Description |
-|---------|-------------|
-| `orders.create` | — |
+| Ability         | Description |
+| --------------- | ----------- |
+| `orders.create` | —           |
 
 **Validates:**
 
-| Field | Rules | Description |
-|-------|-------|-------------|
-| `items` | `required\|array\|min:1` | Order line items |
-| `items.*.product_id` | `required\|integer\|exists:products,id` | — |
-| `items.*.quantity` | `required\|integer\|min:1` | — |
-| `payment_method` | `required\|in:card,bank_transfer` | — |
+| Field                | Rules                                   | Description      |
+| -------------------- | --------------------------------------- | ---------------- |
+| `items`              | `required\|array\|min:1`                | Order line items |
+| `items.*.product_id` | `required\|integer\|exists:products,id` | —                |
+| `items.*.quantity`   | `required\|integer\|min:1`              | —                |
+| `payment_method`     | `required\|in:card,bank_transfer`       | —                |
 
 **Emits:**
 
-| Event | Description | Tags |
-|-------|-------------|------|
-| `OrderPlaced` | Dispatched after the order is saved | — |
+| Event         | Description                         | Tags |
+| ------------- | ----------------------------------- | ---- |
+| `OrderPlaced` | Dispatched after the order is saved | —    |
 
 **Side Effects:**
 
-| Description | Tags |
-|-------------|------|
-| Sends order confirmation email | `email` |
+| Description                           | Tags        |
+| ------------------------------------- | ----------- |
+| Sends order confirmation email        | `email`     |
 | Reserves inventory for each line item | `inventory` |
 
 **Throws:**
 
-| Exception | Description |
-|-----------|-------------|
-| `PaymentFailedException` | If the payment gateway rejects the charge |
-| `InsufficientStockException` | If any item cannot be reserved |
-````
+| Exception                    | Description                               |
+| ---------------------------- | ----------------------------------------- |
+| `PaymentFailedException`     | If the payment gateway rejects the charge |
+| `InsufficientStockException` | If any item cannot be reserved            |
+```
 
 ---
 
@@ -580,8 +578,8 @@ Create a new order
 php vendor/bin/signal generate [--config=signal.json]
 ```
 
-| Option | Default | Description |
-|--------|---------|-------------|
+| Option     | Default       | Description                |
+| ---------- | ------------- | -------------------------- |
 | `--config` | `signal.json` | Path to Signal config file |
 
 ---
@@ -598,34 +596,36 @@ Written to `{output.path}/signal.json`. Machine-readable — useful for feeding 
 
 ```json
 {
-    "generated_at": "2025-01-01T00:00:00+00:00",
-    "classes": [
-        {
-            "name": "OrderController",
-            "namespace": "App\\Http\\Controllers\\Api",
-            "fully_qualified_name": "App\\Http\\Controllers\\Api\\OrderController",
-            "file": "src/Http/Controllers/Api/OrderController.php",
-            "type": "controller",
-            "description": "RESTful API controller for managing customer orders",
-            "tags": ["orders", "api", "v1"],
-            "methods": [
-                {
-                    "name": "store",
-                    "route": {
-                        "method": "post",
-                        "path": "/api/orders",
-                        "description": "Create a new order"
-                    },
-                    "authorize": [
-                        { "ability": "orders.create", "description": "" }
-                    ],
-                    "emits": [
-                        { "event": "OrderPlaced", "description": "Dispatched after the order is saved", "tags": [] }
-                    ]
-                }
-            ]
-        }
-    ]
+	"generated_at": "2025-01-01T00:00:00+00:00",
+	"classes": [
+		{
+			"name": "OrderController",
+			"namespace": "App\\Http\\Controllers\\Api",
+			"fully_qualified_name": "App\\Http\\Controllers\\Api\\OrderController",
+			"file": "src/Http/Controllers/Api/OrderController.php",
+			"type": "controller",
+			"description": "RESTful API controller for managing customer orders",
+			"tags": ["orders", "api", "v1"],
+			"methods": [
+				{
+					"name": "store",
+					"route": {
+						"method": "post",
+						"path": "/api/orders",
+						"description": "Create a new order"
+					},
+					"authorize": [{ "ability": "orders.create", "description": "" }],
+					"emits": [
+						{
+							"event": "OrderPlaced",
+							"description": "Dispatched after the order is saved",
+							"tags": []
+						}
+					]
+				}
+			]
+		}
+	]
 }
 ```
 

@@ -11,33 +11,35 @@ interface Props {
 const { currentPage, totalPages, total, prevHref, nextHref, label = 'articles' } = Astro.props;
 ---
 
-{totalPages > 1 && (
-	<nav
-		class="flex flex-col items-start gap-4 px-section py-5 border-t border-edge sm:flex-row sm:items-center sm:justify-between flex-wrap"
-		aria-label={`${label} pages`}
-	>
-		<span class="font-mono text-[12px] fg-weak">
-			Page {currentPage} of {totalPages} · {total} {label}
-		</span>
-		<div class="flex gap-2.5">
-			{prevHref && (
-				<a
-					href={prevHref}
-					class="font-mono text-[13px] fg no-underline py-1.5 px-3 border border-edge rounded-[3px] transition-colors hover:[border-color:var(--color-accent)] hover:[color:var(--color-accent)]"
-					rel="prev"
-				>
-					← Newer
-				</a>
-			)}
-			{nextHref && (
-				<a
-					href={nextHref}
-					class="font-mono text-[13px] fg no-underline py-1.5 px-3 border border-edge rounded-[3px] transition-colors hover:[border-color:var(--color-accent)] hover:[color:var(--color-accent)]"
-					rel="next"
-				>
-					Older →
-				</a>
-			)}
-		</div>
-	</nav>
-)}
+{
+	totalPages > 1 && (
+		<nav
+			class="flex flex-col items-start gap-4 px-section py-5 border-t border-edge sm:flex-row sm:items-center sm:justify-between flex-wrap"
+			aria-label={`${label} pages`}
+		>
+			<span class="font-mono text-[12px] fg-weak">
+				Page {currentPage} of {totalPages} · {total} {label}
+			</span>
+			<div class="flex gap-2.5">
+				{prevHref && (
+					<a
+						href={prevHref}
+						class="font-mono text-[13px] fg no-underline py-1.5 px-3 border border-edge rounded-[3px] transition-colors hover:[border-color:var(--color-accent)] hover:[color:var(--color-accent)]"
+						rel="prev"
+					>
+						← Newer
+					</a>
+				)}
+				{nextHref && (
+					<a
+						href={nextHref}
+						class="font-mono text-[13px] fg no-underline py-1.5 px-3 border border-edge rounded-[3px] transition-colors hover:[border-color:var(--color-accent)] hover:[color:var(--color-accent)]"
+						rel="next"
+					>
+						Older →
+					</a>
+				)}
+			</div>
+		</nav>
+	)
+}

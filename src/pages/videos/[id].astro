@@ -7,14 +7,15 @@ import { formatDate } from '@/utils/format';
 
 export async function getStaticPaths() {
 	const videos = await getCollection('videos');
-	return videos.map(video => ({
+	return videos.map((video) => ({
 		params: { id: video.id },
 		props: { video },
 	}));
 }
 
 const { video } = Astro.props;
-const { title, description, videoId, publishedDate, duration, views, type, tags, difficulty } = video.data;
+const { title, description, videoId, publishedDate, duration, views, type, tags, difficulty } =
+	video.data;
 
 const typeLabels: Record<string, string> = {
 	video: 'Video',
@@ -38,13 +39,17 @@ const videoSchema = {
 };
 ---
 
-<Layout title={title} description={description} ogImage={`/og/videos/${video.id}.webp`} jsonLd={videoSchema}>
+<Layout
+	title={title}
+	description={description}
+	ogImage={`/og/videos/${video.id}.webp`}
+	jsonLd={videoSchema}
+>
 	<article>
 		<header class="px-section pt-12 pb-10 border-b border-edge">
-			<Breadcrumb items={[
-				{ label: 'Videos', href: '/videos' },
-				{ label: typeLabels[type] ?? type },
-			]} />
+			<Breadcrumb
+				items={[{ label: 'Videos', href: '/videos' }, { label: typeLabels[type] ?? type }]}
+			/>
 
 			<h1 class="text-[28px] font-bold fg-strong leading-tight mb-4 max-w-[60ch]">{title}</h1>
 			<p class="text-base leading-[1.65] fg max-w-[60ch] mb-5">{description}</p>
@@ -56,36 +61,46 @@ const videoSchema = {
 				<span class="font-mono text-[11px] fg-accent uppercase tracking-[0.06em] font-semibold">
 					{typeLabels[type] ?? type}
 				</span>
-				{duration && (
-					<span class="font-mono text-[11px] fg-weak border border-edge rounded-[3px] px-1.5 py-px">{duration}</span>
-				)}
-				{views && (
-					<span class="font-mono text-[11px] fg-weak">{views} views</span>
-				)}
-				{difficulty && (
-					<span class="font-mono text-[11px] fg-weak uppercase tracking-[0.06em]">{difficulty}</span>
-				)}
+				{
+					duration && (
+						<span class="font-mono text-[11px] fg-weak border border-edge rounded-[3px] px-1.5 py-px">
+							{duration}
+						</span>
+					)
+				}
+				{views && <span class="font-mono text-[11px] fg-weak">{views} views</span>}
+				{
+					difficulty && (
+						<span class="font-mono text-[11px] fg-weak uppercase tracking-[0.06em]">
+							{difficulty}
+						</span>
+					)
+				}
 			</div>
 
-			{tags.length > 0 && (
-				<div class="flex flex-wrap gap-1.5" aria-label="Tags">
-					{tags.map(tag => (
-						<Tag>{tag}</Tag>
-					))}
-				</div>
-			)}
+			{
+				tags.length > 0 && (
+					<div class="flex flex-wrap gap-1.5" aria-label="Tags">
+						{tags.map((tag) => (
+							<Tag>{tag}</Tag>
+						))}
+					</div>
+				)
+			}
 		</header>
 
 		<div class="px-section py-10">
-			<div class="relative w-full max-w-[72ch] rounded-xl overflow-hidden bg-surface-weak" style="aspect-ratio: 16/9;">
+			<div
+				class="relative w-full max-w-[72ch] rounded-xl overflow-hidden bg-surface-weak"
+				style="aspect-ratio: 16/9;"
+			>
 				<iframe
 					src={`https://www.youtube-nocookie.com/embed/${videoId}`}
 					title={title}
 					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 					allowfullscreen
 					loading="lazy"
-					class="absolute inset-0 w-full h-full border-0"
-				></iframe>
+					class="absolute inset-0 w-full h-full border-0"></iframe>
 			</div>
 
 			<div class="mt-6 flex flex-wrap items-center gap-3">
@@ -96,7 +111,7 @@ const videoSchema = {
 					class="font-mono text-[13px] fg-accent no-underline hover:underline"
 				>
 					Watch on YouTube <span aria-hidden="true">↗</span>
-				<span class="visually-hidden">(opens in new tab)</span>
+					<span class="visually-hidden">(opens in new tab)</span>
 				</a>
 				<a
 					href="https://youtube.com/@juststeveking"
@@ -114,7 +129,8 @@ const videoSchema = {
 	<section class="px-section py-12 border-t border-edge" aria-label="Work with me">
 		<p class="font-mono text-[11px] uppercase tracking-[0.1em] fg-weak mb-4">Work with me</p>
 		<p class="text-[16px] fg leading-relaxed max-w-[52ch] mb-6">
-			If your team is dealing with slow or unreliable APIs, I offer focused audits, hands-on fixes, and ongoing advisory.
+			If your team is dealing with slow or unreliable APIs, I offer focused audits, hands-on fixes,
+			and ongoing advisory.
 		</p>
 		<div class="flex flex-wrap items-center gap-3">
 			<a
@@ -131,4 +147,41 @@ const videoSchema = {
 			</a>
 		</div>
 	</section>
+
+	<script is:inline define:vars={{ title, type, difficulty, duration, videoId, ytUrl }}>
+		document.addEventListener('DOMContentLoaded', () => {
+			window.posthog?.capture('video_viewed', {
+				video_title: title,
+				video_type: type,
+				video_difficulty: difficulty ?? null,
+				video_duration: duration ?? null,
+				video_id: videoId,
+			});
+
+			document.querySelector(`a[href="${ytUrl}"]`)?.addEventListener('click', () => {
+				window.posthog?.capture('video_watch_on_youtube_clicked', {
+					video_title: title,
+					video_id: videoId,
+				});
+			});
+
+			document
+				.querySelector('a[href="https://youtube.com/@juststeveking"]')
+				?.addEventListener('click', () => {
+					window.posthog?.capture('youtube_subscribe_clicked', {
+						video_title: title,
+						video_id: videoId,
+					});
+				});
+
+			document.querySelectorAll('a[href="https://juststeveking.link"]').forEach((el) => {
+				el.addEventListener('click', () => {
+					window.posthog?.capture('discovery_call_clicked', {
+						location: 'video',
+						video_title: title,
+					});
+				});
+			});
+		});
+	</script>
 </Layout>

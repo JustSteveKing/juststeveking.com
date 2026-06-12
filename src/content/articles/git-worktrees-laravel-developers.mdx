@@ -1,6 +1,6 @@
 ---
-title: "The overlooked Git feature every Laravel developer should be using"
-description: "Use Git worktrees to maintain multiple isolated Laravel environments simultaneously without stashing or reinstalling dependencies."
+title: 'The overlooked Git feature every Laravel developer should be using'
+description: 'Use Git worktrees to maintain multiple isolated Laravel environments simultaneously without stashing or reinstalling dependencies.'
 category: DevOps
 pubDate: 2026-02-18
 sponsor:
@@ -12,7 +12,7 @@ author:
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["git", "laravel", "workflow", "devops"]
+tags: ['git', 'laravel', 'workflow', 'devops']
 crossPost:
   originalUrl: https://sevalla.com/blog/git-worktrees-laravel-developers/
   originalSite: Sevalla
@@ -88,13 +88,13 @@ A practical setup keeps the main working directory as the base and creates addit
 
 Laravel apps are heavy. Not in a bad way, but in a realistic way. Switching branches isn't just changing some text files. It's:
 
-*   Composer dependency changes that trigger reinstalls
-*   NPM dependency changes and asset rebuilds
-*   Database migrations that might differ between branches
-*   Config files that affect how your app behaves
-*   Environment settings for different features
-*   Queue workers that need restarting
-*   Cache that needs clearing
+- Composer dependency changes that trigger reinstalls
+- NPM dependency changes and asset rebuilds
+- Database migrations that might differ between branches
+- Config files that affect how your app behaves
+- Environment settings for different features
+- Queue workers that need restarting
+- Cache that needs clearing
 
 Branch switching in a Laravel app feels like rebooting your entire development environment.
 
@@ -128,11 +128,11 @@ Environment isolation makes or breaks this workflow. If worktrees share the same
 
 Each worktree should have its own:
 
-*   Database name
-*   Cache prefix
-*   Queue prefix
-*   Session configuration
-*   Port numbers
+- Database name
+- Cache prefix
+- Queue prefix
+- Session configuration
+- Port numbers
 
 My .env files look like this:
 

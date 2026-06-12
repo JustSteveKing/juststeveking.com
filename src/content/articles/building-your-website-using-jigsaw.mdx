@@ -3,14 +3,14 @@ title: Building your website using Jigsaw
 description: Learn to build a markdown-based personal website with Jigsaw, Laravel's static site generator.
 category: Laravel
 pubDate: 2022-07-12
-image: "/images/social/articles/jigsaw-website.png"
+image: '/images/social/articles/jigsaw-website.png'
 minRead: 14
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["jigsaw", "static-site-generator", "laravel", "markdown"]
+tags: ['jigsaw', 'static-site-generator', 'laravel', 'markdown']
 ---
 
 As developers, the chance of you having a personal website is pretty high. After all, it is what we do - and most likely, you have rebuilt this countless times. Because we all know that we need to rebuild our website before we finish that blog post we have been meaning to write...
@@ -140,9 +140,9 @@ Now, if we serve the website again, using the jigsaw command:
 ./vendor/bin/jigsaw serve
 ```
 
-When we visit `http://localhost:8000/blog/my-first-blog-post` we will see the new page we just created. 
+When we visit `http://localhost:8000/blog/my-first-blog-post` we will see the new page we just created.
 
-So we have covered how to write content, which in fairness, wasn't too taxing. What else would we want on our website? Well, this template comes with a way to generate a sitemap, which is pretty helpful! 
+So we have covered how to write content, which in fairness, wasn't too taxing. What else would we want on our website? Well, this template comes with a way to generate a sitemap, which is pretty helpful!
 
 Jigsaw has a concept called `Listeners` that runs after specific events during the build process of the website. If we open up `bootstrap.php`, you should see the following code:
 
@@ -179,7 +179,7 @@ class GenerateIndex
 					'snippet' => $page->getExcerpt(),
 				];
 		})->values());
-		
+
 		file_put_contents(
 			$jigsaw->getDestinationPath() . '/index.json',
 			json_encode($data)
@@ -224,37 +224,58 @@ We create a channel with our site information, then we loop through each post an
 
 ```html
 <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <meta name="description" content="{{ $page->description ?? $page->siteDescription }}">
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta http-equiv="x-ua-compatible" content="ie=edge" />
+	<meta name="description" content="{{ $page->description ?? $page->siteDescription }}" />
 
-        <meta property="og:title" content="{{ $page->title ? $page->title . ' | ' : '' }}{{ $page->siteName }}"/>
-        <meta property="og:type" content="{{ $page->type ?? 'website' }}" />
-        <meta property="og:url" content="{{ $page->getUrl() }}"/>
-        <meta property="og:description" content="{{ $page->description ?? $page->siteDescription }}" />
+	<meta
+		property="og:title"
+		content="{{ $page->title ? $page->title . ' | ' : '' }}{{ $page->siteName }}"
+	/>
+	<meta property="og:type" content="{{ $page->type ?? 'website' }}" />
+	<meta property="og:url" content="{{ $page->getUrl() }}" />
+	<meta property="og:description" content="{{ $page->description ?? $page->siteDescription }}" />
 
-        <title>{{ $page->title ?  $page->title . ' | ' : '' }}{{ $page->siteName }}</title>
+	<title>{{ $page->title ? $page->title . ' | ' : '' }}{{ $page->siteName }}</title>
 
-        <link rel="home" href="{{ $page->baseUrl }}">
-        <link rel="icon" href="/favicon.ico">
-        <link href="/blog/feed.atom" type="application/atom+xml" rel="alternate" title="{{ $page->siteName }} Atom Feed">
+	<link rel="home" href="{{ $page->baseUrl }}" />
+	<link rel="icon" href="/favicon.ico" />
+	<link
+		href="/blog/feed.atom"
+		type="application/atom+xml"
+		rel="alternate"
+		title="{{ $page->siteName }} Atom Feed"
+	/>
 
-        <link rel="alternate" type="application/rss+xml" title="{{ $page->siteName }}" href="/blog/rss.xml" />
+	<link
+		rel="alternate"
+		type="application/rss+xml"
+		title="{{ $page->siteName }}"
+		href="/blog/rss.xml"
+	/>
 
-        @if ($page->production)
-            <!-- Insert analytics code here -->
-        @endif
+	@if ($page->production)
+	<!-- Insert analytics code here -->
+	@endif
 
-        <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,300i,400,400i,700,700i,800,800i" rel="stylesheet">
-        <link rel="stylesheet" href="{{ mix('css/main.css', 'assets/build') }}">
-    </head>
+	<link
+		href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,300i,400,400i,700,700i,800,800i"
+		rel="stylesheet"
+	/>
+	<link rel="stylesheet" href="{{ mix('css/main.css', 'assets/build') }}" />
+</head>
 ```
 
-As you can see, we added the following snippet to point to our RSS feed. 
+As you can see, we added the following snippet to point to our RSS feed.
 
 ```html
-<link rel="alternate" type="application/rss+xml" title="{{ $page->siteName }}" href="{{ $page->baseUrl.'/rss.xml' }}" />
+<link
+	rel="alternate"
+	type="application/rss+xml"
+	title="{{ $page->siteName }}"
+	href="{{ $page->baseUrl.'/rss.xml' }}"
+/>
 ```
 
 So inspecting this code, we already have a feed - the atom feed. This comes as part of the template itself but is an Atom feed over an RSS feed - this isn't a problem, though. Having both options available means that you are more accessible, which is never a bad thing when it comes to your website.
@@ -271,6 +292,5 @@ This will build your local site into static content inside `build_production`, a
 - [Netlify](https://jigsaw.tighten.com/docs/deploying-your-site/#using-netlify)
 - [Amazon S3](https://jigsaw.tighten.com/docs/deploying-your-site/#using-amazon-s3)
 - [Manual Deployment](https://jigsaw.tighten.com/docs/deploying-your-site/#manually)
-
 
 So pick your desired provider for hosting, and set it up. You are now ready to start blogging with minimal effort - and an easy-to-use system to do it on. The fact that it is a static site also means that you do not have to worry about slow queries fetching data or any usual problems you might have with a non-static website.

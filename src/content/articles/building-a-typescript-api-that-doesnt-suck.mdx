@@ -1,9 +1,9 @@
 ---
 title: Building A TypeScript API That Doesn't Suck
-description: "Learn how to build a TypeScript SDK the right way: ditching axios for ofetch, using factory patterns, and creating production-ready code."
+description: 'Learn how to build a TypeScript SDK the right way: ditching axios for ofetch, using factory patterns, and creating production-ready code.'
 category: SDKs
 pubDate: 2025-12-03
-image: "/images/articles/astro.png"
+image: '/images/articles/astro.png'
 minRead: 40
 sponsor:
   name: Sevalla
@@ -15,11 +15,11 @@ author:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
 crossPost:
-  originalUrl: "https://sevalla.com/blog/build-modern-typescript-sdk/"
-  originalSite: "Sevalla Blog"
+  originalUrl: 'https://sevalla.com/blog/build-modern-typescript-sdk/'
+  originalSite: 'Sevalla Blog'
   publishedDate: 2025-12-03
   permission: true
-tags: ["typescript", "sdk", "api", "development"]
+tags: ['typescript', 'sdk', 'api', 'development']
 ---
 
 I've built the same SDK three times now. Once in Go, once in PHP, and now in TypeScript. Each time, I thought I knew what I was doing. Each time, I learned I was wrong about something fundamental.
@@ -79,10 +79,10 @@ Here's what sold me:
 
 ```typescript
 try {
-  const response = await axios.get('/api/users');
-  const data = response.data;
+	const response = await axios.get('/api/users');
+	const data = response.data;
 } catch (error) {
-  // Hope you checked error.response vs error.request vs error
+	// Hope you checked error.response vs error.request vs error
 }
 ```
 
@@ -90,10 +90,10 @@ With ofetch:
 
 ```typescript
 try {
-  const data = await ofetch('/api/users');
-  // Already parsed JSON, no .data property needed
+	const data = await ofetch('/api/users');
+	// Already parsed JSON, no .data property needed
 } catch (error) {
-  // It threw because the status wasn't 2xx, clean and simple
+	// It threw because the status wasn't 2xx, clean and simple
 }
 ```
 
@@ -131,25 +131,25 @@ import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-  build: {
-    lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
-      name: 'Sevalla',
-      formats: ['es', 'cjs'],
-      fileName: (format) => `sevalla.${format}.js`,
-    },
-    rollupOptions: {
-      external: ['ofetch'],
-      output: {
-        globals: {
-          ofetch: 'ofetch',
-        },
-      },
-    },
-    sourcemap: true,
-    minify: 'esbuild',
-  },
-  plugins: [dts({ rollupTypes: true })],
+	build: {
+		lib: {
+			entry: resolve(__dirname, 'src/index.ts'),
+			name: 'Sevalla',
+			formats: ['es', 'cjs'],
+			fileName: (format) => `sevalla.${format}.js`,
+		},
+		rollupOptions: {
+			external: ['ofetch'],
+			output: {
+				globals: {
+					ofetch: 'ofetch',
+				},
+			},
+		},
+		sourcemap: true,
+		minify: 'esbuild',
+	},
+	plugins: [dts({ rollupTypes: true })],
 });
 ```
 
@@ -194,20 +194,20 @@ I start every SDK with a `types.ts` file:
 
 ```typescript
 export interface Application {
-  id: string;
-  name: string;
-  repository_url: string;
-  branch: string;
-  status: 'pending' | 'building' | 'running' | 'stopped' | 'failed';
-  url: string;
-  created_at: string;
-  updated_at: string;
-  replicas: number;
-  plan: 'hobby' | 'starter' | 'pro' | 'business' | 'enterprise';
-  region: 'us-central' | 'us-east' | 'europe-west' | 'asia-south';
-  port?: number;
-  ssl_enabled: boolean;
-  cdn_enabled: boolean;
+	id: string;
+	name: string;
+	repository_url: string;
+	branch: string;
+	status: 'pending' | 'building' | 'running' | 'stopped' | 'failed';
+	url: string;
+	created_at: string;
+	updated_at: string;
+	replicas: number;
+	plan: 'hobby' | 'starter' | 'pro' | 'business' | 'enterprise';
+	region: 'us-central' | 'us-east' | 'europe-west' | 'asia-south';
+	port?: number;
+	ssl_enabled: boolean;
+	cdn_enabled: boolean;
 }
 ```
 
@@ -221,17 +221,17 @@ This is better than enums. Enums in TypeScript are... weird. They compile to obj
 
 ```typescript
 export interface CreateApplicationRequest {
-  name: string;
-  repository_url: string;
-  branch: string;
-  plan?: Application['plan'];  // Optional, has a default
-  region?: Application['region'];
-  replicas?: number;
-  port?: number;
-  build_command?: string;
-  start_command?: string;
-  ssl_enabled?: boolean;
-  cdn_enabled?: boolean;
+	name: string;
+	repository_url: string;
+	branch: string;
+	plan?: Application['plan']; // Optional, has a default
+	region?: Application['region'];
+	replicas?: number;
+	port?: number;
+	build_command?: string;
+	start_command?: string;
+	ssl_enabled?: boolean;
+	cdn_enabled?: boolean;
 }
 ```
 
@@ -251,26 +251,26 @@ I learned this the hard way in the PHP SDK. I had separate schemas for requests 
 
 ```typescript
 export interface PaginationParams {
-  page?: number;
-  per_page?: number;
-  sort?: string;
-  order?: 'asc' | 'desc';
+	page?: number;
+	per_page?: number;
+	sort?: string;
+	order?: 'asc' | 'desc';
 }
 
 export interface PaginatedResponse<T> {
-  data: T[];
-  meta: {
-    current_page: number;
-    per_page: number;
-    total: number;
-    total_pages: number;
-  };
-  links: {
-    first: string;
-    last: string;
-    next?: string;
-    prev?: string;
-  };
+	data: T[];
+	meta: {
+		current_page: number;
+		per_page: number;
+		total: number;
+		total_pages: number;
+	};
+	links: {
+		first: string;
+		last: string;
+		next?: string;
+		prev?: string;
+	};
 }
 ```
 
@@ -285,15 +285,17 @@ Alright, controversial opinion time: most SDK constructors are terrible.
 ```typescript
 // Don't do this
 const client = new ApiClient({
-  apiKey: 'key',
-  baseUrl: 'url',
-  timeout: 30000,
-  retries: 3,
-  retryDelay: 1000,
-  maxRetryDelay: 30000,
-  retryStatusCodes: [429, 500, 502, 503, 504],
-  headers: { /* ... */ },
-  // 15 more options
+	apiKey: 'key',
+	baseUrl: 'url',
+	timeout: 30000,
+	retries: 3,
+	retryDelay: 1000,
+	maxRetryDelay: 30000,
+	retryStatusCodes: [429, 500, 502, 503, 504],
+	headers: {
+		/* ... */
+	},
+	// 15 more options
 });
 ```
 
@@ -308,57 +310,57 @@ Instead, use a factory function:
 
 ```typescript
 export interface SevallaConfig {
-  apiKey: string;
-  baseUrl?: string;
-  timeout?: number;
-  retry?: number;
-  debug?: boolean;
+	apiKey: string;
+	baseUrl?: string;
+	timeout?: number;
+	retry?: number;
+	debug?: boolean;
 }
 
 export function createHttpClient(config: SevallaConfig) {
-  const {
-    apiKey,
-    baseUrl = 'https://api.sevalla.com/v1',
-    timeout = 30000,
-    retry = 3,
-    debug = false,
-  } = config;
+	const {
+		apiKey,
+		baseUrl = 'https://api.sevalla.com/v1',
+		timeout = 30000,
+		retry = 3,
+		debug = false,
+	} = config;
 
-  return ofetch.create({
-    baseURL: baseUrl,
-    timeout,
-    retry,
-    
-    onRequest({ options }) {
-      options.headers = {
-        ...options.headers,
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      };
-      
-      if (debug) {
-        console.log('[Sevalla SDK]', options.method, options.baseURL + (options.url || ''));
-      }
-    },
-    
-    onResponse({ response, options }) {
-      if (debug) {
-        console.log('[Sevalla SDK]', response.status, options.method, options.url);
-      }
-    },
-    
-    onResponseError({ response }) {
-      const data = response._data as SevallaError;
-      
-      throw new SevallaApiError(
-        data.message || 'An error occurred',
-        response.status,
-        data.code || 'UNKNOWN_ERROR',
-        data.details
-      );
-    },
-  });
+	return ofetch.create({
+		baseURL: baseUrl,
+		timeout,
+		retry,
+
+		onRequest({ options }) {
+			options.headers = {
+				...options.headers,
+				Authorization: `Bearer ${apiKey}`,
+				'Content-Type': 'application/json',
+				Accept: 'application/json',
+			};
+
+			if (debug) {
+				console.log('[Sevalla SDK]', options.method, options.baseURL + (options.url || ''));
+			}
+		},
+
+		onResponse({ response, options }) {
+			if (debug) {
+				console.log('[Sevalla SDK]', response.status, options.method, options.url);
+			}
+		},
+
+		onResponseError({ response }) {
+			const data = response._data as SevallaError;
+
+			throw new SevallaApiError(
+				data.message || 'An error occurred',
+				response.status,
+				data.code || 'UNKNOWN_ERROR',
+				data.details,
+			);
+		},
+	});
 }
 ```
 
@@ -394,7 +396,7 @@ Without this, you'd be writing:
 
 ```typescript
 await ofetch('/applications', {
-  headers: { 'Authorization': `Bearer ${apiKey}` }
+	headers: { Authorization: `Bearer ${apiKey}` },
 });
 ```
 
@@ -406,7 +408,7 @@ The interceptor does it once, in one place. Every request gets authenticated. Yo
 
 ```typescript
 if (debug) {
-  console.log('[Sevalla SDK]', options.method, options.url);
+	console.log('[Sevalla SDK]', options.method, options.url);
 }
 ```
 
@@ -415,9 +417,9 @@ I added this after spending two hours debugging why my requests weren't working 
 Now users can enable debug mode:
 
 ```typescript
-const sevalla = new Sevalla({ 
-  apiKey: 'key',
-  debug: true  // See every request and response
+const sevalla = new Sevalla({
+	apiKey: 'key',
+	debug: true, // See every request and response
 });
 ```
 
@@ -428,7 +430,7 @@ And they get visibility into what the SDK is doing. This saves so much debugging
 ```typescript
 onResponseError({ response }) {
   const data = response._data as SevallaError;
-  
+
   throw new SevallaApiError(
     data.message || 'An error occurred',
     response.status,
@@ -445,9 +447,9 @@ It's the difference between:
 ```typescript
 // Bad
 try {
-  await fetch('/api/applications');
+	await fetch('/api/applications');
 } catch (error) {
-  // What do I even check here? error.response? error.message?
+	// What do I even check here? error.response? error.message?
 }
 ```
 
@@ -456,11 +458,11 @@ And:
 ```typescript
 // Good
 try {
-  await sevalla.applications.create(config);
+	await sevalla.applications.create(config);
 } catch (error) {
-  if (error instanceof SevallaApiError) {
-    console.log(error.code, error.status, error.details);
-  }
+	if (error instanceof SevallaApiError) {
+		console.log(error.code, error.status, error.details);
+	}
 }
 ```
 
@@ -472,57 +474,57 @@ Speaking of errors, let's build that `SevallaApiError` class properly:
 
 ```typescript
 export interface SevallaError {
-  message: string;
-  code: string;
-  details?: Record<string, unknown>;
+	message: string;
+	code: string;
+	details?: Record<string, unknown>;
 }
 
 export class SevallaApiError extends Error {
-  constructor(
-    message: string,
-    public readonly status: number,
-    public readonly code: string,
-    public readonly details?: Record<string, unknown>
-  ) {
-    super(message);
-    this.name = 'SevallaApiError';
-    
-    // Maintains proper stack trace in V8
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, SevallaApiError);
-    }
-  }
+	constructor(
+		message: string,
+		public readonly status: number,
+		public readonly code: string,
+		public readonly details?: Record<string, unknown>,
+	) {
+		super(message);
+		this.name = 'SevallaApiError';
 
-  /**
-   * Check if error is a validation error
-   */
-  isValidationError(): boolean {
-    return this.status === 422 || this.code === 'VALIDATION_ERROR';
-  }
+		// Maintains proper stack trace in V8
+		if (Error.captureStackTrace) {
+			Error.captureStackTrace(this, SevallaApiError);
+		}
+	}
 
-  /**
-   * Check if error is a rate limit error
-   */
-  isRateLimitError(): boolean {
-    return this.status === 429 || this.code === 'RATE_LIMIT_EXCEEDED';
-  }
+	/**
+	 * Check if error is a validation error
+	 */
+	isValidationError(): boolean {
+		return this.status === 422 || this.code === 'VALIDATION_ERROR';
+	}
 
-  /**
-   * Check if error is an authentication error
-   */
-  isAuthError(): boolean {
-    return this.status === 401 || this.code === 'UNAUTHORIZED';
-  }
+	/**
+	 * Check if error is a rate limit error
+	 */
+	isRateLimitError(): boolean {
+		return this.status === 429 || this.code === 'RATE_LIMIT_EXCEEDED';
+	}
 
-  /**
-   * Get field-specific validation errors
-   */
-  getValidationErrors(): Record<string, string[]> | undefined {
-    if (!this.isValidationError() || !this.details) {
-      return undefined;
-    }
-    return this.details as Record<string, string[]>;
-  }
+	/**
+	 * Check if error is an authentication error
+	 */
+	isAuthError(): boolean {
+		return this.status === 401 || this.code === 'UNAUTHORIZED';
+	}
+
+	/**
+	 * Get field-specific validation errors
+	 */
+	getValidationErrors(): Record<string, string[]> | undefined {
+		if (!this.isValidationError() || !this.details) {
+			return undefined;
+		}
+		return this.details as Record<string, string[]>;
+	}
 }
 ```
 
@@ -530,25 +532,25 @@ Now your users can write clean error handling:
 
 ```typescript
 try {
-  await sevalla.applications.create(config);
+	await sevalla.applications.create(config);
 } catch (error) {
-  if (!(error instanceof SevallaApiError)) {
-    throw error; // Network error, timeout, etc.
-  }
-  
-  if (error.isValidationError()) {
-    const fieldErrors = error.getValidationErrors();
-    console.error('Validation failed:', fieldErrors);
-    // Show field-specific errors to user
-  } else if (error.isRateLimitError()) {
-    console.error('Rate limited, backing off...');
-    // Implement exponential backoff
-  } else if (error.isAuthError()) {
-    console.error('Authentication failed');
-    // Redirect to login or refresh token
-  } else {
-    console.error('API error:', error.message);
-  }
+	if (!(error instanceof SevallaApiError)) {
+		throw error; // Network error, timeout, etc.
+	}
+
+	if (error.isValidationError()) {
+		const fieldErrors = error.getValidationErrors();
+		console.error('Validation failed:', fieldErrors);
+		// Show field-specific errors to user
+	} else if (error.isRateLimitError()) {
+		console.error('Rate limited, backing off...');
+		// Implement exponential backoff
+	} else if (error.isAuthError()) {
+		console.error('Authentication failed');
+		// Redirect to login or refresh token
+	} else {
+		console.error('API error:', error.message);
+	}
 }
 ```
 
@@ -575,96 +577,96 @@ Instead, we build resource classes:
 export type HttpClient = ReturnType<typeof createHttpClient>;
 
 export class ApplicationsResource {
-  constructor(private client: HttpClient) {}
+	constructor(private client: HttpClient) {}
 
-  async list(params?: PaginationParams): Promise<PaginatedResponse<Application>> {
-    return this.client('/applications', {
-      method: 'GET',
-      query: params,
-    });
-  }
+	async list(params?: PaginationParams): Promise<PaginatedResponse<Application>> {
+		return this.client('/applications', {
+			method: 'GET',
+			query: params,
+		});
+	}
 
-  async get(id: string): Promise<Application> {
-    return this.client(`/applications/${id}`, {
-      method: 'GET',
-    });
-  }
+	async get(id: string): Promise<Application> {
+		return this.client(`/applications/${id}`, {
+			method: 'GET',
+		});
+	}
 
-  async create(data: CreateApplicationRequest): Promise<Application> {
-    return this.client('/applications', {
-      method: 'POST',
-      body: data,
-    });
-  }
+	async create(data: CreateApplicationRequest): Promise<Application> {
+		return this.client('/applications', {
+			method: 'POST',
+			body: data,
+		});
+	}
 
-  async update(id: string, data: Partial<CreateApplicationRequest>): Promise<Application> {
-    return this.client(`/applications/${id}`, {
-      method: 'PATCH',
-      body: data,
-    });
-  }
+	async update(id: string, data: Partial<CreateApplicationRequest>): Promise<Application> {
+		return this.client(`/applications/${id}`, {
+			method: 'PATCH',
+			body: data,
+		});
+	}
 
-  async delete(id: string): Promise<void> {
-    return this.client(`/applications/${id}`, {
-      method: 'DELETE',
-    });
-  }
+	async delete(id: string): Promise<void> {
+		return this.client(`/applications/${id}`, {
+			method: 'DELETE',
+		});
+	}
 
-  async deploy(id: string): Promise<Deployment> {
-    return this.client(`/applications/${id}/deploy`, {
-      method: 'POST',
-    });
-  }
+	async deploy(id: string): Promise<Deployment> {
+		return this.client(`/applications/${id}/deploy`, {
+			method: 'POST',
+		});
+	}
 
-  async scale(id: string, replicas: number): Promise<Application> {
-    return this.client(`/applications/${id}/scale`, {
-      method: 'POST',
-      body: { replicas },
-    });
-  }
+	async scale(id: string, replicas: number): Promise<Application> {
+		return this.client(`/applications/${id}/scale`, {
+			method: 'POST',
+			body: { replicas },
+		});
+	}
 
-  async logs(id: string, lines?: number): Promise<{ logs: string }> {
-    return this.client(`/applications/${id}/logs`, {
-      method: 'GET',
-      query: lines ? { lines } : undefined,
-    });
-  }
+	async logs(id: string, lines?: number): Promise<{ logs: string }> {
+		return this.client(`/applications/${id}/logs`, {
+			method: 'GET',
+			query: lines ? { lines } : undefined,
+		});
+	}
 
-  async restart(id: string): Promise<Application> {
-    return this.client(`/applications/${id}/restart`, {
-      method: 'POST',
-    });
-  }
+	async restart(id: string): Promise<Application> {
+		return this.client(`/applications/${id}/restart`, {
+			method: 'POST',
+		});
+	}
 
-  async rollback(id: string, deploymentId: string): Promise<Deployment> {
-    return this.client(`/applications/${id}/rollback`, {
-      method: 'POST',
-      body: { deployment_id: deploymentId },
-    });
-  }
+	async rollback(id: string, deploymentId: string): Promise<Deployment> {
+		return this.client(`/applications/${id}/rollback`, {
+			method: 'POST',
+			body: { deployment_id: deploymentId },
+		});
+	}
 
-  async deployments(id: string, params?: PaginationParams): Promise<PaginatedResponse<Deployment>> {
-    return this.client(`/applications/${id}/deployments`, {
-      method: 'GET',
-      query: params,
-    });
-  }
+	async deployments(id: string, params?: PaginationParams): Promise<PaginatedResponse<Deployment>> {
+		return this.client(`/applications/${id}/deployments`, {
+			method: 'GET',
+			query: params,
+		});
+	}
 
-  async setEnvironmentVariables(
-    id: string, 
-    variables: Record<string, string>
-  ): Promise<Application> {
-    return this.client(`/applications/${id}/environment`, {
-      method: 'PUT',
-      body: { variables },
-    });
-  }
+	async setEnvironmentVariables(
+		id: string,
+		variables: Record<string, string>,
+	): Promise<Application> {
+		return this.client(`/applications/${id}/environment`, {
+			method: 'PUT',
+			body: { variables },
+		});
+	}
 
-  async getEnvironmentVariables(id: string): Promise<Record<string, string>> {
-    return this.client(`/applications/${id}/environment`, {
-      method: 'GET',
-    });
-  }
+	async getEnvironmentVariables(id: string): Promise<Record<string, string>> {
+		return this.client(`/applications/${id}/environment`, {
+			method: 'GET',
+		});
+	}
 }
 ```
 
@@ -704,23 +706,23 @@ Now we tie it together:
 
 ```typescript
 export class Sevalla {
-  private client: HttpClient;
-  
-  public readonly applications: ApplicationsResource;
-  public readonly databases: DatabasesResource;
-  public readonly deployments: DeploymentsResource;
+	private client: HttpClient;
 
-  constructor(config: SevallaConfig) {
-    this.client = createHttpClient(config);
-    this.applications = new ApplicationsResource(this.client);
-    this.databases = new DatabasesResource(this.client);
-    this.deployments = new DeploymentsResource(this.client);
-  }
+	public readonly applications: ApplicationsResource;
+	public readonly databases: DatabasesResource;
+	public readonly deployments: DeploymentsResource;
+
+	constructor(config: SevallaConfig) {
+		this.client = createHttpClient(config);
+		this.applications = new ApplicationsResource(this.client);
+		this.databases = new DatabasesResource(this.client);
+		this.deployments = new DeploymentsResource(this.client);
+	}
 }
 
 // Clean export for users
 export function createClient(config: SevallaConfig): Sevalla {
-  return new Sevalla(config);
+	return new Sevalla(config);
 }
 ```
 
@@ -729,7 +731,7 @@ Simple. Clean. One client, multiple resources.
 The `readonly` keyword is important. It prevents:
 
 ```typescript
-sevalla.applications = somethingElse;  // TypeScript error
+sevalla.applications = somethingElse; // TypeScript error
 ```
 
 You'd be surprised how often people try to do weird things if you don't stop them.
@@ -765,12 +767,12 @@ So I added helper functions in a `helpers.ts` file:
 
 ```typescript
 export async function createAndDeploy(
-  sevalla: Sevalla,
-  config: CreateApplicationRequest
+	sevalla: Sevalla,
+	config: CreateApplicationRequest,
 ): Promise<{ application: Application; deployment: Deployment }> {
-  const application = await sevalla.applications.create(config);
-  const deployment = await sevalla.applications.deploy(application.id);
-  return { application, deployment };
+	const application = await sevalla.applications.create(config);
+	const deployment = await sevalla.applications.deploy(application.id);
+	return { application, deployment };
 }
 ```
 
@@ -793,51 +795,51 @@ But look at `provisionFullStack()`:
 
 ```typescript
 export async function provisionFullStack(
-  sevalla: Sevalla,
-  appConfig: CreateApplicationRequest,
-  dbConfig: CreateDatabaseRequest
-): Promise<{ 
-  application: Application; 
-  database: Database; 
-  deployment: Deployment;
-  credentials: DatabaseCredentials;
+	sevalla: Sevalla,
+	appConfig: CreateApplicationRequest,
+	dbConfig: CreateDatabaseRequest,
+): Promise<{
+	application: Application;
+	database: Database;
+	deployment: Deployment;
+	credentials: DatabaseCredentials;
 }> {
-  // Create database first
-  const database = await sevalla.databases.create(dbConfig);
-  
-  // Wait for database to be ready
-  let dbStatus = database;
-  while (dbStatus.status === 'provisioning') {
-    await new Promise(resolve => setTimeout(resolve, 5000));
-    dbStatus = await sevalla.databases.get(database.id);
-  }
-  
-  if (dbStatus.status === 'failed') {
-    throw new Error('Database provisioning failed');
-  }
-  
-  // Get credentials
-  const credentials = await sevalla.databases.getCredentials(database.id);
-  
-  // Create application with database connection
-  const application = await sevalla.applications.create({
-    ...appConfig,
-  });
-  
-  // Set environment variables
-  await sevalla.applications.setEnvironmentVariables(application.id, {
-    DATABASE_URL: credentials.connection_string,
-    DATABASE_HOST: credentials.host,
-    DATABASE_PORT: credentials.port.toString(),
-    DATABASE_NAME: credentials.database,
-    DATABASE_USER: credentials.username,
-    DATABASE_PASSWORD: credentials.password,
-  });
-  
-  // Deploy
-  const deployment = await sevalla.applications.deploy(application.id);
-  
-  return { application, database, deployment, credentials };
+	// Create database first
+	const database = await sevalla.databases.create(dbConfig);
+
+	// Wait for database to be ready
+	let dbStatus = database;
+	while (dbStatus.status === 'provisioning') {
+		await new Promise((resolve) => setTimeout(resolve, 5000));
+		dbStatus = await sevalla.databases.get(database.id);
+	}
+
+	if (dbStatus.status === 'failed') {
+		throw new Error('Database provisioning failed');
+	}
+
+	// Get credentials
+	const credentials = await sevalla.databases.getCredentials(database.id);
+
+	// Create application with database connection
+	const application = await sevalla.applications.create({
+		...appConfig,
+	});
+
+	// Set environment variables
+	await sevalla.applications.setEnvironmentVariables(application.id, {
+		DATABASE_URL: credentials.connection_string,
+		DATABASE_HOST: credentials.host,
+		DATABASE_PORT: credentials.port.toString(),
+		DATABASE_NAME: credentials.database,
+		DATABASE_USER: credentials.username,
+		DATABASE_PASSWORD: credentials.password,
+	});
+
+	// Deploy
+	const deployment = await sevalla.applications.deploy(application.id);
+
+	return { application, database, deployment, credentials };
 }
 ```
 
@@ -851,63 +853,57 @@ Or look at `deployWithRollback()`:
 
 ```typescript
 export interface DeploymentOptions {
-  pollInterval?: number;
-  timeout?: number;
-  onStatusChange?: (status: string) => void;
+	pollInterval?: number;
+	timeout?: number;
+	onStatusChange?: (status: string) => void;
 }
 
 export async function deployWithRollback(
-  sevalla: Sevalla,
-  applicationId: string,
-  options: DeploymentOptions = {}
+	sevalla: Sevalla,
+	applicationId: string,
+	options: DeploymentOptions = {},
 ): Promise<Deployment> {
-  const {
-    pollInterval = 5000,
-    timeout = 600000,
-    onStatusChange,
-  } = options;
-  
-  // Get last successful deployment
-  const history = await sevalla.applications.deployments(applicationId, { 
-    per_page: 20 
-  });
-  const lastSuccessful = history.data.find(d => d.status === 'success');
-  
-  // Start deployment
-  const deployment = await sevalla.applications.deploy(applicationId);
-  
-  // Poll until complete
-  let current = deployment;
-  const startTime = Date.now();
-  
-  while (current.status === 'pending' || current.status === 'building') {
-    if (Date.now() - startTime > timeout) {
-      throw new Error(`Deployment timeout after ${timeout}ms`);
-    }
-    
-    await new Promise(resolve => setTimeout(resolve, pollInterval));
-    
-    const latest = await sevalla.deployments.get(current.id);
-    
-    if (latest.status !== current.status && onStatusChange) {
-      onStatusChange(latest.status);
-    }
-    
-    current = latest;
-  }
-  
-  // Handle failure
-  if (current.status === 'failed') {
-    if (lastSuccessful) {
-      await sevalla.applications.rollback(applicationId, lastSuccessful.id);
-      throw new Error(
-        `Deployment ${current.id} failed. Rolled back to ${lastSuccessful.id}`
-      );
-    }
-    throw new Error(`Deployment ${current.id} failed. No previous deployment to rollback to.`);
-  }
-  
-  return current;
+	const { pollInterval = 5000, timeout = 600000, onStatusChange } = options;
+
+	// Get last successful deployment
+	const history = await sevalla.applications.deployments(applicationId, {
+		per_page: 20,
+	});
+	const lastSuccessful = history.data.find((d) => d.status === 'success');
+
+	// Start deployment
+	const deployment = await sevalla.applications.deploy(applicationId);
+
+	// Poll until complete
+	let current = deployment;
+	const startTime = Date.now();
+
+	while (current.status === 'pending' || current.status === 'building') {
+		if (Date.now() - startTime > timeout) {
+			throw new Error(`Deployment timeout after ${timeout}ms`);
+		}
+
+		await new Promise((resolve) => setTimeout(resolve, pollInterval));
+
+		const latest = await sevalla.deployments.get(current.id);
+
+		if (latest.status !== current.status && onStatusChange) {
+			onStatusChange(latest.status);
+		}
+
+		current = latest;
+	}
+
+	// Handle failure
+	if (current.status === 'failed') {
+		if (lastSuccessful) {
+			await sevalla.applications.rollback(applicationId, lastSuccessful.id);
+			throw new Error(`Deployment ${current.id} failed. Rolled back to ${lastSuccessful.id}`);
+		}
+		throw new Error(`Deployment ${current.id} failed. No previous deployment to rollback to.`);
+	}
+
+	return current;
 }
 ```
 
@@ -925,7 +921,7 @@ await sevalla.applications.deploy('app-id');
 
 // High-level safety
 await deployWithRollback(sevalla, 'app-id', {
-  onStatusChange: (status) => console.log('Status:', status)
+	onStatusChange: (status) => console.log('Status:', status),
 });
 ```
 
@@ -940,16 +936,16 @@ Let me show you what this looks like in practice.
 ```typescript
 import { createClient } from '@sevalla/sdk';
 
-const sevalla = createClient({ 
-  apiKey: process.env.SEVALLA_API_KEY! 
+const sevalla = createClient({
+	apiKey: process.env.SEVALLA_API_KEY!,
 });
 
 const app = await sevalla.applications.create({
-  name: 'my-api',
-  repository_url: 'https://github.com/user/my-api',
-  branch: 'main',
-  port: 3000,
-  plan: 'starter',
+	name: 'my-api',
+	repository_url: 'https://github.com/user/my-api',
+	branch: 'main',
+	port: 3000,
+	plan: 'starter',
 });
 
 await sevalla.applications.deploy(app.id);
@@ -963,10 +959,10 @@ import { createClient, createAndDeploy } from '@sevalla/sdk';
 const sevalla = createClient({ apiKey: process.env.SEVALLA_API_KEY! });
 
 const { application, deployment } = await createAndDeploy(sevalla, {
-  name: 'my-api',
-  repository_url: 'https://github.com/user/my-api',
-  branch: 'main',
-  port: 3000,
+	name: 'my-api',
+	repository_url: 'https://github.com/user/my-api',
+	branch: 'main',
+	port: 3000,
 });
 
 console.log(`Deployed: ${application.url}`);
@@ -980,21 +976,21 @@ import { createClient, deployWithRollback } from '@sevalla/sdk';
 const sevalla = createClient({ apiKey: process.env.SEVALLA_API_KEY! });
 
 try {
-  const deployment = await deployWithRollback(sevalla, 'app-id', {
-    pollInterval: 10000,
-    timeout: 600000,
-    onStatusChange: (status) => {
-      console.log(`Deployment status: ${status}`);
-    },
-  });
-  
-  console.log('✓ Deployed successfully:', deployment.id);
+	const deployment = await deployWithRollback(sevalla, 'app-id', {
+		pollInterval: 10000,
+		timeout: 600000,
+		onStatusChange: (status) => {
+			console.log(`Deployment status: ${status}`);
+		},
+	});
+
+	console.log('✓ Deployed successfully:', deployment.id);
 } catch (error) {
-  if (error instanceof SevallaApiError) {
-    console.error('✗ Deployment failed:', error.message);
-  } else {
-    console.error('✗ Deployment failed and was rolled back');
-  }
+	if (error instanceof SevallaApiError) {
+		console.error('✗ Deployment failed:', error.message);
+	} else {
+		console.error('✗ Deployment failed and was rolled back');
+	}
 }
 ```
 
@@ -1006,19 +1002,19 @@ import { createClient, provisionFullStack } from '@sevalla/sdk';
 const sevalla = createClient({ apiKey: process.env.SEVALLA_API_KEY! });
 
 const { application, database, deployment } = await provisionFullStack(
-  sevalla,
-  {
-    name: 'my-app',
-    repository_url: 'https://github.com/user/app',
-    branch: 'main',
-    port: 3000,
-  },
-  {
-    name: 'my-db',
-    type: 'postgresql',
-    version: '15',
-    size: 'small',
-  }
+	sevalla,
+	{
+		name: 'my-app',
+		repository_url: 'https://github.com/user/app',
+		branch: 'main',
+		port: 3000,
+	},
+	{
+		name: 'my-db',
+		type: 'postgresql',
+		version: '15',
+		size: 'small',
+	},
 );
 
 console.log('App:', application.url);
@@ -1060,14 +1056,14 @@ export { SevallaApiError } from './errors';
 
 // Types
 export type {
-  SevallaConfig,
-  Application,
-  Database,
-  Deployment,
-  CreateApplicationRequest,
-  CreateDatabaseRequest,
-  PaginationParams,
-  PaginatedResponse,
+	SevallaConfig,
+	Application,
+	Database,
+	Deployment,
+	CreateApplicationRequest,
+	CreateDatabaseRequest,
+	PaginationParams,
+	PaginatedResponse,
 } from './types';
 
 // Resources (for advanced use cases)
@@ -1076,11 +1072,7 @@ export { DatabasesResource } from './resources/databases';
 export { DeploymentsResource } from './resources/deployments';
 
 // Helpers
-export {
-  createAndDeploy,
-  deployWithRollback,
-  provisionFullStack,
-} from './helpers';
+export { createAndDeploy, deployWithRollback, provisionFullStack } from './helpers';
 ```
 
 This structure gives users:
@@ -1096,38 +1088,36 @@ Your `package.json` should look like this:
 
 ```json
 {
-  "name": "@sevalla/sdk",
-  "version": "1.0.0",
-  "type": "module",
-  "main": "./dist/sevalla.cjs.js",
-  "module": "./dist/sevalla.es.js",
-  "types": "./dist/sevalla.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/sevalla.d.ts",
-      "import": "./dist/sevalla.es.js",
-      "require": "./dist/sevalla.cjs.js"
-    }
-  },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "vite build",
-    "dev": "vite build --watch",
-    "test": "vitest",
-    "typecheck": "tsc --noEmit"
-  },
-  "peerDependencies": {
-    "ofetch": "^1.3.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.10.0",
-    "typescript": "^5.3.0",
-    "vite": "^5.0.0",
-    "vite-plugin-dts": "^3.7.0",
-    "vitest": "^1.0.0"
-  }
+	"name": "@sevalla/sdk",
+	"version": "1.0.0",
+	"type": "module",
+	"main": "./dist/sevalla.cjs.js",
+	"module": "./dist/sevalla.es.js",
+	"types": "./dist/sevalla.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/sevalla.d.ts",
+			"import": "./dist/sevalla.es.js",
+			"require": "./dist/sevalla.cjs.js"
+		}
+	},
+	"files": ["dist"],
+	"scripts": {
+		"build": "vite build",
+		"dev": "vite build --watch",
+		"test": "vitest",
+		"typecheck": "tsc --noEmit"
+	},
+	"peerDependencies": {
+		"ofetch": "^1.3.0"
+	},
+	"devDependencies": {
+		"@types/node": "^20.10.0",
+		"typescript": "^5.3.0",
+		"vite": "^5.0.0",
+		"vite-plugin-dts": "^3.7.0",
+		"vitest": "^1.0.0"
+	}
 }
 ```
 
@@ -1153,48 +1143,48 @@ import { createHttpClient } from '../src/client';
 import { SevallaApiError } from '../src/errors';
 
 describe('HTTP Client', () => {
-  it('adds authentication header', async () => {
-    const client = createHttpClient({
-      apiKey: 'test-key',
-      baseUrl: 'https://api.test.com',
-    });
+	it('adds authentication header', async () => {
+		const client = createHttpClient({
+			apiKey: 'test-key',
+			baseUrl: 'https://api.test.com',
+		});
 
-    // Mock the fetch
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      status: 200,
-      json: async () => ({ id: '123' }),
-    });
+		// Mock the fetch
+		global.fetch = vi.fn().mockResolvedValue({
+			ok: true,
+			status: 200,
+			json: async () => ({ id: '123' }),
+		});
 
-    await client('/test');
+		await client('/test');
 
-    expect(global.fetch).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.objectContaining({
-        headers: expect.objectContaining({
-          'Authorization': 'Bearer test-key',
-        }),
-      })
-    );
-  });
+		expect(global.fetch).toHaveBeenCalledWith(
+			expect.any(String),
+			expect.objectContaining({
+				headers: expect.objectContaining({
+					Authorization: 'Bearer test-key',
+				}),
+			}),
+		);
+	});
 
-  it('transforms API errors', async () => {
-    const client = createHttpClient({
-      apiKey: 'test-key',
-    });
+	it('transforms API errors', async () => {
+		const client = createHttpClient({
+			apiKey: 'test-key',
+		});
 
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: false,
-      status: 422,
-      _data: {
-        message: 'Validation failed',
-        code: 'VALIDATION_ERROR',
-        details: { name: ['Name is required'] },
-      },
-    });
+		global.fetch = vi.fn().mockResolvedValue({
+			ok: false,
+			status: 422,
+			_data: {
+				message: 'Validation failed',
+				code: 'VALIDATION_ERROR',
+				details: { name: ['Name is required'] },
+			},
+		});
 
-    await expect(client('/test')).rejects.toThrow(SevallaApiError);
-  });
+		await expect(client('/test')).rejects.toThrow(SevallaApiError);
+	});
 });
 ```
 
@@ -1204,29 +1194,24 @@ For helper functions:
 
 ```typescript
 describe('deployWithRollback', () => {
-  it('rolls back on deployment failure', async () => {
-    const mockSevalla = {
-      applications: {
-        deploy: vi.fn().mockResolvedValue({ id: 'dep-1', status: 'pending' }),
-        deployments: vi.fn().mockResolvedValue({
-          data: [{ id: 'dep-old', status: 'success' }],
-        }),
-        rollback: vi.fn().mockResolvedValue({ id: 'dep-old' }),
-      },
-      deployments: {
-        get: vi.fn().mockResolvedValue({ id: 'dep-1', status: 'failed' }),
-      },
-    } as any;
+	it('rolls back on deployment failure', async () => {
+		const mockSevalla = {
+			applications: {
+				deploy: vi.fn().mockResolvedValue({ id: 'dep-1', status: 'pending' }),
+				deployments: vi.fn().mockResolvedValue({
+					data: [{ id: 'dep-old', status: 'success' }],
+				}),
+				rollback: vi.fn().mockResolvedValue({ id: 'dep-old' }),
+			},
+			deployments: {
+				get: vi.fn().mockResolvedValue({ id: 'dep-1', status: 'failed' }),
+			},
+		} as any;
 
-    await expect(
-      deployWithRollback(mockSevalla, 'app-1')
-    ).rejects.toThrow(/rolled back/i);
+		await expect(deployWithRollback(mockSevalla, 'app-1')).rejects.toThrow(/rolled back/i);
 
-    expect(mockSevalla.applications.rollback).toHaveBeenCalledWith(
-      'app-1',
-      'dep-old'
-    );
-  });
+		expect(mockSevalla.applications.rollback).toHaveBeenCalledWith('app-1', 'dep-old');
+	});
 });
 ```
 
@@ -1262,26 +1247,26 @@ Most list endpoints return paginated results. I should have added helpers for it
 
 ```typescript
 export async function* paginateAll<T>(
-  fetcher: (params: PaginationParams) => Promise<PaginatedResponse<T>>
+	fetcher: (params: PaginationParams) => Promise<PaginatedResponse<T>>,
 ) {
-  let page = 1;
-  let hasMore = true;
+	let page = 1;
+	let hasMore = true;
 
-  while (hasMore) {
-    const response = await fetcher({ page, per_page: 100 });
-    
-    for (const item of response.data) {
-      yield item;
-    }
-    
-    hasMore = response.meta.current_page < response.meta.total_pages;
-    page++;
-  }
+	while (hasMore) {
+		const response = await fetcher({ page, per_page: 100 });
+
+		for (const item of response.data) {
+			yield item;
+		}
+
+		hasMore = response.meta.current_page < response.meta.total_pages;
+		page++;
+	}
 }
 
 // Usage
 for await (const app of paginateAll(sevalla.applications.list)) {
-  console.log(app.name);
+	console.log(app.name);
 }
 ```
 
@@ -1295,15 +1280,15 @@ Let users inject their own logic:
 
 ```typescript
 const sevalla = createClient({
-  apiKey: 'key',
-  hooks: {
-    beforeRequest: (options) => {
-      // Custom logic before each request
-    },
-    afterResponse: (response) => {
-      // Custom logic after each response
-    },
-  },
+	apiKey: 'key',
+	hooks: {
+		beforeRequest: (options) => {
+			// Custom logic before each request
+		},
+		afterResponse: (response) => {
+			// Custom logic after each response
+		},
+	},
 });
 ```
 
@@ -1424,7 +1409,6 @@ This SDK started with axios and pure classes. It evolved to ofetch, Vite, and hy
 If you're building an SDK, don't aim for perfection. Aim for useful. Ship it. Learn from it. Improve it.
 
 And for the love of all that is holy, check your bundle size.
-	
 The complete SDK is [available on GitHub](https://github.com/juststeveking/sevalla-ts), and if you want to see how this plays out in other languages, I've got Go and PHP versions too. Each one taught me something that made the others better.
 
 Now go build something that doesn't suck.

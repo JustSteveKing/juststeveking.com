@@ -3,21 +3,21 @@ title: Reaching for Facades
 description: Demystify Laravel Facades and harness them for clear, efficient code and Laravel's unique features.
 category: Laravel
 pubDate: 2022-11-04
-image: "/images/articles/reaching-for-facades.png"
+image: '/images/articles/reaching-for-facades.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "facades", "design-patterns", "php"]
+tags: ['laravel', 'facades', 'design-patterns', 'php']
 ---
 
 Facades, people seem to love them or hate them. Either way, they are a natural part of what Laravel is today. Laravel Facades, however, aren't strictly facades; are they? Instead, they are static accessors to resolve a class from the container.
 
 When I first started with Laravel, I hated it, and after three years of using Larvel - I finally started to accept it. I was your typical Laravel hater of today. It was when I learned to embrace Laravel for what it is, instead of trying to fight the framework of my way of thinking, that I learned to love it. Some might say I am one of its biggest advocates now.
 
-One of the things I hated for a time was Facades. I was in the grumpy camp complaining about static method calls, blah blah blah. But I didn't know how they worked in Laravel. I was joining in with the noise repeating what other developers had said without knowing what I was talking about. 
+One of the things I hated for a time was Facades. I was in the grumpy camp complaining about static method calls, blah blah blah. But I didn't know how they worked in Laravel. I was joining in with the noise repeating what other developers had said without knowing what I was talking about.
 
 Fast forward to today, and I understand how Facades work - and you know what? I have definitely changed my tune. I want to write this tutorial not so that you can all agree with me, although you should, but so that you, too, can understand how facades work and where they have their benefits.
 
@@ -56,7 +56,7 @@ class AddSubscriberController
 }
 ```
 
-So this is a 'little' long-winded, but it is clear to see what you are doing. You create the client, send the request through the client, and catch a potential exception. Finally, returning either a redirect or a response depending if it were an API or web controller. This code isn't bad. You can test it. You can ensure behavior within the controller with little effort. 
+So this is a 'little' long-winded, but it is clear to see what you are doing. You create the client, send the request through the client, and catch a potential exception. Finally, returning either a redirect or a response depending if it were an API or web controller. This code isn't bad. You can test it. You can ensure behavior within the controller with little effort.
 
 However, if the package changed how you integrated with it, everywhere you were newing up the client to work with the API, you would have to go through your code base and make all the changes as required. This is a perfect time to look at refactoring, as you are saving yourself future work by working smarter. Using the DI container directly, let's look at a refactored version of the above code.
 

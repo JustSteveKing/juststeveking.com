@@ -1,21 +1,22 @@
 ---
-name: "juststeveking/feed-parser"
-description: "A simple feed parser for PHP with zero dependencies."
-packagist: "https://packagist.org/packages/juststeveking/feed-parser"
-github: "https://github.com/JustSteveKing/feed-parser"
-link: "https://github.com/JustSteveKing/feed-parser"
-tech: ["PHP"]
+name: 'juststeveking/feed-parser'
+description: 'A simple feed parser for PHP with zero dependencies.'
+packagist: 'https://packagist.org/packages/juststeveking/feed-parser'
+github: 'https://github.com/JustSteveKing/feed-parser'
+link: 'https://github.com/JustSteveKing/feed-parser'
+tech: ['PHP']
 featured: false
 downloads: 15
 monthlyDownloads: 0
 stars: 5
-version: "dev-main"
-updatedAt: "2026-04-07"
+version: 'dev-main'
+updatedAt: '2026-04-07'
 ---
 
 # Feed Generator
 
 <!-- BADGES_START -->
+
 [![Latest Version][badge-release]][packagist]
 [![PHP Version][badge-php]][php]
 ![tests](https://github.com/juststeveking/feed-parser/workflows/tests/badge.svg)
@@ -24,10 +25,10 @@ updatedAt: "2026-04-07"
 [badge-release]: https://img.shields.io/packagist/v/juststeveking/feed-parser.svg?style=flat-square&label=release
 [badge-php]: https://img.shields.io/packagist/php-v/juststeveking/feed-parser.svg?style=flat-square
 [badge-downloads]: https://img.shields.io/packagist/dt/juststeveking/feed-parser.svg?style=flat-square&colorB=mediumvioletred
-
 [packagist]: https://packagist.org/packages/juststeveking/feed-parser
 [php]: https://php.net
 [downloads]: https://packagist.org/packages/juststeveking/feed-parser
+
 <!-- BADGES_END -->
 
 A simple feed parser for PHP with zero dependencies.
@@ -152,4 +153,3 @@ composer refactor
 ## LICENSE
 
 The MIT License (MIT). Please see [License File](./LICENSE) for more information.
-

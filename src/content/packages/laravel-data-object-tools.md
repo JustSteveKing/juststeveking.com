@@ -1,21 +1,22 @@
 ---
-name: "juststeveking/laravel-data-object-tools"
-description: "A set of tools to make working with Data Transfer Objects easier in Laravel"
-packagist: "https://packagist.org/packages/juststeveking/laravel-data-object-tools"
-github: "https://github.com/JustSteveKing/laravel-data-object-tools"
-link: "https://github.com/JustSteveKing/laravel-data-object-tools"
-tech: ["PHP", "Laravel"]
+name: 'juststeveking/laravel-data-object-tools'
+description: 'A set of tools to make working with Data Transfer Objects easier in Laravel'
+packagist: 'https://packagist.org/packages/juststeveking/laravel-data-object-tools'
+github: 'https://github.com/JustSteveKing/laravel-data-object-tools'
+link: 'https://github.com/JustSteveKing/laravel-data-object-tools'
+tech: ['PHP', 'Laravel']
 featured: false
 downloads: 14394
 monthlyDownloads: 33
 stars: 67
-version: "dev-main"
-updatedAt: "2026-06-10"
+version: 'dev-main'
+updatedAt: '2026-06-10'
 ---
 
 # Laravel Data Object Tools
 
 <!-- BADGES_START -->
+
 [![Latest Version][badge-release]][packagist]
 [![PHP Version][badge-php]][php]
 [![Tests][badge-tests]][tests]
@@ -25,11 +26,11 @@ updatedAt: "2026-06-10"
 [badge-release]: https://img.shields.io/packagist/v/juststeveking/laravel-data-object-tools.svg?style=flat-square&label=release
 [badge-php]: https://img.shields.io/packagist/php-v/juststeveking/laravel-data-object-tools.svg?style=flat-square
 [badge-downloads]: https://img.shields.io/packagist/dt/juststeveking/laravel-data-object-tools.svg?style=flat-square&colorB=mediumvioletred
-
 [packagist]: https://packagist.org/packages/juststeveking/laravel-data-object-tools
 [php]: https://php.net
 [downloads]: https://packagist.org/packages/juststeveking/laravel-data-object-tools
 [tests]: https://github.com/juststeveking/laravel-data-object-tools/actions/workflows/test.yml
+
 <!-- BADGES_END -->
 
 This package is aimed to be a suite of tools to help working with DTOs even easier.
@@ -50,7 +51,7 @@ php artisan make:dto MyDto
 ```
 
 This will generate the following class: `app/DataObjects/MyDto.php`. By default this class
-will be a `final` class that implements a `DataObjectContract` which enforces a method `toArray` so that you can 
+will be a `final` class that implements a `DataObjectContract` which enforces a method `toArray` so that you can
 easily cast your DTOs to arrays.
 
 If you are using PHP 8.2 however, you will by default get a `readonly` class generated, so that you do not have
@@ -66,7 +67,7 @@ class StoreController
     public function __construct(
         private readonly HydratorContract $hydrator,
     ) {}
-    
+
     public function __invoke(StoreRequest $request)
     {
         $model = Model::query()->create(
@@ -118,5 +119,3 @@ composer run test
 ## LICENSE
 
 The MIT License (MIT). Please see [License File](./LICENSE) for more information.
-
-

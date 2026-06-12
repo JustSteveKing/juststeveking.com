@@ -77,7 +77,8 @@ export const servicesProcess = servicesRaw.process;
 
 export const designKitMeta: PageMeta = designKitRaw.meta;
 export const designKitColors: DesignKitColor[] = designKitRaw.colors;
-export const designKitTypography: { primary: TypographyVariant; technical: TypographyVariant } = designKitRaw.typography as any;
+export const designKitTypography: { primary: TypographyVariant; technical: TypographyVariant } =
+	designKitRaw.typography as any;
 export const designKitVisualLanguage: VisualLanguageItem[] = designKitRaw.visualLanguage;
 
 // Re-export type so callers can import it from here if convenient

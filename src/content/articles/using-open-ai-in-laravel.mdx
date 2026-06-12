@@ -3,14 +3,14 @@ title: Using OpenAI in Laravel
 description: Discover how to harness the potential of OpenAI in Laravel for AI-driven applications, from natural language processing to text generation.
 category: Laravel
 pubDate: 2023-01-06
-image: "/images/articles/laravel-openai.png"
+image: '/images/articles/laravel-openai.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "openai", "ai-integration", "text-generation"]
+tags: ['laravel', 'openai', 'ai-integration', 'text-generation']
 ---
 
 AI is it a buzzword, or is it something we should be thinking about? With the release of the OpenAI package, we can dive into AI-powered Laravel applications
@@ -46,7 +46,7 @@ Now, anytime I try to inject the OpenAI Client class into a constructor or anywh
 
 Our use case is when we save a product with a description. We want to auto-generate an advertisement text for the product. In reality, the best place for this to happen would be in a Job. One we can dispatch as part of the creation process of the model itself.
 
-I won't go through the creation of the model, as I want to ensure I get all the points from this tutorial. 
+I won't go through the creation of the model, as I want to ensure I get all the points from this tutorial.
 
 When we dispatch a background job, we pass through what we want serialized into the constructor - and then, in the handle method, we can resolve instances from the DI container.
 
@@ -76,7 +76,7 @@ final class GenerateAdFromProduct implements ShouldQueue
             'frequency_penalty' => 0.0,
             'presence_penalty' => 0.0,
         ]);
-        
+
         DB::transaction(fn () => Product::query()->find(
             id: $this->product,
         ))->update(['ai_description' => $response['choices'][0]['text']]);
@@ -152,22 +152,22 @@ The output for this will be the following:
 
 ```json
 {
-  "object": "text_completion",
-  "created": 1672769063,
-  "model": "text-davinci-003",
-  "choices": [
-    {
-      "text": "Are you a #Laravel developer looking to stay up-to-date with the latest news and updates? Look no further than Laravel News! With over 10K users daily, you'll be able to stay informed and learn from the official news outlet for the Laravel ecosystem. #LaravelNews #Developers #Ecosystem",
-      "index": 0,
-      "logprobs": null,
-      "finish_reason": "stop"
-    }
-  ],
-  "usage": {
-    "prompt_tokens": 82,
-    "completion_tokens": 72,
-    "total_tokens": 154
-  }
+	"object": "text_completion",
+	"created": 1672769063,
+	"model": "text-davinci-003",
+	"choices": [
+		{
+			"text": "Are you a #Laravel developer looking to stay up-to-date with the latest news and updates? Look no further than Laravel News! With over 10K users daily, you'll be able to stay informed and learn from the official news outlet for the Laravel ecosystem. #LaravelNews #Developers #Ecosystem",
+			"index": 0,
+			"logprobs": null,
+			"finish_reason": "stop"
+		}
+	],
+	"usage": {
+		"prompt_tokens": 82,
+		"completion_tokens": 72,
+		"total_tokens": 154
+	}
 }
 ```
 

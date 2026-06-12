@@ -1,7 +1,7 @@
-export { default as Badge } from "./Badge.astro";
+export { default as Badge } from './Badge.astro';
 export { default as Breadcrumb } from './Breadcrumb.astro';
 export { default as Card } from './Card.astro';
-export { default as Logo } from "./Logo.astro";
+export { default as Logo } from './Logo.astro';
 export { default as PageHeader } from './PageHeader.astro';
 export { default as Search } from './Search.svelte';
 export { default as SectionLabel } from './SectionLabel.astro';

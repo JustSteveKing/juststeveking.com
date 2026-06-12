@@ -3,14 +3,14 @@ title: Getting started with Laravel Scout and Meilisearch
 description: Boost your Laravel app's search with Scout and Meilisearch for powerful, efficient capabilities.
 category: Laravel
 pubDate: 2022-06-21
-image: "/images/social/articles/laravel-scout-meilisearch.png"
+image: '/images/social/articles/laravel-scout-meilisearch.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "meilisearch", "laravel-scout", "search-implementation"]
+tags: ['laravel', 'meilisearch', 'laravel-scout', 'search-implementation']
 ---
 
 We have all needed to add some sort of search to our applications before, and a lot of the time we leaned towards Algolia and Laravel Scout - because it worked out the box and achieved great results. But there is a (relatively) new kid on the block now, meilisearch. Meilisearch is very similar to Algolia in terms of functionality, however it is an open source project build using the Rust programming language. So you can run this locally at no cost, or in production using something like Laravel Forge to spin up a server.
@@ -54,10 +54,11 @@ php artisan vendor:publish --provider="Laravel\Scout\ScoutServiceProvider"
 This will set us up so that we can modify the newly created `config/scout.php` to however we might want to change it, but the chances are you will want to keep this pretty standard.
 
 At this point we have a few options, driver options. In this tutorial we are going to be covering how to use [Meilisearch](https://www.meilisearch.com/) but you have the following options available as Laravel Scout drivers:
--	Algolia: Use the algolia 3rd party service.
--	Meilisearch: Use the open source meilisearch service.
--	Collection: Use the database as a search service - only supports MySQL and PostgreSQL.
--	null: Don't use a driver - usually used for testing.
+
+- Algolia: Use the algolia 3rd party service.
+- Meilisearch: Use the open source meilisearch service.
+- Collection: Use the database as a search service - only supports MySQL and PostgreSQL.
+- null: Don't use a driver - usually used for testing.
 
 To get started using the meilisearch driver, we need to install a new package which will allow scout to use the meilisearch SDK, so run the following composer command:
 
@@ -90,12 +91,12 @@ public function up()
 {
     Schema::create('categories', static function (Blueprint $table): void {
         $table->id();
- 
+
         $table->string('name');
         $table->string('slug')->unique();
-		
+
 		$table->boolean('searchable')->default(true);
- 
+
         $table->timestamps();
     });
 }
@@ -158,7 +159,7 @@ public function up(): void
         $table->string('title');
         $table->string('slug')->unique();
         $table->mediumText('content');
-		
+
 		$table->boolean('published')->default(true);
 
         $table
@@ -226,10 +227,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 		$categories = Category::factory(10)->create();
-		
+
 		$categories->each(function (Category $category) {
-			$this->command->getOutput()->info(  
-    			message: "Creating posts for category: [$category->name]",  
+			$this->command->getOutput()->info(
+    			message: "Creating posts for category: [$category->name]",
 			);
 
 			$bar = $this->command->getOutput()->createProgressBar(100);
@@ -266,7 +267,7 @@ class Post extends Model
 {
     use Searchable;
     use HasFactory;
-	
+
 	protected $with = [
 		'category'
 	];
@@ -282,7 +283,7 @@ class Post extends Model
 {
     use Searchable;
     use HasFactory;
-	
+
 	protected $with = [
 		'category'
 	];
@@ -303,7 +304,7 @@ class Post extends Model
 {
     use Searchable;
     use HasFactory;
-	
+
 	protected $with = [
 		'category'
 	];
@@ -373,7 +374,7 @@ class Post extends Model
 {
     use Searchable;
     use HasFactory;
-	
+
 	protected $with = [
 		'category'
 	];
@@ -398,7 +399,7 @@ class Post extends Model
 
 	public static function getSearchFilterAttributes(): array
 	{
-    	return [  
+    	return [
         	'category.name',
         	'category.slug',
     	];
@@ -419,7 +420,7 @@ Then add the following code snippet:
 ```php
 class SetupSearchFilters extends Command
 {
-    protected $signature = 'scout:filters 
+    protected $signature = 'scout:filters
 		{index : The index you want to work with.}
 	';
 

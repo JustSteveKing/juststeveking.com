@@ -1,16 +1,16 @@
 ---
-name: "juststeveking/laravel-bastion"
-description: "Stripe-inspired API authentication with environment isolation, granular scopes, and built-in security."
-packagist: "https://packagist.org/packages/juststeveking/laravel-bastion"
-github: "https://github.com/JustSteveKing/laravel-bastion"
-link: "https://github.com/JustSteveKing/laravel-bastion"
-tech: ["PHP"]
+name: 'juststeveking/laravel-bastion'
+description: 'Stripe-inspired API authentication with environment isolation, granular scopes, and built-in security.'
+packagist: 'https://packagist.org/packages/juststeveking/laravel-bastion'
+github: 'https://github.com/JustSteveKing/laravel-bastion'
+link: 'https://github.com/JustSteveKing/laravel-bastion'
+tech: ['PHP']
 featured: false
 downloads: 176
 monthlyDownloads: 118
 stars: 108
-version: "dev-main"
-updatedAt: "2026-06-10"
+version: 'dev-main'
+updatedAt: '2026-06-10'
 ---
 
 <p align="center">
@@ -20,6 +20,7 @@ updatedAt: "2026-06-10"
 # Laravel Bastion
 
 <!-- BADGES_START -->
+
 [![PHP Version][badge-php]][php]
 [![Latest Version][badge-release]][packagist]
 [](https://github.com/JustSteveKing/laravel-bastion/actions/workflows/tests.yml)
@@ -30,10 +31,10 @@ updatedAt: "2026-06-10"
 [php]: https://php.net
 [downloads]: https://packagist.org/packages/juststeveking/laravel-bastion
 [packagist]: https://packagist.org/packages/juststeveking/laravel-bastion
-
 [badge-release]: https://img.shields.io/packagist/v/juststeveking/laravel-bastion.svg?style=flat-square&label=release
 [badge-php]: https://img.shields.io/packagist/php-v/juststeveking/laravel-bastion.svg?style=flat-square
 [badge-downloads]: https://img.shields.io/packagist/dt/juststeveking/laravel-bastion.svg?style=flat-square&colorB=mediumvioletred
+
 <!-- BADGES_END -->
 
 Stripe-inspired API authentication with environment isolation, granular scopes, and built-in security.
@@ -69,6 +70,7 @@ php artisan bastion:install
 ```
 
 This will:
+
 1. Publish the configuration file to `config/bastion.php`
 2. Publish the database migrations
 3. Optionally run the migrations
@@ -134,27 +136,33 @@ curl -H "Authorization: Bearer app_test_rk_..." \
 Bastion supports three token types, inspired by Stripe:
 
 ### Public Keys (`pk`)
+
 ```php
 TokenType::Public
 ```
+
 - Prefix: `app_{env}_pk_*`
 - Limited access, safe for client-side use
 - Ideal for JavaScript/mobile apps
 - Cannot perform sensitive operations
 
 ### Secret Keys (`sk`)
+
 ```php
 TokenType::Secret
 ```
+
 - Prefix: `app_{env}_sk_*`
 - Full access to all permitted scopes
 - Must be kept secure on the server
 - Use for backend integrations
 
 ### Restricted Keys (`rk`)
+
 ```php
 TokenType::Restricted
 ```
+
 - Prefix: `app_{env}_rk_*`
 - Scoped access with specific permissions
 - Best for third-party integrations
@@ -165,17 +173,21 @@ TokenType::Restricted
 Bastion isolates test and production data:
 
 ### Test Environment
+
 ```php
 TokenEnvironment::Test
 ```
+
 - For development and testing
 - Higher rate limits (default: 100/min)
 - Can be used in any environment
 
 ### Live Environment
+
 ```php
 TokenEnvironment::Live
 ```
+
 - For production traffic
 - Standard rate limits (default: 60/min)
 - Can be restricted from non-production environments (configurable)
@@ -330,6 +342,7 @@ Route::middleware([AuthenticateToken::class, AuditApiRequest::class])
 ```
 
 Audit logs capture:
+
 - Request method, path, and query parameters
 - Response status code and time
 - IP address and user agent
@@ -507,6 +520,7 @@ Laravel Bastion implements multiple security layers:
 - **Automatic event dispatching** - Monitor all token lifecycle events
 
 ### Community Requests
+
 Have a feature idea? [Open an issue](https://github.com/juststeveking/laravel-bastion/issues/new?template=feature_request.md) with the `enhancement` label.
 
 ## Out of Scope
@@ -517,4 +531,3 @@ Bastion focuses on token-based authentication with scopes and environments. It d
 - Domain/host origin restrictions
 
 If you need these controls, add them at your application layer (e.g., trusted proxies, firewall/WAF rules, or custom middleware) alongside Bastion.
-

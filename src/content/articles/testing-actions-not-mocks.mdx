@@ -1,6 +1,6 @@
 ---
-title: "Testing Actions, Not Mocks"
-description: "Mocking your own Actions tests the wiring, not the behaviour. How I test Laravel Action classes for real with Pest, and where fakes still belong."
+title: 'Testing Actions, Not Mocks'
+description: 'Mocking your own Actions tests the wiring, not the behaviour. How I test Laravel Action classes for real with Pest, and where fakes still belong.'
 category: Testing
 pubDate: 2026-06-10
 minRead: 12
@@ -9,7 +9,7 @@ author:
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "testing", "software-architecture", "pest"]
+tags: ['laravel', 'testing', 'software-architecture', 'pest']
 ---
 
 There is a particular kind of test that feels productive while you write it and tells you nothing once it runs. You reach for a mock, you set up the expectation, you assert that a method was called, the suite goes green, and you close the laptop feeling covered. Then something real changes, the behaviour breaks where it counts, and the suite is still green. That gap between "my tests pass" and "my code works" is almost always paved with mocks.
@@ -213,4 +213,4 @@ The deeper idea, the one worth carrying into every test you write, is that a moc
 
 When your suite goes green, you want that to mean your application works. Mock your own actions and it means your wiring matched your mocks. Test your actions for real and it means something you can actually deploy on.
 
-*Next time I will take the same knife to validation testing, because asserting that a Form Request has a rule is its own quiet little lie.*
+_Next time I will take the same knife to validation testing, because asserting that a Form Request has a rule is its own quiet little lie._

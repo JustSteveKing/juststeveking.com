@@ -1,16 +1,16 @@
 ---
-name: "juststeveking/resume-php"
-description: "A PHP library for building and working with the JSON resume schema."
-packagist: "https://packagist.org/packages/juststeveking/resume-php"
-github: "https://github.com/JustSteveKing/resume-php"
-link: "https://github.com/JustSteveKing/resume-php"
-tech: ["PHP"]
+name: 'juststeveking/resume-php'
+description: 'A PHP library for building and working with the JSON resume schema.'
+packagist: 'https://packagist.org/packages/juststeveking/resume-php'
+github: 'https://github.com/JustSteveKing/resume-php'
+link: 'https://github.com/JustSteveKing/resume-php'
+tech: ['PHP']
 featured: false
 downloads: 502
 monthlyDownloads: 164
 stars: 106
-version: "dev-main"
-updatedAt: "2026-06-10"
+version: 'dev-main'
+updatedAt: '2026-06-10'
 ---
 
 # Resume PHP
@@ -246,4 +246,3 @@ The MIT License (MIT). Please see [License File](LICENSE) for more information.
 
 - [Steve McDougall](https://github.com/juststeveking)
 - [All Contributors](../../contributors)
-

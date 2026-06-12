@@ -1,21 +1,22 @@
 ---
-name: "juststeveking/laravel-flows"
-description: "A fluent, modular workflow builder for Laravel."
-packagist: "https://packagist.org/packages/juststeveking/laravel-flows"
-github: "https://github.com/JustSteveKing/laravel-flows"
-link: "https://github.com/JustSteveKing/laravel-flows"
-tech: ["PHP"]
+name: 'juststeveking/laravel-flows'
+description: 'A fluent, modular workflow builder for Laravel.'
+packagist: 'https://packagist.org/packages/juststeveking/laravel-flows'
+github: 'https://github.com/JustSteveKing/laravel-flows'
+link: 'https://github.com/JustSteveKing/laravel-flows'
+tech: ['PHP']
 featured: false
 downloads: 18
 monthlyDownloads: 0
 stars: 105
-version: "dev-main"
-updatedAt: "2026-04-30"
+version: 'dev-main'
+updatedAt: '2026-04-30'
 ---
 
 # Laravel Flows
 
 <!-- BADGES_START -->
+
 [![PHP Version][badge-php]][php]
 [![Latest Version][badge-release]][packagist]
 [![Tests](https://github.com/JustSteveKing/laravel-flows/actions/workflows/tests.yml/badge.svg)](https://github.com/JustSteveKing/laravel-flows/actions/workflows/tests.yml)
@@ -26,10 +27,10 @@ updatedAt: "2026-04-30"
 [php]: https://php.net
 [downloads]: https://packagist.org/packages/juststeveking/laravel-flows
 [packagist]: https://packagist.org/packages/juststeveking/laravel-flows
-
 [badge-release]: https://img.shields.io/packagist/v/juststeveking/laravel-flows.svg?style=flat-square&label=release
 [badge-php]: https://img.shields.io/packagist/php-v/juststeveking/laravel-flows.svg?style=flat-square
 [badge-downloads]: https://img.shields.io/packagist/dt/juststeveking/laravel-flows.svg?style=flat-square&colorB=mediumvioletred
+
 <!-- BADGES_END -->
 
 A fluent, modular workflow builder for Laravel that leverages the Pipeline pattern to simplify and organize business logic.
@@ -276,7 +277,7 @@ $flow = Flow::start()
             'error' => $e->getMessage(),
             'payload' => $payload,
         ]);
-        
+
         return array_merge($payload, ['error' => 'Failed to create user']);
     });
 
@@ -291,6 +292,7 @@ $result = $flow->execute([
 When defining your workflows, you can mix and match steps and conditions seamlessly. Use `run()` or `chain()` for your steps and `branch()` for conditionally running sub-flows. This keeps your business logic clean and flexible.
 
 ### Reusable Flow
+
 The `->with(...)` method in a flow offers you the flexibility you need to specify flow logic that can be re-used wherever you need it.
 
 Example with Reusable Flow:
@@ -320,6 +322,7 @@ $flow = Flow::start()->with(new ReusableFlow());
 ```
 
 The `->with(...)` method accepts any form of `callable`, such as:
+
 - Closures (e.g. `function () {  }`)
 - Traditional callable notations (e.g. `[$this, 'methodName']`)
 - First-class callables (e.g. `$this->methodName(...)`)
@@ -429,4 +432,3 @@ Contributions are welcome! Please submit a pull request or open an issue if you 
 ## License
 
 This package is open-sourced software licensed under the MIT license.
-

@@ -3,14 +3,14 @@ title: Steve vs Matt - How two developers approach the same problem
 description: Steve vs Matt; Two Developers, One Problem - Witness two programmers tackle the same challenge with contrasting approaches
 category: PHP
 pubDate: 2022-12-15
-image: "/images/articles/steve-vs-matt.png"
+image: '/images/articles/steve-vs-matt.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["php", "programming-styles", "code-design", "software-development"]
+tags: ['php', 'programming-styles', 'code-design', 'software-development']
 ---
 
 It's very common to see two programmers who code the same feature differently. But it's much less common for those two programmers to see eye-to-eye and remain friendly. Thankfully, we have a chance to see how two friends approach the same coding challenge differently and each friend's reflection on the other's code and approach.
@@ -39,7 +39,7 @@ What I start with is an interface for the things I want to be able to list. In t
 interface ListContract
 {
     public function random(): string;
- 
+
     public function secure(): string;
 }
 ```
@@ -94,7 +94,7 @@ final class PackageServiceProvider extends ServiceProvider
             ),
         );
     }
- 
+
     // boot method would be below.
 }
 ```
@@ -111,26 +111,26 @@ trait HasWords
         private readonly array $words,
     ) {
     }
- 
+
     public function random(): string
     {
         return $this->words[array_rand($this->words)];
     }
- 
+
     public function secure(): string
     {
         $word = $this->random();
- 
+
         $asArray = str_split($word);
- 
+
         $secureArray = array_map(
             callback: fn (string $item): string => $this->convertToNumerical($item),
             array: $asArray,
         );
- 
+
         return implode('', $secureArray);
     }
- 
+
     public function convertToNumerical(string $item): string
     {
         return match ($item) {
@@ -156,7 +156,7 @@ final class PasswordGenerator implements GeneratorContract
         private readonly ListContract $adjectives,
     ) {
     }
- 
+
     public function generate(): string
     {
         return $this->build(
@@ -166,7 +166,7 @@ final class PasswordGenerator implements GeneratorContract
             $this->adjectives->random(),
         );
     }
- 
+
     public function generateSecure(): string
     {
         return $this->build(
@@ -176,7 +176,7 @@ final class PasswordGenerator implements GeneratorContract
             $this->adjectives->secure(),
         );
     }
- 
+
     private function build(string ...$parts): string
     {
         return implode('-', $parts);
@@ -190,7 +190,7 @@ Overall this solution allows for a lot of extension and customization regarding 
 
 I think you did a lot of the review yourself, my friend! 😆
 
-Steve's caveats here bring a lot of my thoughts already: a lot of usages of interfaces and traits over-engineer for the *possible* future, but that ends up with us creating a more complicated system that's less capable of adapting if the future becomes something other than what we are imagining *might* happen.
+Steve's caveats here bring a lot of my thoughts already: a lot of usages of interfaces and traits over-engineer for the _possible_ future, but that ends up with us creating a more complicated system that's less capable of adapting if the future becomes something other than what we are imagining _might_ happen.
 
 I think the `match` statement instead of the `str_replace` you'll see me use in my example is the most enjoyable little bit of difference. `str_replace` is clearer upfront; more people are familiar with it, and it requires fewer lines of code and doesn't need an extra `array_map`. However, as Steve pointed out, the syntax cleanly shows the initial and replacement letters on the same lines, and that's definitely nice. Either way, it's fun to see all the different ways we can use `match`.
 
@@ -254,7 +254,7 @@ class PasswordGenerator
 }
 ```
 
-Once I finished writing this method, I realized I wanted to quickly check to make sure I wrote it *right*. "Wouldn't it be nice," I thought to myself, "to have a test to check this method instead of having to test it manually every time?" So, let's spin up a really quick test to prove that `makeStringSecure` method works the way we want.
+Once I finished writing this method, I realized I wanted to quickly check to make sure I wrote it _right_. "Wouldn't it be nice," I thought to myself, "to have a test to check this method instead of having to test it manually every time?" So, let's spin up a really quick test to prove that `makeStringSecure` method works the way we want.
 
 ```php
 class PasswordGeneratorTest extends TestCase
@@ -426,11 +426,11 @@ class PasswordGeneratorTest extends TestCase
 
 ### Why do I write this way
 
-When I program, I aim to write flexible, comprehensible, changeable, and deletable code. We can't predict the future, but we can write code that is *easy to change* in the future, so I opt for simple, clear, concise code.
+When I program, I aim to write flexible, comprehensible, changeable, and deletable code. We can't predict the future, but we can write code that is _easy to change_ in the future, so I opt for simple, clear, concise code.
 
 In my way of thinking, you can always add tools or structures later, but it's much harder to remove them later. I adhere very strongly to YAGNI ("you aren't gonna need it") ideals, and if you're curious to learn more about my thoughts here, check out my Laracon Online talk [Abstracting Too Early](https://www.youtube.com/watch?v=f4QShF42c6E&t=13999s).
 
-I build interfaces when I see a concrete, tangible need for them. I build abstractions when I see a pain point that's best solved by that abstraction and no earlier. I've found this to be 
+I build interfaces when I see a concrete, tangible need for them. I build abstractions when I see a pain point that's best solved by that abstraction and no earlier. I've found this to be
 
 ### Steve's code review
 
@@ -446,4 +446,4 @@ Overall, Matt made evident improvements to my approach that aim at simplicity ov
 
 ## Conclusion
 
-Thanks so much for checking this out! We hope seeing two programmers approach the same problem with different priorities and mindsets *, but respect for each other* can lead to a super enjoyable conversation where we all learn!
+Thanks so much for checking this out! We hope seeing two programmers approach the same problem with different priorities and mindsets _, but respect for each other_ can lead to a super enjoyable conversation where we all learn!

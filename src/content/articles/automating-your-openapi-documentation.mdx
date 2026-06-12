@@ -3,14 +3,14 @@ title: Automating your OpenAPI Documentation
 description: Learn to automate API documentation in Laravel with a design-first approach using OpenAPI, Scribe, and efficient pagination in this practical tutorial.
 category: Laravel
 pubDate: 2022-10-21
-image: "/images/social/articles/automating-openapi-docs.png"
+image: '/images/social/articles/automating-openapi-docs.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "openapi", "api-documentation", "automation"]
+tags: ['laravel', 'openapi', 'api-documentation', 'automation']
 ---
 
 Over the years, as developers, we have always looked for ways that we can automate our documentation, from PHPDoc to Swagger and beyond. In recent years that has been a significant shift in the API world to adopt a more design-first-led approach to API documentation. This was mainly spurred by the creation of the OpenAPI specification, which is the replacement for Swagger.
@@ -68,8 +68,7 @@ info:
   description: ''
   version: 1.0.0
 servers:
-  -
-    url: 'http://localhost:8000'
+  - url: 'http://localhost:8000'
 paths: []
 tags: []
 ```
@@ -170,6 +169,6 @@ final class IndexController
 }
 ```
 
-We start by adding `@group Book Collection` which will group this endpoint under a "Book Collection"  allowing for easier navigation of your API documentation. We then add "Get all Books from the API." which describes the specific endpoint. We then can add additional `@queryParam` entries to document the available query parameters this endpoint takes. Much easier than writing YAML, right!
+We start by adding `@group Book Collection` which will group this endpoint under a "Book Collection" allowing for easier navigation of your API documentation. We then add "Get all Books from the API." which describes the specific endpoint. We then can add additional `@queryParam` entries to document the available query parameters this endpoint takes. Much easier than writing YAML, right!
 
 The Scribe documentation has much more information, and you can go in-depth with what information you add. I have only brushed the basics here - but already you can see how useful this can be. What do you use for your API Documentation? Let us know on Twitter!

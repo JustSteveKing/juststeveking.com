@@ -3,7 +3,7 @@ title: Advanced Authorization methods in Laravel
 description: Unravel Laravels authorization built-in Gates, Policies & advanced ReBAC, ABAC, PBAC methods for secure, scalable app access control.
 category: Laravel
 pubDate: 2025-02-13
-image: "/images/articles/advanced-authorization.png"
+image: '/images/articles/advanced-authorization.png'
 minRead: 7
 sponsor:
   name: Permit
@@ -14,10 +14,10 @@ author:
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "authorization", "security", "access-control"]
+tags: ['laravel', 'authorization', 'security', 'access-control']
 ---
 
-Authorization, often confused with authentication, is a crucial aspect of web application security. In this article, we will explore Laravel’s built-in authorization features and dive into alternative models such as ReBAC, ABAC, and PBAC, helping you choose the right approach for your application. In Laravel we use an assortment of different approaches, which mostly revolves around RBAC, or Role Based Access Control for those not into acronyms. Is that all? Surely there must be more options to protect the valuable data our apps collect. Let's talk about some Laravel Authorization best practices, and see how we can implement them into our projects. 
+Authorization, often confused with authentication, is a crucial aspect of web application security. In this article, we will explore Laravel’s built-in authorization features and dive into alternative models such as ReBAC, ABAC, and PBAC, helping you choose the right approach for your application. In Laravel we use an assortment of different approaches, which mostly revolves around RBAC, or Role Based Access Control for those not into acronyms. Is that all? Surely there must be more options to protect the valuable data our apps collect. Let's talk about some Laravel Authorization best practices, and see how we can implement them into our projects.
 
 Out of the box Laravel provides robust mechanisms, in the form of Gates and Policies, but sometimes we need a little more granular control that this approach. So, we are going to investigate three alternatives to RBAC that you can implement in Laravel today, and discuss when and why we might use them. We will look at Role-based vs Attribute-based access control in Laravel, finishing off with Policy-based access control and trying to decide which approach is going to be best for which use-case.
 
@@ -66,7 +66,7 @@ final class TaskPolicy
 }
 ```
 
-Here we have two methods, `view` and `create` which keeps the logical flow of who can do what to what in your Laravel application.  We can take this a step further by implementing what's called a Policy "filter", which is a method that will be ran before any other policy check and is useful for things like administrative users.
+Here we have two methods, `view` and `create` which keeps the logical flow of who can do what to what in your Laravel application. We can take this a step further by implementing what's called a Policy "filter", which is a method that will be ran before any other policy check and is useful for things like administrative users.
 
 ```php
 final class TaskPolicy
@@ -102,7 +102,7 @@ final class ProjectPolicy
 }
 ```
 
-Again we have a sanity check to make sure the user has verified their email address, then we want to see if the user belongs to this project through the users Projects relationship.  We would then do the check in our code exactly the same way as we usually would with a Policy. The biggest drawback here is that is really does rely on you having good relationship management, and if you aren't going to lean on the ORM you need to make sure you use effective join queries.
+Again we have a sanity check to make sure the user has verified their email address, then we want to see if the user belongs to this project through the users Projects relationship. We would then do the check in our code exactly the same way as we usually would with a Policy. The biggest drawback here is that is really does rely on you having good relationship management, and if you aren't going to lean on the ORM you need to make sure you use effective join queries.
 
 You can use something like ReBAC alongside something like RBAC, as they do play quite nicely together - but it will massively depend on the application you are building. A lot of the applications I have built in my career could benefit from this approach, but there are certain scenarios where this just isn't enough. As the data you are storing and providing access to gets more sensitive or personal, you are going to want to start looking for alternative methods of Authorization to help you out.
 
@@ -117,8 +117,8 @@ final class DocumentPolicy
 {
 	public function view(User $user, Document $document): bool
 	{
-		return $user->department === $document->department 
-			&& now()->hour >= 9 
+		return $user->department === $document->department
+			&& now()->hour >= 9
 			&& now()->hour <= 17;
 	}
 }
@@ -149,8 +149,8 @@ final class ClientPolicy
 	public function approveBudget(User $user, Client $client)
 	{
 		if ($client->revenue >= 1_000_000) {
-			return $user->role === 'senior-manager' 
-				&& $client->budget > 100_000;	
+			return $user->role === 'senior-manager'
+				&& $client->budget > 100_000;
 		}
 
 		// other logical checks
@@ -185,5 +185,4 @@ Finally, the big one. The one everyone always asks. Does it scale? Scalability i
 
 ## Conclusion
 
-To some it all up, Laravel has fantastic Authorization functionality but the problem comes in managing the logic around Authorization. You can leverage ReBAC, ABAC, or PBAC to create a more granular and flexible access controls. It is important to evaluate your specific requirements and choose the model that is going to align best with your performance, management, and scalability needs. 
-
+To some it all up, Laravel has fantastic Authorization functionality but the problem comes in managing the logic around Authorization. You can leverage ReBAC, ABAC, or PBAC to create a more granular and flexible access controls. It is important to evaluate your specific requirements and choose the model that is going to align best with your performance, management, and scalability needs.

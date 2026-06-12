@@ -1,11 +1,11 @@
 ---
-import "@/styles/main.css";
+import '@/styles/main.css';
 import ClientRouter from 'astro:components/ClientRouter.astro';
 import { SiteHeader, SiteFooter } from '@/components';
-import { site } from "@/config";
-import { getSeoMetadata, getPersonSchema, formatJsonLd } from "@/utils/seo";
-import type { SEOProps } from "@/types";
-
+import PostHog from '@/components/PostHog.astro';
+import { site } from '@/config';
+import { getSeoMetadata, getPersonSchema, formatJsonLd } from '@/utils/seo';
+import type { SEOProps } from '@/types';
 
 interface Props extends SEOProps {
 	jsonLd?: Record<string, unknown> | Record<string, unknown>[];
@@ -13,17 +13,8 @@ interface Props extends SEOProps {
 
 const { jsonLd, ...seoProps } = Astro.props;
 
-const {
-	pageTitle,
-	description,
-	ogImage,
-	noIndex,
-	canonical,
-	author,
-	twitter,
-	locale,
-	siteName,
-} = getSeoMetadata(seoProps);
+const { pageTitle, description, ogImage, noIndex, canonical, author, twitter, locale, siteName } =
+	getSeoMetadata(seoProps);
 
 const canonicalUrl = canonical || new URL(Astro.url.pathname, site.url).href;
 const ogImageUrl = new URL(ogImage, site.url).href;
@@ -67,19 +58,35 @@ const pageSchemas = formatJsonLd(jsonLd);
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={ogImageUrl} />
 
-		<link rel="alternate" type="application/rss+xml" href="/rss.xml" title={`${author} — Articles`} />
+		<link
+			rel="alternate"
+			type="application/rss+xml"
+			href="/rss.xml"
+			title={`${author} — Articles`}
+		/>
+
+		<PostHog />
 
 		<script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />
-		{pageSchemas.map(s => (
-			<script is:inline type="application/ld+json" set:html={JSON.stringify(s)} />
-		))}
+		{
+			pageSchemas.map((s) => (
+				<script is:inline type="application/ld+json" set:html={JSON.stringify(s)} />
+			))
+		}
+
+		<script is:inline>
+			posthog.capture('my_custom_event', { property: 'value' })
+
+		</script>
 
 		<ClientRouter />
 	</head>
 	<body class="group">
 		<a href="#main-content" class="skip-link">Skip to main content</a>
 		<main id="main-content" class="flex flex-col items-center min-h-screen gap-16">
-			<div class="w-full max-w-(--container-max-width) border-b max-[900px]:border-x-0 min-[901px]:border-x border-edge overflow-x-clip">
+			<div
+				class="w-full max-w-(--container-max-width) border-b max-[900px]:border-x-0 min-[901px]:border-x border-edge overflow-x-clip"
+			>
 				<SiteHeader />
 				<slot />
 				<SiteFooter />

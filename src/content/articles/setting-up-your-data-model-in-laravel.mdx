@@ -3,14 +3,14 @@ title: Setting up your Data Model in Laravel
 description: Master the art of Laravel data modeling and build a meeting room booking system with this comprehensive tutorial.
 category: Laravel
 pubDate: 2022-09-20
-image: "/images/articles/laravel-eloquent.png"
+image: '/images/articles/laravel-eloquent.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "data-model", "eloquent", "database-design"]
+tags: ['laravel', 'data-model', 'eloquent', 'database-design']
 ---
 
 The data model is one of the most important parts of any Laravel application. Many systems will be designed around this data model, so it is typically one of the first things we approach during development. Some of us have been doing this for years and have a good idea of how to approach this - while others may not be used to it yet. I learned about data modeling before I knew there was such thing as a framework, designing my data model in `CREATE TABLE` statements.
@@ -21,7 +21,7 @@ This tutorial is part one of an ongoing series where we should have built an ent
 
 What are we going to build? I am glad you asked. I could do something straightforward here, like a ToDo application or a blog - but you won't learn anything useful from that. Instead, we are going to be building something unique and exciting with quite a few moving parts, which by the end of it all, should be something worthwhile. Recently I went on the hunt for a meeting room booking system, and in all honesty I struggled to find one. So we will be building an open source one in Laravel. The purpose here is to build something in a way that we would expect in a production environment while at the same time offering something for free.
 
-What is going to be included within this meeting room management platform? This isn't going to be a SaaS style application where anyone can sign up and use it, this will be something you download and run yourself. It is crucial at this stage to think about these decisions as it informs much of our data model. 
+What is going to be included within this meeting room management platform? This isn't going to be a SaaS style application where anyone can sign up and use it, this will be something you download and run yourself. It is crucial at this stage to think about these decisions as it informs much of our data model.
 
 The way we want our application to work is, at first, a configuration process happens where important setup instructions can be gone through. An overall system admin can be invited onto the platform to allow them to invite users and set up the system as required.
 
@@ -67,7 +67,7 @@ final class UserFactory extends Factory
             'type' => Type::ADMIN,
         ];
     }
-    
+
     public function unverified(): UserFactory
     {
         return $this->state(
@@ -112,6 +112,7 @@ final class User extends Authenticatable implements MustVerifyEmail
     ];
 }
 ```
+
 Before we go into more detail, you are probably wondering about the Enum itself and its available options.
 
 ```php

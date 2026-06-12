@@ -3,21 +3,21 @@ title: Reducing code duplication
 description: Learn to reduce code duplication in Laravel using artisan commands and services for better code quality.
 category: Laravel
 pubDate: 2023-01-26
-image: "/images/articles/reducing-code-duplication.png"
+image: '/images/articles/reducing-code-duplication.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "code-organization", "refactoring", "design-patterns"]
+tags: ['laravel', 'code-organization', 'refactoring', 'design-patterns']
 ---
 
 Code duplication is the most painful thing for a lot of developers, you think you have solved the problem, but there are several instances of the same issue.
 
 In many of the codebases I have seen as a Laravel developer, the console commands always seem to be the forgotten area or the part where people need to pay more attention to the quality.
 
-In this tutorial, I will walk through how you can approach writing code with a focus on reducing code duplication. To begin with, let's pose a hypothetical. We have a Laravel application that is an e-commerce store, and once a day, we want to generate a report on all the sales and the status of shipments. Our current approach is to log in to the administration panel and click a button to generate the report. 
+In this tutorial, I will walk through how you can approach writing code with a focus on reducing code duplication. To begin with, let's pose a hypothetical. We have a Laravel application that is an e-commerce store, and once a day, we want to generate a report on all the sales and the status of shipments. Our current approach is to log in to the administration panel and click a button to generate the report.
 
 This may be unrealistic, as the first instance here would be to automate it. But stick with me just a little while as we venture through this idea to improve it.
 

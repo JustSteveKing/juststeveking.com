@@ -9,14 +9,14 @@ author:
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["php", "uri-builder", "package-development", "api-integration"]
+tags: ['php', 'uri-builder', 'package-development', 'api-integration']
 ---
 
-I would like to announce my latest package *uri-builder* which is a fluent
+I would like to announce my latest package _uri-builder_ which is a fluent
 interface for building a URI string. Now, it might sound simple - and you
 might wonder why did I build this. So without further ado, let me explain:
 
-A lot of us have been there before; we need to build a URI to call a 3rd party API but juggling things like query parameters and paths can be a pain. In php we have `parse_url` which is *almost* really good for parsing a url. The main problem I have with this function is that you cannot guarantee it's outcome, also there is no reverse of it!
+A lot of us have been there before; we need to build a URI to call a 3rd party API but juggling things like query parameters and paths can be a pain. In php we have `parse_url` which is _almost_ really good for parsing a url. The main problem I have with this function is that you cannot guarantee it's outcome, also there is no reverse of it!
 
 This was the deciding factor for me to build a package to handle this for me. I build quite a few Software Development Kits for clients and for open source, and it is always a bit of a pain not having a clean way to build and pass URLs through to methods, and not having this aspect of our code as testable as it could be.
 
@@ -39,7 +39,7 @@ So, using the built in `parse_url` you are returned with an array, and you then 
 
 You can feel the frustration right there in that sentence. In 2020, where we have AI reminding us that we have an appointment at our doctors and that there is light traffic so may need to leave a little earlier than usual - parse_url can't guarantee what it is going to give us.
 
-My first thought on this package, was that I need to guarantee a minimum that can be passed to the class that will alow it to run, otherwise if there is an issue, or we aren't going to get the return we would hope for, or for anything else: throw a `RuntimeException` - halt the process and deal with this issue, because this URL is malformed or missing parts, so a future part of your application that may require this URI is *not* going to function properly.
+My first thought on this package, was that I need to guarantee a minimum that can be passed to the class that will alow it to run, otherwise if there is an issue, or we aren't going to get the return we would hope for, or for anything else: throw a `RuntimeException` - halt the process and deal with this issue, because this URL is malformed or missing parts, so a future part of your application that may require this URI is _not_ going to function properly.
 
 I added 2 ways to use this package, you can either build this up programatically:
 

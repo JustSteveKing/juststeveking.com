@@ -1,14 +1,14 @@
 ---
-title: "Expandable relationships with sparse expansions"
-slug: "expandable-relationships-with-sparse-expansions"
-description: "Avoid over-fetching by default while letting clients pull related data in one call when needed using expand parameters."
-category: "reading-data"
-complexity: "intermediate"
-apiStyles: ["rest"]
-useWhen: "You want to avoid over-fetching by default but let clients pull related data in one call when needed."
-avoidWhen: "Relationships are huge or consistently expensive to fetch, and bundling them will hurt performance."
-tags: ["relationships", "expansions", "over-fetching"]
-related: ["cursor-based-pagination-for-stable-lists"]
+title: 'Expandable relationships with sparse expansions'
+slug: 'expandable-relationships-with-sparse-expansions'
+description: 'Avoid over-fetching by default while letting clients pull related data in one call when needed using expand parameters.'
+category: 'reading-data'
+complexity: 'intermediate'
+apiStyles: ['rest']
+useWhen: 'You want to avoid over-fetching by default but let clients pull related data in one call when needed.'
+avoidWhen: 'Relationships are huge or consistently expensive to fetch, and bundling them will hurt performance.'
+tags: ['relationships', 'expansions', 'over-fetching']
+related: ['cursor-based-pagination-for-stable-lists']
 ---
 
 Instead of always embedding everything, or always forcing N+1 client calls, you expose a base representation and allow clients to “expand” specific relationships via a query parameter like `expand=`.
@@ -88,5 +88,3 @@ DX tips
 - Enforce a sane limit on the number of expansions to avoid “fetch everything” abuse.
 
 - Consider combining with sparse fieldsets (‎`fields[customer]=id,name`).
-
-

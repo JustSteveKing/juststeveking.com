@@ -3,14 +3,14 @@ title: Embracing PSRs to build an interoperable HTTP Client
 description: Learn to build a PSR-18 compliant HTTP client in PHP, enhancing web development through interoperability and efficient request handling.
 category: PHP
 pubDate: 2020-05-29
-image: "/images/social/articles/embracing-psrs.png"
+image: '/images/social/articles/embracing-psrs.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["php", "psr-standards", "http-client", "interoperability"]
+tags: ['php', 'psr-standards', 'http-client', 'interoperability']
 ---
 
 Recently I have been scratching my head over PSR-18. As a new PSR there isn't
@@ -74,7 +74,7 @@ public function post(string $uri, array $body): ResponseInterface
   try {
     $content = $this->encodeJson($body);
   } catch (JsonException $exception) {
-    throw RequestError::invalidJson($exception); 
+    throw RequestError::invalidJson($exception);
   }
 
   $request = $this->requestFactory

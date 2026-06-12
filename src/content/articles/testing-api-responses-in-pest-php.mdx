@@ -3,14 +3,14 @@ title: Testing API responses in PestPHP
 description: Efficient API Response Testing in Laravel with pestPHP - Learn to test Laravel API responses effectively using pestPHP and fixtures.
 category: Laravel
 pubDate: 2022-05-11
-image: "/images/articles/pest-php.png"
+image: '/images/articles/pest-php.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["pestphp", "api-testing", "laravel", "test-fixtures"]
+tags: ['pestphp', 'api-testing', 'laravel', 'test-fixtures']
 ---
 
 I get asked about API response testing a lot, how should you do it, and where to start. I have a general rule when it comes to testing APIs, and that rule is: "test your code, and your code only". What do I mean by this? Let me explain:
@@ -25,7 +25,7 @@ I have previously written blog posts about how to integrate with 3rd party APIs 
 
 This is a typical CRUD style behaviour where you want to `READ` some data, `CREATE` some data and `DELETE` some data. I will use a fictional API for this, as it is the approach that is important not the specifics of the API.
 
-*Our API*
+_Our API_
 
 Our API is a simple API that lets us manage a library of books that we have access to, nothing exciting. We can add new books to this API and we can remove books when we have gifted them or got rid of them in someway. So let us start with the first idea, getting a list of books that we have in our library. For the interest of simplicity I am not going to handle authentication in these examples. The examples I will use the Laravel Http facade to make this even more straight forward.
 

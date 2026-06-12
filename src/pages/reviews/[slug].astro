@@ -7,7 +7,7 @@ import { formatDate } from '@/utils/format';
 
 export async function getStaticPaths() {
 	const reviews = await getCollection('reviews');
-	return reviews.map(review => ({
+	return reviews.map((review) => ({
 		params: { slug: review.id },
 		props: { review },
 	}));
@@ -47,10 +47,7 @@ const reviewSchema = {
 <Layout {...pageMeta} jsonLd={reviewSchema}>
 	<article>
 		<header class="px-section pt-12 pb-10 border-b border-edge">
-			<Breadcrumb items={[
-				{ label: 'Reviews', href: '/reviews' },
-				{ label: subject },
-			]} />
+			<Breadcrumb items={[{ label: 'Reviews', href: '/reviews' }, { label: subject }]} />
 
 			<h1 class="text-[28px] font-bold fg-strong leading-tight mb-4 max-w-[60ch]">{title}</h1>
 			<p class="text-base leading-[1.65] fg max-w-[60ch] mb-5">{description}</p>
@@ -59,29 +56,56 @@ const reviewSchema = {
 				<time class="font-mono text-[13px] fg-weak" datetime={pubDate.toISOString()}>
 					{formatDate(pubDate)}
 				</time>
-				<span class="font-mono text-[11px] font-bold fg-accent uppercase tracking-[0.08em] border border-edge rounded-[3px] px-1.5 py-0.5" style="border-color: var(--color-accent);">{badge}</span>
-				{subjectUrl && (
-					<a
-						href={subjectUrl}
-						target="_blank"
-						rel="noopener noreferrer"
-						class="font-mono text-[12px] fg-weak no-underline transition-colors hover:text-accent"
-					>
-						{subject} <span aria-hidden="true">↗</span>
-						<span class="visually-hidden">(opens in new tab)</span>
-					</a>
-				)}
+				<span
+					class="font-mono text-[11px] font-bold fg-accent uppercase tracking-[0.08em] border border-edge rounded-[3px] px-1.5 py-0.5"
+					style="border-color: var(--color-accent);">{badge}</span
+				>
+				{
+					subjectUrl && (
+						<a
+							href={subjectUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="font-mono text-[12px] fg-weak no-underline transition-colors hover:text-accent"
+						>
+							{subject} <span aria-hidden="true">↗</span>
+							<span class="visually-hidden">(opens in new tab)</span>
+						</a>
+					)
+				}
 			</div>
 
-			{tags.length > 0 && (
-				<div class="flex flex-wrap gap-1.5" aria-label="Tags">
-					{tags.map(tag => (
-						<Tag>{tag}</Tag>
-					))}
-				</div>
-			)}
+			{
+				tags.length > 0 && (
+					<div class="flex flex-wrap gap-1.5" aria-label="Tags">
+						{tags.map((tag) => (
+							<Tag>{tag}</Tag>
+						))}
+					</div>
+				)
+			}
 		</header>
 
 		<Content />
 	</article>
 </Layout>
+
+<script is:inline define:vars={{ title, subject, badge, tags, subjectUrl }}>
+	document.addEventListener('DOMContentLoaded', () => {
+		window.posthog?.capture('review_read', {
+			review_title: title,
+			review_subject: subject,
+			review_badge: badge,
+			review_tags: tags,
+		});
+
+		if (subjectUrl) {
+			document.querySelector(`a[href="${subjectUrl}"]`)?.addEventListener('click', () => {
+				window.posthog?.capture('review_subject_clicked', {
+					review_subject: subject,
+					subject_url: subjectUrl,
+				});
+			});
+		}
+	});
+</script>

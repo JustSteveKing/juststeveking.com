@@ -1,16 +1,16 @@
 ---
-name: "juststeveking/laravel-transporter"
-description: "Transporter is a futuristic way to send API requests in PHP. This is an OOP approach to handle API requests."
-packagist: "https://packagist.org/packages/juststeveking/laravel-transporter"
-github: "https://github.com/JustSteveKing/laravel-transporter"
-link: "https://github.com/JustSteveKing/laravel-transporter"
-tech: ["PHP"]
+name: 'juststeveking/laravel-transporter'
+description: 'Transporter is a futuristic way to send API requests in PHP. This is an OOP approach to handle API requests.'
+packagist: 'https://packagist.org/packages/juststeveking/laravel-transporter'
+github: 'https://github.com/JustSteveKing/laravel-transporter'
+link: 'https://github.com/JustSteveKing/laravel-transporter'
+tech: ['PHP']
 featured: false
 downloads: 203425
 monthlyDownloads: 2684
 stars: 480
-version: "dev-main"
-updatedAt: "2026-06-10"
+version: 'dev-main'
+updatedAt: '2026-06-10'
 ---
 
 # Transporter
@@ -22,8 +22,6 @@ updatedAt: "2026-06-10"
 Transporter is a futuristic way to send API requests in PHP. This is an OOP approach to handle API requests.
 
 <p align="center">
-
-
 
 </p>
 
@@ -59,7 +57,6 @@ php artisan make:api-request NameOfYourRequest
 
 This will by default publish as: `app/Transporter/Requests/NameOfYourRequest.php`
 
-
 ## Usage
 
 Transporter Requests are an extention of Laravels `PendingRequest` so all of the methods available on a Pending Request is available to you on your requests.
@@ -82,7 +79,6 @@ When building your request to send, you can override the following:
 - Request Query Params using `withQuery(array $query)`
 - Request Path using `setPath(string $path)`
 
-
 ### Checking the payload
 
 I had a request in an issue to be able to see the request data for a request, so I have added a helper method called `payload` which will return whatever has been stored in the request `data` property.
@@ -96,7 +92,6 @@ $request = TestRequest::build()
 
 $data = $request->payload(); // ['title' => 'Build a package']
 ```
-
 
 ### Concurrent Requests
 
@@ -161,7 +156,7 @@ $responses['third']->json();
 
 ### Optional Alias
 
-Instead of the standard `send()` method, it is also possible to use the fun alias `energize()`. *Please note, no sound effects are included.*
+Instead of the standard `send()` method, it is also possible to use the fun alias `energize()`. _Please note, no sound effects are included._
 
 ```php
 TestRequest::build()
@@ -212,7 +207,7 @@ Which will return a response with the data you pass through to `withFakeData`, w
 
 ### Sending XML
 
-Thanks to a fantastic suggestion by [@jessarcher](https://github.com/jessarcher) we can use a `Trait` to allow for easy use of XML in your requests. Using this as a trait makes a lot of sense as most APIs these days use JSON, so it is purely opt in. 
+Thanks to a fantastic suggestion by [@jessarcher](https://github.com/jessarcher) we can use a `Trait` to allow for easy use of XML in your requests. Using this as a trait makes a lot of sense as most APIs these days use JSON, so it is purely opt in.
 To use this, simply use the trait on your request:
 
 ```php
@@ -228,12 +223,13 @@ use JustSteveKing\Transporter\Request;
 class XmlRequest extends Request
 {
     use SendsXml;
-    
+
     protected string $method = 'POST';
-    
+
     protected string $path = '/your-endpoint';
 }
 ```
+
 Then all you need to do is call the methods:
 
 ```php
@@ -277,4 +273,3 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-

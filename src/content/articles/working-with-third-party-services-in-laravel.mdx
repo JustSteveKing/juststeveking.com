@@ -3,14 +3,14 @@ title: Working with third party services in Laravel
 description: Learn how to work with 3rd party services in Laravel, focusing on connecting to the PingPing API. Improve your Laravel skills today!
 category: Laravel
 pubDate: 2021-04-30
-image: "/images/social/articles/api-integration.png"
+image: '/images/social/articles/api-integration.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "api-integration", "service-pattern", "third-party-services"]
+tags: ['laravel', 'api-integration', 'service-pattern', 'third-party-services']
 ---
 
 I have been working with 3rd party APIs for longer than I care to admit, over
@@ -123,7 +123,7 @@ trait HasFake
 {
     /**
     * Proxies a fake call to Illuminate\Http\Client\Factory::fake()
-    * 
+    *
     * @param null|callable|array $callback
     */
     public static function fake(
@@ -544,6 +544,6 @@ class Client
 
 As you can see, we get the response from our API. Then if it wasn't successful we return the response as an exception, then we create our collection - map over the data in our response as a collection. Use our Action to create a full DTO and push this onto our collection, which we finally return.
 
-The result of all of the above is a simple to use, and easy to extend API integration, which returns specific Objects - which you later extend to make requests yourself. During my time writing this article I was writing the code as I went along and testing in [TinkerwellApp](https://tinkerwell.app/) which I have found to be super useful for this sort of work. 
+The result of all of the above is a simple to use, and easy to extend API integration, which returns specific Objects - which you later extend to make requests yourself. During my time writing this article I was writing the code as I went along and testing in [TinkerwellApp](https://tinkerwell.app/) which I have found to be super useful for this sort of work.
 
 If you enjoyed this article, why not let me know on twitter [@JustSteveKing](https://twitter.com/JustSteveKing) or checkout the repo for this tutorial on [GitHub](https://github.com/JustSteveKing/laravel-api-service-tutorial)

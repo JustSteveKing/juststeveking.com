@@ -3,14 +3,14 @@ title: Laravel Command Bus
 description: Implement Command Bus in Laravel for efficient code management. Learn to create command handlers and integrate them seamlessly into your projects.
 category: Laravel
 pubDate: 2022-05-13
-image: "/images/articles/laravel-command-bus.png"
+image: '/images/articles/laravel-command-bus.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "command-bus", "design-patterns", "software-architecture"]
+tags: ['laravel', 'command-bus', 'design-patterns', 'software-architecture']
 ---
 
 In Laravel 5.1 the Command Bus was replaced with Dispatchable Jobs, we can still use them but let us also look at how to add a Command Bus.
@@ -126,7 +126,7 @@ final class CommandBusServiceProvider extends ServiceProvider
 }
 ```
 
-We now have a way to tell Laravel *which* command bus we want to use within our application, our next step is to register this inside `config/app.php` under the `providers` array. Once we have done this we need to find ways to register the commands we want to use. This is where things can take a turn, as there are many ways in which you might want to be able to do this. This will mostly depend on your application architecture, so for this example I will use a modular architecture, where we have a `src/Modules` directory where we register our modules.
+We now have a way to tell Laravel _which_ command bus we want to use within our application, our next step is to register this inside `config/app.php` under the `providers` array. Once we have done this we need to find ways to register the commands we want to use. This is where things can take a turn, as there are many ways in which you might want to be able to do this. This will mostly depend on your application architecture, so for this example I will use a modular architecture, where we have a `src/Modules` directory where we register our modules.
 
 Let us imagine this is a Customer Relationship Management system, and we will register a few command into the command bus. Create a new service provider called `src/Modules/Clients/Providers/ClientCommandBusServiceProvider.php` and add the following code:
 

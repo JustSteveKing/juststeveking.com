@@ -1,9 +1,9 @@
 ---
-title: "Building APIs that scale with Nitro, Drizzle, and unstorage"
+title: 'Building APIs that scale with Nitro, Drizzle, and unstorage'
 description: "Discover how Nitro, Drizzle ORM, and unstorage create a modern TypeScript API stack that's faster to build, easier to scale, and ready for edge deployments."
 category: API Development
 pubDate: 2025-10-08
-tags: ["TypeScript", "Node.js", "API", "Nitro", "Drizzle", "Express", "Sevalla", "ORM", "Caching"]
+tags: ['TypeScript', 'Node.js', 'API', 'Nitro', 'Drizzle', 'Express', 'Sevalla', 'ORM', 'Caching']
 draft: false
 sponsor:
   name: Sevalla
@@ -11,10 +11,10 @@ sponsor:
   logo: https://github.com/sevalla-hosting.png
 featured: true
 readingTime: 15
-canonical: "https://sevalla.com/blog/express-typescript-apis/"
+canonical: 'https://sevalla.com/blog/express-typescript-apis/'
 crossPost:
-  originalUrl: "https://sevalla.com/blog/express-typescript-apis/"
-  originalSite: "Sevalla Blog"
+  originalUrl: 'https://sevalla.com/blog/express-typescript-apis/'
+  originalSite: 'Sevalla Blog'
   publishedDate: 2025-09-30
   permission: true
 ---
@@ -37,29 +37,29 @@ Here's a typical example most of us have written at some point:
 
 ```javascript
 // The familiar Express boilerplate dance
-const express = require("express")
-const app = express()
+const express = require('express');
+const app = express();
 
-app.use(express.json())
-app.use(cors())
-app.use(helmet())
+app.use(express.json());
+app.use(cors());
+app.use(helmet());
 
 // Manual route definition
-app.get("/api/users/:id", async (req, res, next) => {
-  try {
-    // Hope the types work out...
-    const userId = req.params.id
-    const user = await getUserById(userId)
-    res.json(user)
-  } catch (error) {
-    next(error)
-  }
-})
+app.get('/api/users/:id', async (req, res, next) => {
+	try {
+		// Hope the types work out...
+		const userId = req.params.id;
+		const user = await getUserById(userId);
+		res.json(user);
+	} catch (error) {
+		next(error);
+	}
+});
 
 // Error handling middleware
 app.use((error, req, res, next) => {
-  // More boilerplate...
-})
+	// More boilerplate...
+});
 ```
 
 It works, but it's verbose, repetitive, and fragile. The more you scale a project, the heavier this boilerplate feels. Modern TypeScript development deserves a cleaner, more reliable foundation, and that's where Nitro changes the game.
@@ -87,28 +87,28 @@ Instead of manually registering routes, Nitro uses a file-based approach. Creati
 ```typescript
 // server/api/users/[id].get.ts
 export default defineEventHandler(async (event) => {
-  const userId = getRouterParam(event, "id")
+	const userId = getRouterParam(event, 'id');
 
-  // Full TypeScript support out of the box
-  if (!userId || isNaN(Number(userId))) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "Invalid user ID",
-    })
-  }
+	// Full TypeScript support out of the box
+	if (!userId || isNaN(Number(userId))) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Invalid user ID',
+		});
+	}
 
-  // Your business logic here
-  const user = await getUserById(Number(userId))
+	// Your business logic here
+	const user = await getUserById(Number(userId));
 
-  if (!user) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: "User not found",
-    })
-  }
+	if (!user) {
+		throw createError({
+			statusCode: 404,
+			statusMessage: 'User not found',
+		});
+	}
 
-  return { user }
-})
+	return { user };
+});
 ```
 
 This approach eliminates repetitive boilerplate, including route registration, lengthy middleware chains, and scattered try/catch blocks. The result is cleaner code and stronger TypeScript inference throughout the API.
@@ -138,44 +138,37 @@ With Drizzle, database schema definitions are written in TypeScript. This makes 
 
 ```typescript
 // db/schema.ts
-import {
-  pgTable,
-  serial,
-  varchar,
-  integer,
-  timestamp,
-  text,
-} from "drizzle-orm/pg-core"
-import { relations } from "drizzle-orm"
+import { pgTable, serial, varchar, integer, timestamp, text } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  email: varchar("email", { length: 256 }).notNull().unique(),
-  name: varchar("name", { length: 256 }).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-})
+export const users = pgTable('users', {
+	id: serial('id').primaryKey(),
+	email: varchar('email', { length: 256 }).notNull().unique(),
+	name: varchar('name', { length: 256 }).notNull(),
+	createdAt: timestamp('created_at').defaultNow().notNull(),
+});
 
-export const posts = pgTable("posts", {
-  id: serial("id").primaryKey(),
-  title: varchar("title", { length: 256 }).notNull(),
-  content: text("content").notNull(),
-  authorId: integer("author_id")
-    .notNull()
-    .references(() => users.id),
-  publishedAt: timestamp("published_at"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-})
+export const posts = pgTable('posts', {
+	id: serial('id').primaryKey(),
+	title: varchar('title', { length: 256 }).notNull(),
+	content: text('content').notNull(),
+	authorId: integer('author_id')
+		.notNull()
+		.references(() => users.id),
+	publishedAt: timestamp('published_at'),
+	createdAt: timestamp('created_at').defaultNow().notNull(),
+});
 
 export const usersRelations = relations(users, ({ many }) => ({
-  posts: many(posts),
-}))
+	posts: many(posts),
+}));
 
 export const postsRelations = relations(posts, ({ one }) => ({
-  author: one(users, {
-    fields: [posts.authorId],
-    references: [users.id],
-  }),
-}))
+	author: one(users, {
+		fields: [posts.authorId],
+		references: [users.id],
+	}),
+}));
 ```
 
 Instead of spreading database types, application models, and API response types across different files, Drizzle ensures everything flows from this single definition.
@@ -186,33 +179,33 @@ Writing queries in Drizzle is both type-safe and familiar. For example, fetching
 
 ```typescript
 // server/api/users/[id]/posts.get.ts
-import { db } from "~/db"
-import { users, posts } from "~/db/schema"
-import { eq } from "drizzle-orm"
+import { db } from '~/db';
+import { users, posts } from '~/db/schema';
+import { eq } from 'drizzle-orm';
 
 export default defineEventHandler(async (event) => {
-  const userId = getRouterParam(event, "id")
+	const userId = getRouterParam(event, 'id');
 
-  // Type-safe query with automatic joins
-  const userWithPosts = await db.query.users.findFirst({
-    where: eq(users.id, Number(userId)),
-    with: {
-      posts: {
-        where: eq(posts.publishedAt, null), // Only published posts
-        orderBy: (posts, { desc }) => [desc(posts.createdAt)],
-      },
-    },
-  })
+	// Type-safe query with automatic joins
+	const userWithPosts = await db.query.users.findFirst({
+		where: eq(users.id, Number(userId)),
+		with: {
+			posts: {
+				where: eq(posts.publishedAt, null), // Only published posts
+				orderBy: (posts, { desc }) => [desc(posts.createdAt)],
+			},
+		},
+	});
 
-  if (!userWithPosts) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: "User not found",
-    })
-  }
+	if (!userWithPosts) {
+		throw createError({
+			statusCode: 404,
+			statusMessage: 'User not found',
+		});
+	}
 
-  return userWithPosts
-})
+	return userWithPosts;
+});
 ```
 
 The result is fully typed end-to-end, from database query to API response, with predictable SQL under the hood.
@@ -223,36 +216,36 @@ For more advanced use cases, Drizzle's query builder feels like writing SQL dire
 
 ```typescript
 // server/api/analytics/popular-posts.get.ts
-import { db } from "~/db"
-import { posts, users } from "~/db/schema"
-import { desc, count, gte, and, eq } from "drizzle-orm"
+import { db } from '~/db';
+import { posts, users } from '~/db/schema';
+import { desc, count, gte, and, eq } from 'drizzle-orm';
 
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
-  const daysBack = Number(query.days) || 30
-  const cutoffDate = new Date()
-  cutoffDate.setDate(cutoffDate.getDate() - daysBack)
+	const query = getQuery(event);
+	const daysBack = Number(query.days) || 30;
+	const cutoffDate = new Date();
+	cutoffDate.setDate(cutoffDate.getDate() - daysBack);
 
-  const popularPosts = await db
-    .select({
-      id: posts.id,
-      title: posts.title,
-      authorName: users.name,
-      publishedAt: posts.publishedAt,
-    })
-    .from(posts)
-    .innerJoin(users, eq(posts.authorId, users.id))
-    .where(
-      and(
-        gte(posts.publishedAt, cutoffDate),
-        // Add other conditions as needed
-      ),
-    )
-    .orderBy(desc(posts.createdAt))
-    .limit(10)
+	const popularPosts = await db
+		.select({
+			id: posts.id,
+			title: posts.title,
+			authorName: users.name,
+			publishedAt: posts.publishedAt,
+		})
+		.from(posts)
+		.innerJoin(users, eq(posts.authorId, users.id))
+		.where(
+			and(
+				gte(posts.publishedAt, cutoffDate),
+				// Add other conditions as needed
+			),
+		)
+		.orderBy(desc(posts.createdAt))
+		.limit(10);
 
-  return { posts: popularPosts }
-})
+	return { posts: popularPosts };
+});
 ```
 
 Instead of juggling raw SQL strings or verbose ORM patterns, queries remain expressive, type-safe, and easy to maintain.
@@ -270,25 +263,25 @@ In development, caching can be added with just a few lines of code:
 ```typescript
 // server/api/expensive-calculation.get.ts
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
-  const cacheKey = `calculation:${JSON.stringify(query)}`
+	const query = getQuery(event);
+	const cacheKey = `calculation:${JSON.stringify(query)}`;
 
-  // Check cache first
-  const cached = await useStorage("cache").getItem(cacheKey)
-  if (cached) {
-    return cached
-  }
+	// Check cache first
+	const cached = await useStorage('cache').getItem(cacheKey);
+	if (cached) {
+		return cached;
+	}
 
-  // Expensive operation
-  const result = await performComplexCalculation(query)
+	// Expensive operation
+	const result = await performComplexCalculation(query);
 
-  // Cache for 1 hour
-  await useStorage("cache").setItem(cacheKey, result, {
-    ttl: 60 * 60 * 1000,
-  })
+	// Cache for 1 hour
+	await useStorage('cache').setItem(cacheKey, result, {
+		ttl: 60 * 60 * 1000,
+	});
 
-  return result
-})
+	return result;
+});
 ```
 
 This makes it easy to add caching logic while iterating locally, with no extra infrastructure required.
@@ -300,19 +293,19 @@ When moving to production, the same caching code can be reused across different 
 ```typescript
 // nitro.config.ts
 export default defineNitroConfig({
-  storage: {
-    cache: {
-      driver: "redis",
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
-      password: process.env.REDIS_PASSWORD,
-    },
-    sessions: {
-      driver: "cloudflare-kv-binding",
-      binding: "SESSIONS",
-    },
-  },
-})
+	storage: {
+		cache: {
+			driver: 'redis',
+			host: process.env.REDIS_HOST,
+			port: process.env.REDIS_PORT,
+			password: process.env.REDIS_PASSWORD,
+		},
+		sessions: {
+			driver: 'cloudflare-kv-binding',
+			binding: 'SESSIONS',
+		},
+	},
+});
 ```
 
 This flexibility allows developers to start with in-memory caching during development and then scale to Redis, Cloudflare KV, or other providers in production without needing to rewrite application logic.
@@ -326,42 +319,42 @@ A paginated list of posts can be served efficiently with built-in caching:
 ```typescript
 // server/api/posts/index.get.ts
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
-  const page = Number(query.page) || 1
-  const limit = Math.min(Number(query.limit) || 10, 50)
-  const offset = (page - 1) * limit
+	const query = getQuery(event);
+	const page = Number(query.page) || 1;
+	const limit = Math.min(Number(query.limit) || 10, 50);
+	const offset = (page - 1) * limit;
 
-  const cacheKey = `posts:${page}:${limit}`
+	const cacheKey = `posts:${page}:${limit}`;
 
-  // Try cache first
-  let result = await useStorage("cache").getItem(cacheKey)
+	// Try cache first
+	let result = await useStorage('cache').getItem(cacheKey);
 
-  if (!result) {
-    const posts = await db.query.posts.findMany({
-      with: {
-        author: {
-          columns: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-      limit,
-      offset,
-      orderBy: (posts, { desc }) => [desc(posts.publishedAt)],
-      where: (posts, { isNotNull }) => isNotNull(posts.publishedAt),
-    })
+	if (!result) {
+		const posts = await db.query.posts.findMany({
+			with: {
+				author: {
+					columns: {
+						id: true,
+						name: true,
+					},
+				},
+			},
+			limit,
+			offset,
+			orderBy: (posts, { desc }) => [desc(posts.publishedAt)],
+			where: (posts, { isNotNull }) => isNotNull(posts.publishedAt),
+		});
 
-    result = { posts, page, limit }
+		result = { posts, page, limit };
 
-    // Cache for 5 minutes
-    await useStorage("cache").setItem(cacheKey, result, {
-      ttl: 5 * 60 * 1000,
-    })
-  }
+		// Cache for 5 minutes
+		await useStorage('cache').setItem(cacheKey, result, {
+			ttl: 5 * 60 * 1000,
+		});
+	}
 
-  return result
-})
+	return result;
+});
 ```
 
 Fetching a single post by slug follows the same pattern, with type-safe queries and clear error handling:
@@ -369,38 +362,38 @@ Fetching a single post by slug follows the same pattern, with type-safe queries 
 ```typescript
 // server/api/posts/[slug].get.ts
 export default defineEventHandler(async (event) => {
-  const slug = getRouterParam(event, "slug")
+	const slug = getRouterParam(event, 'slug');
 
-  if (!slug) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "Slug is required",
-    })
-  }
+	if (!slug) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Slug is required',
+		});
+	}
 
-  const post = await db.query.posts.findFirst({
-    where: (posts, { eq, and, isNotNull }) =>
-      and(eq(posts.slug, slug), isNotNull(posts.publishedAt)),
-    with: {
-      author: {
-        columns: {
-          id: true,
-          name: true,
-          bio: true,
-        },
-      },
-    },
-  })
+	const post = await db.query.posts.findFirst({
+		where: (posts, { eq, and, isNotNull }) =>
+			and(eq(posts.slug, slug), isNotNull(posts.publishedAt)),
+		with: {
+			author: {
+				columns: {
+					id: true,
+					name: true,
+					bio: true,
+				},
+			},
+		},
+	});
 
-  if (!post) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: "Post not found",
-    })
-  }
+	if (!post) {
+		throw createError({
+			statusCode: 404,
+			statusMessage: 'Post not found',
+		});
+	}
 
-  return { post }
-})
+	return { post };
+});
 ```
 
 The combination of file-based routing, type-safe queries, and flexible caching results in an API that is easy to maintain and performant by default.
@@ -429,4 +422,4 @@ Ready to give it a try? Start with a small project, deploy it to Sevalla, and se
 
 ---
 
-*This article was originally published on [Sevalla Blog](https://sevalla.com/blog/express-typescript-apis/). Follow me on [Twitter](https://twitter.com/juststeveking) for more TypeScript and API development insights.*
+_This article was originally published on [Sevalla Blog](https://sevalla.com/blog/express-typescript-apis/). Follow me on [Twitter](https://twitter.com/juststeveking) for more TypeScript and API development insights._

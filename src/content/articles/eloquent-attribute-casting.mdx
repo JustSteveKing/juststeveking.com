@@ -3,14 +3,14 @@ title: Eloquent Attribute Casting
 description: Learn Eloquent Castable attributes in Laravel with practical examples for enhanced applications.
 category: Laravel
 pubDate: 2022-06-27
-image: "/images/articles/eloquent-attribute-casting.png"
+image: '/images/articles/eloquent-attribute-casting.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "eloquent", "attribute-casting", "data-transfer-objects"]
+tags: ['laravel', 'eloquent', 'attribute-casting', 'data-transfer-objects']
 ---
 
 Eloquent Castable attributes are one of the more powerful features of Laravel; some people use them religiously while others tend to shy away from them. In this tutorial, I will walk through a few different examples of using them and, most importantly, why you should be using them.
@@ -58,7 +58,7 @@ class Address implements CastableDataTransferObject
 	public string $county,
 	public string $postalCode,
 	public string $country,
-	
+
 	public function formatString(): string
 	{
 		return implode(', ', [
@@ -89,7 +89,7 @@ class Money implements CastsAttributes
     public function __construct(
 	    protected int $amount,
 	) {}
-	
+
 	public function get($model, string $key, $value, array $attributes)
 	{
 	    return new Money(
@@ -97,7 +97,7 @@ class Money implements CastsAttributes
 			new Currency('GBP'),
 		);
 	}
-	
+
 	public function set($model, string $key, $value, array $attributes)
 	{
 		return [
@@ -147,7 +147,7 @@ class OpenDaysCast implements CastsAttributes
 	{
 		return $this->dates;
 	}
-	
+
 	public function get($model, string $key, $value, array $attributes)
 	{
 		return Open::fromArray(
@@ -196,13 +196,13 @@ As you can see, we can make this extremely readable so that the developer experi
 public function today(): bool
 {
     $date = now();
-	
+
 	$day = strtolower($date->englishDayOfWeek());
-	
+
 	if (! $this->$day) {
 	    return false;
 	}
-	
+
 	return ! in_array(
 	    $date->toDateString(),
 		$this->holidays,

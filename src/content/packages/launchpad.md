@@ -1,8 +1,8 @@
 ---
 name: juststeveking/launchpad
 description: A helpful Laravel package to help me get started in Laravel projects quicker.
-packagist: "https://packagist.org/packages/juststeveking/launchpad"
-github: "https://github.com/JustSteveKing/launchpad"
+packagist: 'https://packagist.org/packages/juststeveking/launchpad'
+github: 'https://github.com/JustSteveKing/launchpad'
 downloads: 1528
 monthlyDownloads: 0
 stars: 15

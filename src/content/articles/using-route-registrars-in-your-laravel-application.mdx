@@ -3,14 +3,14 @@ title: Using Route Registrars in your Laravel application
 description: Enhance Laravel route management with Route Registrars. Simplify route registration and organization for cleaner and more efficient code.
 category: Laravel
 pubDate: 2022-07-19
-image: "/images/social/articles/laravel-routing.png"
+image: '/images/social/articles/laravel-routing.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "routing", "code-organization", "design-patterns"]
+tags: ['laravel', 'routing', 'code-organization', 'design-patterns']
 ---
 
 Recently I came across a unique approach to loading routes into Laravel applications, and I wanted to share this with you. It allows you to create Route Registrars classes you register your routes within. I saw this in a package currently being developed by [Ollie Read](https://twitter.com/ollieread), and it caught my attention as a clean and exciting way to register routes.
@@ -105,7 +105,7 @@ class DefaultRegistrar implements RouteRegistrar
 }
 ```
 
-Now that our default registrar is created, we can register this inside our Route Service Provider, ensuring it is loaded. 
+Now that our default registrar is created, we can register this inside our Route Service Provider, ensuring it is loaded.
 
 ```php
 declare(strict_types=1);

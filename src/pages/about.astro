@@ -21,88 +21,103 @@ const aboutSchema = {
 		jobTitle: basics.label,
 		description: basics.summary,
 		image: basics.image,
-		sameAs: basics.profiles?.map(p => p.url) ?? [],
+		sameAs: basics.profiles?.map((p) => p.url) ?? [],
 	},
 };
 ---
 
 <Layout {...pageMeta} jsonLd={aboutSchema}>
-	<PageHeader
-		prompt={aboutMeta.prompt}
-		title={aboutMeta.title}
-		subtitle={aboutMeta.subtitle}
-	/>
+	<PageHeader prompt={aboutMeta.prompt} title={aboutMeta.title} subtitle={aboutMeta.subtitle} />
 
-			<section aria-label="About Steve McDougall">
-				<div class="px-section py-section">
-					<div class="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12 lg:gap-16 items-start mb-16">
-						<div class="prose prose-xl max-w-none order-last lg:order-first">
-							{bio.map(paragraph => (
-								<p class="text-lg leading-relaxed fg mb-10 last:mb-0">{paragraph}</p>
-							))}
-						</div>
-
-						{basics.image && (
-							<aside class="lg:sticky lg:top-24">
-								<div class="grayscale hover:grayscale-0 transition-all duration-1000 rounded-3xl overflow-hidden border border-edge shadow-2xl rotate-2 hover:rotate-0 bg-surface max-w-70 lg:max-w-none">
-									<img 
-										src={basics.image} 
-										alt={basics.name} 
-										class="w-full aspect-square object-cover"
-										loading="eager"
-									/>
-								</div>
-							</aside>
-						)}
-					</div>
-
-					<div class="flex justify-between gap-12 flex-wrap my-10 md:my-16 py-section border-t border-b border-edge" aria-label="Key statistics">
-						{stats.map(stat => (
-							<div class="flex flex-col gap-2">
-								<span class="font-mono text-3xl font-bold fg-accent leading-none">{stat.value}</span>
-								<span class="text-[14px] fg-weak max-w-40 leading-snug">{stat.label}</span>
-							</div>
-						))}
-					</div>
-
-					<h2 class="text-sm font-medium font-mono fg-weak uppercase tracking-[0.08em] mt-16 mb-8">What people say</h2>
-
-					<div class="columns-1 md:columns-3 gap-4 space-y-10">
-						{testimonials.map(t => (
-							<blockquote class="break-inside-avoid m-0 pl-6 border-l-2 bg-surface-weak rounded-r py-6 pr-6 flex flex-col" style="border-left-color: var(--color-accent);">
-								<p class="text-[16px] fg-strong leading-relaxed italic mb-4">"{t.data.quote}"</p>
-								<footer class="flex items-center gap-3 mt-4 pt-4 border-t border-edge/30">
-									{t.data.author.avatar?.src && (
-										<img
-											src={t.data.author.avatar.src}
-											alt={t.data.author.name}
-											width="28"
-											height="28"
-											class="rounded-full w-7 h-7 object-cover"
-											loading="lazy"
-										/>
-									)}
-									<span class="text-[13px] font-mono fg-weak leading-tight">
-										<span class="block font-bold fg-strong">{t.data.author.name}</span>
-										{t.data.author.role}{t.data.author.company && ` @ ${t.data.author.company}`}
-									</span>
-								</footer>
-							</blockquote>
-						))}
-					</div>
-
-					<nav class="flex gap-8 flex-wrap mt-16" aria-label="External profiles">
-						{aboutLinks.map(link => (
-							<a
-								href={link.href}
-								class="font-mono text-sm fg-strong border-b border-edge pb-1 no-underline transition-colors hover:border-text-strong"
-								{...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-							>
-								{link.label}
-								{link.external && <span class="visually-hidden">(opens in new tab)</span>}
-							</a>
-						))}
-					</nav>
+	<section aria-label="About Steve McDougall">
+		<div class="px-section py-section">
+			<div class="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12 lg:gap-16 items-start mb-16">
+				<div class="prose prose-xl max-w-none order-last lg:order-first">
+					{
+						bio.map((paragraph) => (
+							<p class="text-lg leading-relaxed fg mb-10 last:mb-0">{paragraph}</p>
+						))
+					}
 				</div>
-			</section>
+
+				{
+					basics.image && (
+						<aside class="lg:sticky lg:top-24">
+							<div class="grayscale hover:grayscale-0 transition-all duration-1000 rounded-3xl overflow-hidden border border-edge shadow-2xl rotate-2 hover:rotate-0 bg-surface max-w-70 lg:max-w-none">
+								<img
+									src={basics.image}
+									alt={basics.name}
+									class="w-full aspect-square object-cover"
+									loading="eager"
+								/>
+							</div>
+						</aside>
+					)
+				}
+			</div>
+
+			<div
+				class="flex justify-between gap-12 flex-wrap my-10 md:my-16 py-section border-t border-b border-edge"
+				aria-label="Key statistics"
+			>
+				{
+					stats.map((stat) => (
+						<div class="flex flex-col gap-2">
+							<span class="font-mono text-3xl font-bold fg-accent leading-none">{stat.value}</span>
+							<span class="text-[14px] fg-weak max-w-40 leading-snug">{stat.label}</span>
+						</div>
+					))
+				}
+			</div>
+
+			<h2 class="text-sm font-medium font-mono fg-weak uppercase tracking-[0.08em] mt-16 mb-8">
+				What people say
+			</h2>
+
+			<div class="columns-1 md:columns-3 gap-4 space-y-10">
+				{
+					testimonials.map((t) => (
+						<blockquote
+							class="break-inside-avoid m-0 pl-6 border-l-2 bg-surface-weak rounded-r py-6 pr-6 flex flex-col"
+							style="border-left-color: var(--color-accent);"
+						>
+							<p class="text-[16px] fg-strong leading-relaxed italic mb-4">"{t.data.quote}"</p>
+							<footer class="flex items-center gap-3 mt-4 pt-4 border-t border-edge/30">
+								{t.data.author.avatar?.src && (
+									<img
+										src={t.data.author.avatar.src}
+										alt={t.data.author.name}
+										width="28"
+										height="28"
+										class="rounded-full w-7 h-7 object-cover"
+										loading="lazy"
+									/>
+								)}
+								<span class="text-[13px] font-mono fg-weak leading-tight">
+									<span class="block font-bold fg-strong">{t.data.author.name}</span>
+									{t.data.author.role}
+									{t.data.author.company && ` @ ${t.data.author.company}`}
+								</span>
+							</footer>
+						</blockquote>
+					))
+				}
+			</div>
+
+			<nav class="flex gap-8 flex-wrap mt-16" aria-label="External profiles">
+				{
+					aboutLinks.map((link) => (
+						<a
+							href={link.href}
+							class="font-mono text-sm fg-strong border-b border-edge pb-1 no-underline transition-colors hover:border-text-strong"
+							{...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+						>
+							{link.label}
+							{link.external && <span class="visually-hidden">(opens in new tab)</span>}
+						</a>
+					))
+				}
+			</nav>
+		</div>
+	</section>
 </Layout>

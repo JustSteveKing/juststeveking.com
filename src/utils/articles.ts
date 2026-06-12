@@ -26,22 +26,24 @@ export async function getAllArticles(): Promise<CollectionEntry<'articles'>[]> {
 
 export async function getAllCategories(): Promise<string[]> {
 	const articles = await getAllArticles();
-	return [...new Set(articles.map(a => a.data.category))].sort();
+	return [...new Set(articles.map((a) => a.data.category))].sort();
 }
 
 export async function getAllTags(): Promise<string[]> {
 	const articles = await getAllArticles();
-	return [...new Set(articles.flatMap(a => a.data.tags))].sort();
+	return [...new Set(articles.flatMap((a) => a.data.tags))].sort();
 }
 
-export async function getArticlesByCategory(category: string): Promise<CollectionEntry<'articles'>[]> {
+export async function getArticlesByCategory(
+	category: string,
+): Promise<CollectionEntry<'articles'>[]> {
 	const articles = await getAllArticles();
-	return articles.filter(a => slugify(a.data.category) === slugify(category));
+	return articles.filter((a) => slugify(a.data.category) === slugify(category));
 }
 
 export async function getArticlesByTag(tag: string): Promise<CollectionEntry<'articles'>[]> {
 	const articles = await getAllArticles();
-	return articles.filter(a => a.data.tags.some(t => slugify(t) === slugify(tag)));
+	return articles.filter((a) => a.data.tags.some((t) => slugify(t) === slugify(tag)));
 }
 
 export function paginateArticles(

@@ -3,14 +3,14 @@ title: Effective Eloquent
 description: Explore advanced Eloquent querying in Laravel with a focus on efficient ORM usage for a banking app, including user accounts and transactions management.
 category: Laravel
 pubDate: 2022-12-20
-image: "/images/articles/effective-eloquent.png"
+image: '/images/articles/effective-eloquent.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "eloquent", "database-queries", "design-patterns"]
+tags: ['laravel', 'eloquent', 'database-queries', 'design-patterns']
 ---
 
 Get ready to level up your Laravel skills with this tutorial on eloquent queries! You'll learn everything you need to know, from beginner to advanced techniques.
@@ -21,7 +21,16 @@ What are we going to be querying today? I have an application I have been workin
 
 The data we are working with; a User can have many Accounts. Each Account has a running balance stored on it. Each Account has many Transactions and the Transaction links between the Account and a Vendor along with the amount the transaction was for. You can see a [SQL diagram for this here](https://drawsql.app/teams/laravel-news/diagrams/acme-bank) if you want to see a visual representation.
 
-<iframe width="100%" height="500px" style="box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16); border-radius:15px;" allowtransparency="true" allowfullscreen="true" scrolling="no" title="Embedded DrawSQL IFrame" src="https://drawsql.app/teams/laravel-news/diagrams/acme-bank/embed"></iframe>
+<iframe
+	width="100%"
+	height="500px"
+	style="box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16); border-radius:15px;"
+	allowtransparency="true"
+	allowfullscreen="true"
+	scrolling="no"
+	title="Embedded DrawSQL IFrame"
+	src="https://drawsql.app/teams/laravel-news/diagrams/acme-bank/embed"
+></iframe>
 
 In my talk for Laracon, I am doing something specific with the queries as it focuses on the API itself. However, there are many other queries we could be using - so let us take a walk through them.
 
@@ -55,7 +64,7 @@ $accounts = DB::table('accounts')->where('user_id', auth()->id())->get();
 
 In my tests, the DB facade used much less memory, but this is because it returns a collection of objects. Whereas the ORM query will return a collection of Models that need to be built and stored in memory. So we are paying for the convenience of having an Eloquent Model available.
 
-Let us move forward. In my example, I have a controller that runs this query inline and returns the results. I have already mentioned that this query could be reused in other application areas, so what can I do to make sure I can control these queries more globally? Query classes to the rescue! 
+Let us move forward. In my example, I have a controller that runs this query inline and returns the results. I have already mentioned that this query could be reused in other application areas, so what can I do to make sure I can control these queries more globally? Query classes to the rescue!
 
 This is a pattern I use pretty heavily and something you should at least entertain if you aren't going to adopt it. It is a trick I learned from the CQRS world, where read operations are classed as `Queries` and write operations are `Commands`. What I like about CQRS is its ability to segregate the logic between what the controller needs to know about and a class dedicated to simply querying data. Let's take a look at this class.
 
@@ -212,7 +221,7 @@ public function __invoke(Request $request): JsonResponse
 }
 ```
 
-It is quite a significant change. However, we can do it in stages and simultaneously test each small part. This benefit is that we can use the same query for one user, a selection of users, or all of our users - and the query class will not need to change. 
+It is quite a significant change. However, we can do it in stages and simultaneously test each small part. This benefit is that we can use the same query for one user, a selection of users, or all of our users - and the query class will not need to change.
 
 Overall, what we have done is create something that is like scopes but less tied to the Eloquent Builder itself.
 

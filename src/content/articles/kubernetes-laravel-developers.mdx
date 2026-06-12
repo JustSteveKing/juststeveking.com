@@ -1,15 +1,15 @@
 ---
-title: "Kubernetes for Laravel developers"
-description: "Learn how Laravel developers can leverage Kubernetes for scalable and efficient application deployment."
-pubDate: "2026-01-19"
-canonical: "https://sevalla.com/blog/kubernetes-laravel-developers/"
+title: 'Kubernetes for Laravel developers'
+description: 'Learn how Laravel developers can leverage Kubernetes for scalable and efficient application deployment.'
+pubDate: '2026-01-19'
+canonical: 'https://sevalla.com/blog/kubernetes-laravel-developers/'
 crossPost:
-    originalUrl: "https://sevalla.com/blog/kubernetes-laravel-developers/"
-    originalSite: "Sevalla"
-    publishedDate: "2026-01-19"
-    permission: true
+  originalUrl: 'https://sevalla.com/blog/kubernetes-laravel-developers/'
+  originalSite: 'Sevalla'
+  publishedDate: '2026-01-19'
+  permission: true
 author:
-    name: "Steve McDougall"
+  name: 'Steve McDougall'
 ---
 
 You've deployed Laravel apps to shared hosting, spun up Forge servers, maybe even configured your own VPS. But every time someone mentions Kubernetes, your eyes glaze over. Pods? Clusters? Manifests? It sounds like an alien language designed to make simple deployments unnecessarily complicated.
@@ -123,8 +123,11 @@ NAME STATUS ROLES AGE VERSION k3d-laravel-cluster-server-0 Ready control-plane,m
 If you don't have kubectl installed, k3d bundles it, or install it separately:
 
 # macOS
+
 brew install kubectl
+
 # Linux
+
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
@@ -165,42 +168,52 @@ Create a Dockerfile in your project root:
 FROM dunglas/frankenphp:latest-php8.5-alpine
 
 # Install PHP extensions Laravel needs
+
 RUN install-php-extensions \
-    pcntl \
-    pdo_mysql \
-    redis \
-    gd \
-    intl \
-    zip \
-    opcache \
-    bcmath
+ pcntl \
+ pdo_mysql \
+ redis \
+ gd \
+ intl \
+ zip \
+ opcache \
+ bcmath
 
 # Install Composer
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
+
 WORKDIR /app
 
 # Copy composer files first for better layer caching
+
 COPY composer.json composer.lock ./
 
 # Install dependencies
+
 RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
 
 # Copy application code
+
 COPY . .
 
 # Generate optimized autoloader
+
 RUN composer dump-autoload --optimize
 
 # Set permissions for Laravel
+
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
-    && chmod -R 775 /app/storage /app/bootstrap/cache
+ && chmod -R 775 /app/storage /app/bootstrap/cache
 
 # Expose port 8000 (Octane default)
+
 EXPOSE 8000
 
 # Start Octane with FrankenPHP
+
 CMD ["php", "artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=8000"]
 
 That's it. No nginx config. No supervisord. No php-fpm tuning. FrankenPHP handles everything.
@@ -217,8 +230,11 @@ Build and load the Image
 Since we're using k3d, we can load images directly into the cluster without pushing to a registry:
 
 # Build the image
+
 docker build -t laravel-k8s:v1 .
+
 # Load it into k3d
+
 k3d image import laravel-k8s:v1 -c laravel-cluster
 
 Let's verify the image works locally first:
@@ -242,50 +258,45 @@ Create k8s/deployment.yaml :
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: laravel-app
-  labels:
-    app: laravel
+name: laravel-app
+labels:
+app: laravel
 spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: laravel
-  template:
-    metadata:
-      labels:
-        app: laravel
-    spec:
-      containers:
-        - name: laravel
-          image: laravel-k8s:v1
-          ports:
-            - containerPort: 8000
-          env:
-            - name: APP_KEY
-              value: "base64:your-app-key-here"
-            - name: APP_ENV
-              value: "production"
-            - name: APP_DEBUG
-              value: "false"
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8000
-            initialDelaySeconds: 10
-            periodSeconds: 5
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 8000
-            initialDelaySeconds: 5
-            periodSeconds: 3
-          resources:
-            requests:
-              memory: "128Mi"
-              cpu: "100m"
-            limits:
-              memory: "256Mi"
-              cpu: "500m"
+replicas: 2
+selector:
+matchLabels:
+app: laravel
+template:
+metadata:
+labels:
+app: laravel
+spec:
+containers: - name: laravel
+image: laravel-k8s:v1
+ports: - containerPort: 8000
+env: - name: APP_KEY
+value: "base64:your-app-key-here" - name: APP_ENV
+value: "production" - name: APP_DEBUG
+value: "false"
+livenessProbe:
+httpGet:
+path: /health
+port: 8000
+initialDelaySeconds: 10
+periodSeconds: 5
+readinessProbe:
+httpGet:
+path: /health
+port: 8000
+initialDelaySeconds: 5
+periodSeconds: 3
+resources:
+requests:
+memory: "128Mi"
+cpu: "100m"
+limits:
+memory: "256Mi"
+cpu: "500m"
 
 Let's break this down section by section.
 
@@ -307,15 +318,14 @@ Create k8s/service.yaml :
 apiVersion: v1
 kind: Service
 metadata:
-  name: laravel-service
+name: laravel-service
 spec:
-  type: LoadBalancer
-  selector:
-    app: laravel
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8000
+type: LoadBalancer
+selector:
+app: laravel
+ports: - protocol: TCP
+port: 80
+targetPort: 8000
 
 Much simpler than the Deployment. Let's break it down:
 
@@ -385,10 +395,15 @@ Port forwarding connected your local port 8080 to the Service
 If a Pod crashes, watch Kubernetes recover:
 
 # Get Pod names
+
 kubectl get pods
+
 # Delete a Pod (simulate a crash)
+
 kubectl delete pod laravel-app-7d9f8b6c4-abc12
+
 # Watch the Deployment create a replacement
+
 kubectl get pods -w
 
 Within seconds, a new Pod appears. The Deployment ensures two replicas always exist.
@@ -490,10 +505,10 @@ kind: ConfigMap
 metadata:
   name: laravel-config
 data:
-  APP_ENV: "production"
-  APP_DEBUG: "false"
-  LOG_CHANNEL: "stderr"
-  DB_CONNECTION: "mysql"
+  APP_ENV: 'production'
+  APP_DEBUG: 'false'
+  LOG_CHANNEL: 'stderr'
+  DB_CONNECTION: 'mysql'
 ```
 
 Create k8s/secret.yaml :
@@ -505,8 +520,8 @@ metadata:
   name: laravel-secrets
 type: Opaque
 stringData:
-  APP_KEY: "base64:your-actual-app-key-here"
-  DB_PASSWORD: "your-database-password"
+  APP_KEY: 'base64:your-actual-app-key-here'
+  DB_PASSWORD: 'your-database-password'
 ```
 
 Note: In production, you'd generate Secrets differently (from files, external secret managers, etc.), not commit them to version control.
@@ -554,11 +569,11 @@ spec:
             periodSeconds: 3
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
+              memory: '128Mi'
+              cpu: '100m'
             limits:
-              memory: "256Mi"
-              cpu: "500m"
+              memory: '256Mi'
+              cpu: '500m'
 ```
 
 Apply everything:

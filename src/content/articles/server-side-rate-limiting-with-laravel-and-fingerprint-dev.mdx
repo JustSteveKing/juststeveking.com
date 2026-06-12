@@ -1,6 +1,6 @@
 ---
-title: "Server-Side Rate Limiting in Laravel with Fingerprint.dev"
-description: "Learn how to build device-based rate limiting in Laravel with Fingerprint.dev, Redis caching, and custom middleware to avoid the limits of IP-based throttling."
+title: 'Server-Side Rate Limiting in Laravel with Fingerprint.dev'
+description: 'Learn how to build device-based rate limiting in Laravel with Fingerprint.dev, Redis caching, and custom middleware to avoid the limits of IP-based throttling.'
 category: Laravel
 pubDate: 2026-05-26
 minRead: 12
@@ -9,7 +9,7 @@ author:
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["laravel", "rate-limiting", "security", "redis", "device-fingerprinting"]
+tags: ['laravel', 'rate-limiting', 'security', 'redis', 'device-fingerprinting']
 ---
 
 Laravel's rate limiter keys on IP addresses by default. That breaks in three common scenarios. This tutorial builds a PHP-first alternative: a typed Fingerprint.dev service, a verification middleware with Redis caching, and a custom rate limiter that throttles by device - not by IP.
@@ -502,4 +502,3 @@ A rate-limiting system that survives the three scenarios that break IP-based thr
 A `FingerprintService` that wraps the REST API with typed responses and graceful failure. A `ResolveVisitorId` middleware that verifies client-supplied IDs server-side and caches the result. A custom `RateLimiter` resolver that keys on `visitor_id` with an automatic IP fallback. Tests for all three layers using `Http::fake()` - no test API keys required.
 
 Every pattern here - the typed HTTP client, the cache-aside middleware, the custom rate-limiter key - is reusable beyond fingerprinting. The Fingerprint.dev API is the specific integration, but the architecture is how you would wrap any external identity or risk signal into Laravel's request lifecycle.
-

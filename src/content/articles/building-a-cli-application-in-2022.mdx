@@ -3,14 +3,14 @@ title: Building a CLI application in 2022
 description: Explore the best options for building CLI apps in 2022, including Laravel Zero, Symfony Console, and more, suitable for both PHP and Rust developers.
 category: PHP
 pubDate: 2022-05-27
-image: "/images/articles/cli-applications.png"
+image: '/images/articles/cli-applications.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["cli-apps", "php", "development-tools", "programming-languages"]
+tags: ['cli-apps', 'php', 'development-tools', 'programming-languages']
 ---
 
 I have been building CLI apps for a long time, from simple bash/perl scripts back when I was a System Admin - and now using things like PHP Go or Rust. Let's walk through options for building CLI apps in 2022
@@ -29,7 +29,6 @@ There are "apps" available, which basically lets you add additional Laravel beha
 
 Building a CLI application in Laravel Zero is pretty simple, it is very much like writing console commands in Laravel itself. There is next to no difference beyond that, other than you do not run `php artisan` you run `php {your-app-name}` - something that might take you a little time to get used to.
 
-
 ## Symfony Console (PHP)
 
 ![Symfony Console ](https://miro.medium.com/max/1400/1*_vwwl1HhdAQ8jPdPHkRs3A.jpeg)
@@ -44,9 +43,9 @@ It goes without saying that the Symfony Console Component is good, but the devel
 
 I can't talk about PHP CLI application without mentioning this awesome, lightweight package by [Erika Heidi](https://github.com/erikaheidi). Minicli has been around for a little while now, and was Erikas approach at building a CLI application with zero dependencies, just using native PHP. It is quite an achievement, and there has been a lot of thought and work gone into this framework. It isn't as polished as others like Symfony Console is, but it is a lot lighter and faster because of it.
 
-If I am building a utility tool, that doesn't require any sort of framework then this is my go to. If I just want to take user input, fetch data from an API and display some information - this is what I use. Also, it is themeable! 
+If I am building a utility tool, that doesn't require any sort of framework then this is my go to. If I just want to take user input, fetch data from an API and display some information - this is what I use. Also, it is themeable!
 
-There isn't too much to say about [Minicli](https://docs.minicli.dev/en/latest/) - it is what you use when you feel like you need to declutter your head from dependency nightmares and just build a CLI app. It is simple to use and build upon, and there is a sample application you can use as a template to get started. If you are looking for a fast, dependency free cli application that is better than just running PHP scripts manually - this is for you. 
+There isn't too much to say about [Minicli](https://docs.minicli.dev/en/latest/) - it is what you use when you feel like you need to declutter your head from dependency nightmares and just build a CLI app. It is simple to use and build upon, and there is a sample application you can use as a template to get started. If you are looking for a fast, dependency free cli application that is better than just running PHP scripts manually - this is for you.
 
 ## Wena (Rust)
 

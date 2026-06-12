@@ -3,21 +3,21 @@ title: Working with Data in your API Integrations
 description: Enhance your API experience with contextual data objects. Learn how to build clean and developer-friendly integrations with third-party APIs using PHP.
 category: PHP
 pubDate: 2022-07-20
-image: "/images/articles/api-integration.png"
+image: '/images/articles/api-integration.png'
 minRead: 7
 author:
   name: Steve McDougall
   avatar:
     src: https://avatars.githubusercontent.com/u/6368379?v=4
     alt: Steve McDougall
-tags: ["api-integration", "php", "data-objects", "code"]
+tags: ['api-integration', 'php', 'data-objects', 'code']
 ---
 
 Working with third-party APIs can be frustrating; we get JSON responses which in PHP will be represented as a plain old array - and we send data as arrays too. We lose a great deal of context and the ability to build something with a great developer experience. What if I told you it didn't have to be this way? What if I told you that it doesn't take much effort to build something that will add more context and improve your work with third-party APIs? Don't believe me? Let's take a look.
 
 This tutorial will walk through integrating a fictional third-party API with nested data inside - the messiest of APIs. We will want to be able to get data from the API but also be able to send data to this API without having to build up these nasty arrays we are used to.
 
-The best way to improve your experience here is to use the most up-to-date PHP version and a third-party package like Laravel Saloon or Laravel Transporter - but sometimes you don't want to pull in an entire package just to make a couple of API requests, right? If we did that, our entire application would be brittle and rely on so much third-party code we may as well be using a website builder. 
+The best way to improve your experience here is to use the most up-to-date PHP version and a third-party package like Laravel Saloon or Laravel Transporter - but sometimes you don't want to pull in an entire package just to make a couple of API requests, right? If we did that, our entire application would be brittle and rely on so much third-party code we may as well be using a website builder.
 
 The API we are going to integrate with is fictional, which tells us the medical history of our users/patients. Imagine an API that you are working with and you want to be able to add new data to it - say a GPs web application or mobile application, and you go in for an appointment, and they need to register any further issues or notes to your file. They might want to check your history and see what is currently on your file.
 
@@ -241,24 +241,24 @@ As you can see, this is relatively straightforward. We pass an identifier to ide
 Before completely removing arrays, we need to understand how the data is displayed and what creates this data. Let's look at an example payload for the dental records:
 
 ```json
-  {
-  "id": "1234-1234-1234-1234",
-  "treatments": {
-    "crowns": [
-      {
-      	"material": "porcelain",
-      	"location": "L12",
-      	"implemented": "2022-07-10"
-      }
-    ],
-    "fillings": [
-      {
-      	"material": "white",
-      	"location": "R8",
-      	"implemented": "2022-07-10"
-      }
-    ]
-  }
+{
+	"id": "1234-1234-1234-1234",
+	"treatments": {
+		"crowns": [
+			{
+				"material": "porcelain",
+				"location": "L12",
+				"implemented": "2022-07-10"
+			}
+		],
+		"fillings": [
+			{
+				"material": "white",
+				"location": "R8",
+				"implemented": "2022-07-10"
+			}
+		]
+	}
 }
 ```
 
