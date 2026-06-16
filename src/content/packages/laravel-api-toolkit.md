@@ -1,16 +1,16 @@
 ---
-name: 'juststeveking/laravel-api-toolkit'
-description: 'A toolkit for creating APIs in Laravel'
-packagist: 'https://packagist.org/packages/juststeveking/laravel-api-toolkit'
-github: 'https://github.com/JustSteveKing/laravel-api-toolkit'
-link: 'https://github.com/JustSteveKing/laravel-api-toolkit'
-tech: ['PHP', 'Laravel']
+name: "juststeveking/laravel-api-toolkit"
+description: "A toolkit for creating APIs in Laravel"
+packagist: "https://packagist.org/packages/juststeveking/laravel-api-toolkit"
+github: "https://github.com/JustSteveKing/laravel-api-toolkit"
+link: "https://github.com/JustSteveKing/laravel-api-toolkit"
+tech: ["PHP", "Laravel"]
 featured: false
-downloads: 485
-monthlyDownloads: 7
+downloads: 486
+monthlyDownloads: 8
 stars: 25
-version: 'v1.0.0'
-updatedAt: '2026-06-10'
+version: "v1.0.0"
+updatedAt: "2026-06-16"
 ---
 
 # A toolkit for creating APIs in Laravel
@@ -111,7 +111,6 @@ The above command will generate:
 - `database/migrations/xxxx_xx_xx_xxxxxx_create_posts_table.php`
 
 ## Testing
-
 ```bash
 composer test
 ```
@@ -136,3 +135,4 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+

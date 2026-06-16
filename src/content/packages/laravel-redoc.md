@@ -1,16 +1,16 @@
 ---
-name: 'juststeveking/laravel-redoc'
-description: 'A simple API documentation package for Laravel using OpenAPI and Redoc'
-packagist: 'https://packagist.org/packages/juststeveking/laravel-redoc'
-github: 'https://github.com/JustSteveKing/laravel-redoc'
-link: 'https://github.com/JustSteveKing/laravel-redoc'
-tech: ['PHP', 'Laravel']
+name: "juststeveking/laravel-redoc"
+description: "A simple API documentation package for Laravel using OpenAPI and Redoc"
+packagist: "https://packagist.org/packages/juststeveking/laravel-redoc"
+github: "https://github.com/JustSteveKing/laravel-redoc"
+link: "https://github.com/JustSteveKing/laravel-redoc"
+tech: ["PHP", "Laravel"]
 featured: false
-downloads: 307165
-monthlyDownloads: 6818
+downloads: 309057
+monthlyDownloads: 7670
 stars: 92
-version: 'dev-main'
-updatedAt: '2026-06-10'
+version: "dev-main"
+updatedAt: "2026-06-16"
 ---
 
 # Laravel Redoc
@@ -50,7 +50,7 @@ return [
         'name' => env('REDOC_PATH_NAME', 'docs'),
         'url' => env('REDOC_PATH_URL', 'api/docs'),
     ],
-
+    
     'alfred' => [
         'enabled' => env('REDOC_ALFRED', true),
         'project_id' => env('ALFRED_PROJECT_ID', null),
@@ -77,19 +77,23 @@ return [
 ];
 ```
 
+
 ## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) and [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) for details.
 
+
 ## Security
 
 If you discover any security related issues, please email juststevemcd@gmail.com instead of using the issue tracker.
+
 
 ## Credits
 
 - [Steve McDougall][link-author]
 - [All Contributors][link-contributors]
 - [Redocly Team for their open source tool redoc](https://github.com/Redocly/redoc)
+
 
 ## License
 
@@ -99,6 +103,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 [ico-github-action]: https://github.com/JustSteveKing/laravel-redoc/workflows/run-tests/badge.svg?branch=main
 [ico-downloads]: https://img.shields.io/packagist/dt/juststeveking/laravel-redoc.svg?style=flat-square
+
 [link-packagist]: https://packagist.org/packages/juststeveking/laravel-redoc
 [link-github-action]: https://github.com/JustSteveKing/laravel-redoc/actions
 [link-downloads]: https://packagist.org/packages/juststeveking/laravel-redoc

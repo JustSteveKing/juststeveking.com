@@ -1,16 +1,16 @@
 ---
-name: 'juststeveking/http-helpers'
-description: 'A collection of helpers to use when working with HTTP.'
-packagist: 'https://packagist.org/packages/juststeveking/http-helpers'
-github: 'https://github.com/JustSteveKing/http-helpers'
-link: 'https://github.com/JustSteveKing/http-helpers'
-tech: ['PHP', 'Laravel']
+name: "juststeveking/http-helpers"
+description: "A collection of helpers to use when working with HTTP."
+packagist: "https://packagist.org/packages/juststeveking/http-helpers"
+github: "https://github.com/JustSteveKing/http-helpers"
+link: "https://github.com/JustSteveKing/http-helpers"
+tech: ["PHP", "Laravel"]
 featured: false
 downloads: 9214
-monthlyDownloads: 3
+monthlyDownloads: 1
 stars: 6
-version: 'dev-main'
-updatedAt: '2026-06-10'
+version: "dev-main"
+updatedAt: "2026-06-16"
 ---
 
 # HTTP Helpers
@@ -26,3 +26,4 @@ composer require juststeveking/http-helpers
 ## Usage
 
 Coming soon.
+

@@ -1,16 +1,16 @@
 ---
-name: 'juststeveking/state-machine'
-description: 'A small, framework-agnostic PHP state machine for modeling valid transitions between states.'
-packagist: 'https://packagist.org/packages/juststeveking/state-machine'
-github: 'https://github.com/JustSteveKing/state-machine'
-link: 'https://github.com/JustSteveKing/state-machine'
-tech: ['PHP']
+name: "juststeveking/state-machine"
+description: "A small, framework-agnostic PHP state machine for modeling valid transitions between states."
+packagist: "https://packagist.org/packages/juststeveking/state-machine"
+github: "https://github.com/JustSteveKing/state-machine"
+link: "https://github.com/JustSteveKing/state-machine"
+tech: ["PHP"]
 featured: false
-downloads: 114
-monthlyDownloads: 114
-stars: 0
-version: 'dev-main'
-updatedAt: '2026-06-10'
+downloads: 139
+monthlyDownloads: 139
+stars: 2
+version: "dev-main"
+updatedAt: "2026-06-16"
 ---
 
 # State Machine
@@ -18,7 +18,6 @@ updatedAt: '2026-06-10'
 A small, framework-agnostic PHP state machine for modeling valid transitions between states.
 
 It is built around three contracts:
-
 - `StateContract`
 - `TransitionContract`
 - `StateMachineContract`
@@ -380,7 +379,6 @@ $event = $machine->transition(
 ## Exception Messages
 
 `InvalidTransitionException` includes named constructors and clear messages for:
-
 - Transition class is not registered on the machine
 - Current state is not allowed by the transition
 - Guard rejected the transition
@@ -408,3 +406,4 @@ composer lint
 ## License
 
 [MIT](./LICENSE)
+

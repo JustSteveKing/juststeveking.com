@@ -1,22 +1,21 @@
 ---
-name: 'juststeveking/sdk-tools'
-description: 'A set of tools you can use to help make better SDKs.'
-packagist: 'https://packagist.org/packages/juststeveking/sdk-tools'
-github: 'https://github.com/JustSteveKing/sdk-tools'
-link: 'https://github.com/JustSteveKing/sdk-tools'
-tech: ['PHP']
+name: "juststeveking/sdk-tools"
+description: "A set of tools you can use to help make better SDKs."
+packagist: "https://packagist.org/packages/juststeveking/sdk-tools"
+github: "https://github.com/JustSteveKing/sdk-tools"
+link: "https://github.com/JustSteveKing/sdk-tools"
+tech: ["PHP"]
 featured: false
-downloads: 8572
-monthlyDownloads: 505
+downloads: 8631
+monthlyDownloads: 476
 stars: 20
-version: 'dev-main'
-updatedAt: '2026-06-10'
+version: "dev-main"
+updatedAt: "2026-06-16"
 ---
 
 # JustSteveKing SDK Tools
 
 <!-- BADGES_START -->
-
 [![Latest Version][badge-release]][packagist]
 [![Software License][badge-license]][license]
 [](https://github.com/JustSteveKing/sdk-tools/actions/workflows/tests.yml)
@@ -27,11 +26,11 @@ updatedAt: '2026-06-10'
 [badge-license]: https://img.shields.io/packagist/l/juststeveking/sdk-tools.svg?style=flat-square
 [badge-php]: https://img.shields.io/packagist/php-v/juststeveking/sdk-tools.svg?style=flat-square
 [badge-downloads]: https://img.shields.io/packagist/dt/juststeveking/sdk-tools.svg?style=flat-square&colorB=mediumvioletred
+
 [packagist]: https://packagist.org/packages/juststeveking/sdk-tools
 [license]: https://github.com/juststeveking/sdk-tools/blob/main/LICENSE.md
 [php]: https://php.net
 [downloads]: https://packagist.org/packages/juststeveking/sdk-tools
-
 <!-- BADGES_END -->
 
 A set of tools you can use to help make better SDKs.
@@ -181,9 +180,9 @@ class Acme extends SDK
 {
     public function __construct(
         protected HttpClient $client,
-        private readonly Authorization $auth,
+        private readonly Authorization $auth,    
     ) {}
-
+    
     public static function build(string $apiToken): Acme
     {
         return new Acme(
@@ -266,7 +265,7 @@ class Project extends Resource
                 previous: $exception,
             );
         }
-
+        
         return $response;
     }
 }
@@ -288,3 +287,5 @@ composer run test
 ## LICENSE
 
 The MIT License (MIT). Please see [License File](./LICENSE) for more information.
+
+

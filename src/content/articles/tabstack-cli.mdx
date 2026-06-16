@@ -1,0 +1,181 @@
+---
+title: "Giving your agents a terminal: a first look at the tabstack CLI"
+description: "A hands-on look at Mozilla's tabstack CLI: a single Go binary that turns any URL into clean Markdown or JSON, runs browser automation, and scripts neatly."
+category: DevTools
+pubDate: 2026-06-16
+shouldCrossPost: true
+minRead: 7
+author:
+  name: Steve McDougall
+  avatar:
+    src: https://avatars.githubusercontent.com/u/6368379?v=4
+    alt: Steve McDougall
+tags: ['tabstack', 'go', 'cli', 'ai-agents']
+---
+
+Every project I touch lately ends up needing the same awkward thing: a reliable way to pull the web into a script or an agent. Not a brittle scrape held together with CSS selectors and hope, but something that takes a URL and hands back clean, structured text I can actually pipe into the next step. I have built that wrapper more than once, and it is never as small as you think it will be. So when Mozilla dropped the `tabstack` CLI, a single Go binary that wraps the Tabstack AI API, I wanted to spend a proper afternoon with it.
+
+The pitch on the README is direct: every web interaction your agent or stack needs, from the terminal or a script. It turns any URL into clean Markdown or schema-shaped JSON, runs natural-language browser automation, and answers research questions with cited sources. The part that made me sit up is that the output is pretty in a terminal and pipeable into `jq` without a flag. That is a small detail, and it tells you the people who built it actually live on the command line.
+
+Let me walk you through it the way I poked at it myself.
+
+## Getting it installed
+
+There is no runtime to install and nothing to bootstrap, because it ships as a single static binary built for macOS, Linux, and Windows. The quickest route is the install script:
+
+```
+curl -fsSL https://tabstack.ai/install.sh | sh
+```
+
+That fetches the right binary for your platform and puts it on your `PATH`, and you are ready to go. If you would rather not pipe a script into your shell, there are a couple of alternatives. With Go on your machine you can use:
+
+```
+go install github.com/Mozilla-Ocho/tabstack-cli/cmd/tabstack@latest
+```
+
+That drops the binary in `$GOPATH/bin`, which is usually `~/go/bin`. If your shell cannot find `tabstack` afterwards, you almost certainly have not got that directory on your `PATH`:
+
+```
+export PATH="$HOME/go/bin:$PATH"
+```
+
+And if you want to avoid Go entirely, there are pre-built binaries on the Releases page, or you can clone the repo and run `make install-local`, which builds it and copies it to `/usr/local/bin` so it works in any terminal straight away. Several routes, all of them boring in the best possible way.
+
+## Authentication done sensibly
+
+This is the bit I want to praise first, because credential handling is where a lot of CLIs get careless. You log in once:
+
+```
+tabstack auth login            # prompts for the key, input hidden, saved to the config file
+tabstack auth status           # shows how your key is being resolved, never prints it
+```
+
+A key can come from three places, and the precedence is exactly the order you would hope for:
+
+1. the `--api-key` flag
+2. the `TABSTACK_API_KEY` environment variable
+3. the config file at `$XDG_CONFIG_HOME/tabstack/config.toml`, defaulting to `~/.config/tabstack/config.toml`
+
+The config file is written `0600`, so it is not world-readable, and `auth status` will tell you which source won without ever leaking the value. This is the contract I want from any tool that holds a secret: a flag for one-off overrides, an environment variable for CI, and a locked-down file for everyday local use. If no key is found, the API commands exit with code `2` and tell you how to set one, rather than failing with a stack trace. We will come back to those exit codes, because they matter.
+
+## The core: turning a page into something useful
+
+Every command follows the same shape: `tabstack <group> <action> <target>`. Once that clicks, the whole surface area feels predictable.
+
+The first thing I reached for was `extract`. At its simplest it converts a page to clean Markdown:
+
+```
+tabstack extract markdown https://example.com --metadata
+```
+
+The `--metadata` flag pulls in the title, author, and similar bits alongside the content. Useful, but the version I keep coming back to is structured extraction, where you hand it a JSON schema and it shapes the output to match:
+
+```
+tabstack extract json https://example.com --schema @schema.json
+tabstack extract json https://example.com --schema '{"type":"object","properties":{"title":{"type":"string"}}}'
+```
+
+Notice the `@schema.json` syntax. That `@file` convention reads the schema from a file, and it works the same way for the other input flags too. You can pass a literal string, point at a file with `@`, or read from stdin with `-`, which is the same ergonomics as `curl -d`. So this is perfectly valid:
+
+```
+echo '{"type":"object"}' | tabstack extract json https://example.com --schema -
+```
+
+If you have ever written the glue that decides "is this argument a path or a literal", you will appreciate that they solved it once and applied it everywhere.
+
+## Generate: extraction with an opinion
+
+Where `extract` pulls what is on the page, `generate` fetches a page and transforms it with AI into the shape you describe. You give it instructions as well as a schema:
+
+```
+tabstack generate json https://example.com \
+  --instructions "Summarise the article and list the key points." \
+  --schema @schema.json
+```
+
+The mental model I landed on is this: `extract json` is for getting the data that is genuinely there, and `generate json` is for asking a model to produce something new from the page, summaries, classifications, restructured points, while still constraining the output to a schema you control. Keeping those two as separate verbs is a good call, because it stops you reaching for the heavier, slower path when all you wanted was the title.
+
+## Agents: automation and research
+
+This is where it stops being a fetch tool and starts being something more interesting. The `agent` group runs server-side and streams progress back as it works.
+
+Browser automation takes a natural-language task:
+
+```
+tabstack agent automate "Find the pricing for the Pro plan" --url https://example.com
+```
+
+Research searches the web, synthesises an answer, and prints a report with numbered, cited sources:
+
+```
+tabstack agent research "What are the latest developments in quantum computing?" --mode balanced
+```
+
+The feature I did not expect, and rather liked, is interactive automation. You can start a run that is allowed to pause and ask you for input partway through:
+
+```
+tabstack agent automate "Log in and download the latest invoice" --url https://example.com --interactive
+```
+
+When it pauses, it gives you a request ID, and you answer it with a separate command:
+
+```
+tabstack agent input <request-id> --data '{"fields":[{"ref":"field1","value":"yes"}]}'
+```
+
+Or you decline:
+
+```
+tabstack agent input <request-id> --data '{"cancelled":true}'
+```
+
+That `agent input` command only applies to runs started with `--interactive`. Without the flag, an automation never stops to ask. It is a clean way to handle the reality that some tasks genuinely need a human in the loop, without baking that assumption into every run.
+
+## The part that makes it scriptable
+
+Here is the design decision I keep telling people about. The output is pretty and styled when you are sitting at a terminal, and it switches to JSON automatically when the output is piped. No flag required:
+
+```
+tabstack extract markdown https://example.com | jq .
+```
+
+You can force a mode with `-o pretty` or `-o json` if you want to be explicit, and you can kill colour with `--no-color` or the `NO_COLOR` environment variable. The streaming commands, `automate` and `research`, emit one NDJSON line per event when they are in JSON mode, so you can process events as they arrive rather than waiting for the whole thing to finish.
+
+The other half of scriptability is the exit codes, and they are thought through:
+
+| Code | Meaning |
+| ---- | ------- |
+| `0` | success |
+| `1` | runtime or network error |
+| `2` | usage, invalid input, or missing config such as no API key |
+| `3` | API error or in-band task failure |
+
+Distinct codes mean you can branch on the actual cause in a shell script, telling a bad argument apart from a network blip apart from an API rejection:
+
+```
+if ! tabstack extract markdown "$url" > out.md; then
+  case $? in
+    2) echo "check your arguments" ;;
+    3) echo "the API rejected the request" ;;
+    *) echo "network or runtime error" ;;
+  esac
+fi
+```
+
+I cannot tell you how often I have wanted exactly this from a tool and been handed a flat exit `1` for every conceivable failure instead.
+
+A few common options round it out. `--effort` lets you pick the speed and capability tradeoff on `extract` and `generate`: `min` is fastest with no fallback, `standard` is the balanced default, and `max` does full browser rendering for JavaScript-heavy sites at the cost of taking longer. `--geo GB` routes the fetch through a given country using an ISO 3166-1 alpha-2 code, which is handy when a page behaves differently by region. And `--nocache` bypasses the cache when you need a fresh read.
+
+## Built to be driven by agents too
+
+The detail that tells you where this is headed is the AGENTS.md file in the repo. The CLI is designed to be driven by LLM agents as well as humans, and that file documents every command, flag, and exit code in a form tuned for machine consumption. If you are wiring `tabstack` into Claude Code or your own harness, you point the agent at that file and let it learn the surface area itself.
+
+This is the right shape for the moment we are in. A well-behaved CLI with predictable verbs, machine-readable output, and meaningful exit codes is exactly the kind of tool an agent can use safely, because every outcome is legible. The same properties that make it pleasant for me at the terminal make it tractable for a model in a loop.
+
+## Would I reach for it?
+
+Yes, and for a specific reason. The web-access problem keeps showing up in my work, and I have written enough of these wrappers to know the unglamorous parts: credential precedence, the file-or-literal-or-stdin question, knowing whether a failure was mine or theirs, behaving differently when piped. The `tabstack` CLI has answered all of those the way I would want them answered, and it has done it in a single binary with no runtime to manage. It is v1.0.0, MIT licensed, and it came out of Mozilla, so it is not a weekend experiment you are betting your pipeline on.
+
+If your stack or your agents need to read the web, give it an afternoon. Start with `tabstack auth login` and `tabstack extract markdown` on a page you know, and build out from there. The shape of the thing rewards exploration.
+
+*I have a feeling the interesting work is not in the extraction at all, but in what you wire on the other end of that pipe. That is the article I want to write next.*

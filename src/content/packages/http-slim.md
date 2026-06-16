@@ -1,22 +1,21 @@
 ---
-name: 'juststeveking/http-slim'
-description: 'A slim psr compliant http client to provide better interoperability.'
-packagist: 'https://packagist.org/packages/juststeveking/http-slim'
-github: 'https://github.com/JustSteveKing/http-slim'
-link: 'https://github.com/JustSteveKing/http-slim'
-tech: ['PHP']
+name: "juststeveking/http-slim"
+description: "A slim psr compliant http client to provide better interoperability."
+packagist: "https://packagist.org/packages/juststeveking/http-slim"
+github: "https://github.com/JustSteveKing/http-slim"
+link: "https://github.com/JustSteveKing/http-slim"
+tech: ["PHP"]
 featured: false
-downloads: 72329
-monthlyDownloads: 630
+downloads: 72447
+monthlyDownloads: 606
 stars: 7
-version: 'v2.1.0'
-updatedAt: '2026-06-10'
+version: "v2.1.0"
+updatedAt: "2026-06-16"
 ---
 
 # Http Slim
 
 <!-- BADGES_START -->
-
 [![Latest Version][badge-release]][packagist]
 [![Software License][badge-license]][license]
 [![PHP Version][badge-php]][php]
@@ -26,12 +25,13 @@ updatedAt: '2026-06-10'
 [badge-release]: https://img.shields.io/packagist/v/juststeveking/http-slim.svg?style=flat-square&label=release
 [badge-license]: https://img.shields.io/packagist/l/juststeveking/http-slim.svg?style=flat-square
 [badge-php]: https://img.shields.io/packagist/php-v/juststeveking/http-slim.svg?style=flat-square
+
 [badge-downloads]: https://img.shields.io/packagist/dt/juststeveking/http-slim.svg?style=flat-square&colorB=mediumvioletred
+
 [packagist]: https://packagist.org/packages/juststeveking/http-slim
 [license]: https://github.com/JustSteveKing/http-slim/blob/master/LICENSE
 [php]: https://php.net
 [downloads]: https://packagist.org/packages/juststeveking/http-slim
-
 <!-- BADGES_END -->
 
 The purpose of this package is to create an interoperable http client implementation allowing a "bring you own packages" approach to connection to 3rd party services.
@@ -41,6 +41,7 @@ The main goal of this package is to adhere to the following PSRs:
 - [PSR-18 - HTTP Client](https://www.php-fig.org/psr/psr-18/)
 - [PSR-17 - HTTP Factories](https://www.php-fig.org/psr/psr-17/)
 - [PSR-7 - HTTP Message Interface](https://www.php-fig.org/psr/psr-7/)
+
 
 ## Installation
 
@@ -62,6 +63,7 @@ A few packages that are recommended:
 - [Symfony HttpClient](https://symfony.com/doc/current/components/http_client.html)
 - [A great PSR implementation with factories to adhere to PSR-18 fully](https://github.com/Nyholm/psr7)
 
+
 ## Usage
 
 Once you have installed a **PSR-18** package and a **PSR-17** package we do not _need_ to do anything else. This package support HTTP Autodiscovery for your PSR compliant Client and Request factories. However, should you choose to inject you can do!
@@ -74,7 +76,7 @@ declare(strict_types=1);
 use JustSteveKing\HttpSlim\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
 
-// Injecting Clients:
+// Injecting Clients: 
 $httpClient = HttpClient::build(
     clientInterface: new Psr18Client(),
     requestFactory: new Psr18Client(),
@@ -144,3 +146,4 @@ $ ./vendor/bin/phpunit --testdox
 ## Security
 
 If you discover any security related issues, please email juststevemcd@gmail.com instead of using the issue tracker.
+

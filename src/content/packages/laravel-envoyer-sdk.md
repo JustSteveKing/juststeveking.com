@@ -1,38 +1,40 @@
 ---
-name: 'juststeveking/laravel-envoyer-sdk'
-description: 'A simple to use PHP class to work with the Laravel Envoyer API'
-packagist: 'https://packagist.org/packages/juststeveking/laravel-envoyer-sdk'
-github: 'https://github.com/JustSteveKing/laravel-envoyer-sdk'
-link: 'https://github.com/JustSteveKing/laravel-envoyer-sdk'
-tech: ['PHP']
+name: "juststeveking/laravel-envoyer-sdk"
+description: "A simple to use PHP class to work with the Laravel Envoyer API"
+packagist: "https://packagist.org/packages/juststeveking/laravel-envoyer-sdk"
+github: "https://github.com/JustSteveKing/laravel-envoyer-sdk"
+link: "https://github.com/JustSteveKing/laravel-envoyer-sdk"
+tech: ["PHP"]
 featured: false
-downloads: 60228
-monthlyDownloads: 563
+downloads: 60346
+monthlyDownloads: 541
 stars: 39
-version: 'v2.0.0'
-updatedAt: '2026-06-10'
+version: "v2.0.0"
+updatedAt: "2026-06-16"
 ---
 
 # Laravel Envoyer SDK
 
 <p align="center">
 
+
+
 </p>
 
 <!-- BADGES_START -->
-
 [![Latest Version][badge-release]][packagist]
 [![PHP Version][badge-php]][php]
+
 
 [![Total Downloads][badge-downloads]][downloads]
 
 [badge-release]: https://img.shields.io/packagist/v/juststeveking/laravel-envoyer-sdk.svg?style=flat-square&label=release
 [badge-php]: https://img.shields.io/packagist/php-v/juststeveking/laravel-envoyer-sdk.svg?style=flat-square
 [badge-downloads]: https://img.shields.io/packagist/dt/juststeveking/laravel-envoyer-sdk.svg?style=flat-square&colorB=mediumvioletred
+
 [packagist]: https://packagist.org/packages/juststeveking/laravel-envoyer-sdk
 [php]: https://php.net
 [downloads]: https://packagist.org/packages/juststeveking/laravel-envoyer-sdk
-
 <!-- BADGES_END -->
 
 A simple to use PHP class to work with the Laravel Envoyer API
@@ -41,6 +43,7 @@ A simple to use PHP class to work with the Laravel Envoyer API
 
 - PHP ^7.4
 - PHP ext-json
+
 
 ## Installation
 
@@ -51,6 +54,7 @@ $ composer require juststeveking/laravel-envoyer-sdk
 ```
 
 To work with this package, firstly you **must** have a [Laravel Envoyer](https://envoyer.io/) account, and secondly you must create an API token through [Laravel Envoyer](https://envoyer.io/) itself.
+
 
 ## Usage
 
@@ -84,6 +88,7 @@ $envoyer = Envoyer::illuminate(
 $envoyer->projects->all();
 ```
 
+
 ### Create a new Project
 
 ```php
@@ -116,6 +121,7 @@ $envoyer = Envoyer::illuminate(
 $envoyer->projects->find('id-of-project');
 ```
 
+
 ### Modify a Project
 
 ```php
@@ -146,7 +152,7 @@ $envoyer->projects->delete('id-of-project');
 
 ### Update a Project's Source
 
-Note that all the options are required, you cannot just parse through push_to_deploy as a single option
+ Note that all the options are required, you cannot just parse through push_to_deploy as a single option
 
 ```php
 use JustSteveKing\Laravel\Envoyer\SDK\Envoyer;
@@ -181,6 +187,7 @@ $envoyer = Envoyer::illuminate(
 $envoyer->servers->on('id-of-project')->all();
 ```
 
+
 ### Create a new Server for a Project
 
 ```php
@@ -199,6 +206,7 @@ $envoyer->servers->on('id-of-project')->create([
 ]);
 ```
 
+
 ### Fetch a single Server for a Project
 
 ```php
@@ -211,6 +219,7 @@ $envoyer = Envoyer::illuminate(
 
 $envoyer->servers->on('id-of-project')->first('id-of-your-server');
 ```
+
 
 ### Modify a Server
 
@@ -227,6 +236,7 @@ $envoyer->servers->on('id-of-project')->modify('id-of-your-server', [
 ]);
 ```
 
+
 ### Delete a Server
 
 ```php
@@ -240,9 +250,11 @@ $envoyer = Envoyer::illuminate(
 $envoyer->servers->on('id-of-project')->remove('id-of-your-server');
 ```
 
+
 ## Managing Environments on a Project
 
 The simple way to manage project environments through the SDK:
+
 
 ### Get current environment
 
@@ -257,6 +269,7 @@ $envoyer = Envoyer::illuminate(
 $envoyer->environments->on('id-of-project')->key('1234')->all();
 ```
 
+
 ### Get environment servers
 
 ```php
@@ -269,6 +282,7 @@ $envoyer = Envoyer::illuminate(
 
 $envoyer->environments->on('id-of-project')->key('1234')->servers();
 ```
+
 
 ### Updating project environments
 
@@ -285,6 +299,7 @@ $envoyer->environments->on('id-of-project')
     ->put('test=api', 'another=value')
 ```
 
+
 ### Resetting environment key
 
 ```php
@@ -297,6 +312,7 @@ $envoyer = Envoyer::illuminate(
 
 $envoyer->environments->on('id-of-project')->key('new-env-key')->reset('new-key');
 ```
+
 
 ## Listing available actions from Envoyer
 
@@ -312,6 +328,7 @@ $envoyer = Envoyer::illuminate(
 
 $envoyer->actions->all();
 ```
+
 
 ## Managing Action Hooks for a Project
 
@@ -329,6 +346,7 @@ $envoyer = Envoyer::illuminate(
 
 $envoyer->hooks->on('id-of-project')->all();
 ```
+
 
 ### Create a new Hook
 
@@ -350,6 +368,7 @@ $envoyer->hooks->on('id-of-project')->create([
 ]);
 ```
 
+
 ### Get a single Hook
 
 ```php
@@ -362,6 +381,7 @@ $envoyer = Envoyer::illuminate(
 
 $envoyer->hooks->on('id-of-project')->first('id-of-hook');
 ```
+
 
 ### Updating a Hook
 
@@ -378,6 +398,7 @@ $envoyer->hooks->on('id-of-project')->modify('id-of-hook', [
 ]);
 ```
 
+
 ### Deleting a Hook
 
 ```php
@@ -390,6 +411,7 @@ $envoyer = Envoyer::illuminate(
 
 $envoyer->hooks->on('id-of-project')->remove('id-of-hook');
 ```
+
 
 ## Managing Deployments
 
@@ -407,6 +429,7 @@ $envoyer = Envoyer::illuminate(
 
 $envoyer->deployments->on('id-of-project')->all();
 ```
+
 
 ### Pushing a new Deployment
 
@@ -460,6 +483,7 @@ $envoyer = Envoyer::illuminate(
 $envoyer->deployments->on('id-of-project')->cancel('id-of-deployment');
 ```
 
+
 ## Managing Collaborators
 
 The simple way to manage project collaborators through the SDK
@@ -477,6 +501,7 @@ $envoyer = Envoyer::illuminate(
 $envoyer->collaborators->on('id-of-project')->all();
 ```
 
+
 ### Invite a new Collaborator
 
 ```php
@@ -492,6 +517,7 @@ $envoyer->collaborators->on('id-of-project')->invite([
 ]);
 ```
 
+
 ### Get a single Collaborator
 
 ```php
@@ -505,6 +531,7 @@ $envoyer = Envoyer::illuminate(
 $envoyer->collaborators->on('id-of-project')->first('id-of-collaborator');
 ```
 
+
 ### Remove a Collaborator
 
 ```php
@@ -517,6 +544,7 @@ $envoyer = Envoyer::illuminate(
 
 $envoyer->collaborators->on('id-of-project')->remove('id-of-collaborator');
 ```
+
 
 ## Managing Notifications
 
@@ -534,6 +562,7 @@ $envoyer = Envoyer::illuminate(
 
 $envoyer->notifications->on('id-of-project')->all();
 ```
+
 
 ### Create a new Notification
 
@@ -574,6 +603,7 @@ $envoyer->notifications->on('id-of-project')->create([
 ]);
 ```
 
+
 ### Get a single Notification
 
 ```php
@@ -586,6 +616,7 @@ $envoyer = Envoyer::illuminate(
 
 $envoyer->notifications->on('id-of-project')->first('id-of-notification');
 ```
+
 
 ### Modify a Notification
 
@@ -604,6 +635,7 @@ $envoyer->notifications->on('id-of-project')->modify('id-of-notification', [
 ]);
 ```
 
+
 ### Remove a Notification
 
 ```php
@@ -616,3 +648,4 @@ $envoyer = Envoyer::illuminate(
 
 $envoyer->notifications->on('id-of-project')->remove('id-of-notification');
 ```
+

@@ -1,16 +1,16 @@
 ---
-name: 'juststeveking/laravel-key-factory'
-description: 'A simple package to generate Eloquent Model Keys'
-packagist: 'https://packagist.org/packages/juststeveking/laravel-key-factory'
-github: 'https://github.com/JustSteveKing/laravel-key-factory'
-link: 'https://github.com/JustSteveKing/laravel-key-factory'
-tech: ['PHP']
+name: "juststeveking/laravel-key-factory"
+description: "A simple package to generate Eloquent Model Keys"
+packagist: "https://packagist.org/packages/juststeveking/laravel-key-factory"
+github: "https://github.com/JustSteveKing/laravel-key-factory"
+link: "https://github.com/JustSteveKing/laravel-key-factory"
+tech: ["PHP"]
 featured: false
-downloads: 1915
-monthlyDownloads: 360
+downloads: 1937
+monthlyDownloads: 325
 stars: 6
-version: 'dev-main'
-updatedAt: '2026-06-10'
+version: "dev-main"
+updatedAt: "2026-06-16"
 ---
 
 # A simple package to generate Eloquent Model Keys
@@ -33,7 +33,6 @@ composer require juststeveking/laravel-key-factory
 You can publish and run the migrations with:
 
 You can publish the config file with:
-
 ```bash
 php artisan vendor:publish --provider="JustSteveKing\KeyFactory\KeyFactoryServiceProvider" --tag="key-factory-config"
 ```
@@ -75,7 +74,7 @@ $key = \Illuminate\Support\Str::key(
 There is an eloquent model trait available to use called `HasKey` which will:
 
 > When you are creating an eloquent model, the trait will be booted.
-> It will get the first 3 characters of the Model name, force them to lowercase and append a "\_" and use this as the prefix for the Key Factory
+> It will get the first 3 characters of the Model name, force them to lowercase and append a "_" and use this as the prefix for the Key Factory
 
 An example:
 
@@ -110,3 +109,4 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+

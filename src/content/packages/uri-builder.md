@@ -1,26 +1,26 @@
 ---
-name: 'juststeveking/uri-builder'
-description: 'A simple URI builder in PHP that is slightly opinionated'
-packagist: 'https://packagist.org/packages/juststeveking/uri-builder'
-github: 'https://github.com/JustSteveKing/uri-builder'
-link: 'https://github.com/JustSteveKing/uri-builder'
-tech: ['PHP']
+name: "juststeveking/uri-builder"
+description: "A simple URI builder in PHP that is slightly opinionated"
+packagist: "https://packagist.org/packages/juststeveking/uri-builder"
+github: "https://github.com/JustSteveKing/uri-builder"
+link: "https://github.com/JustSteveKing/uri-builder"
+tech: ["PHP"]
 featured: false
-downloads: 296384
-monthlyDownloads: 3906
+downloads: 297085
+monthlyDownloads: 3998
 stars: 20
-version: 'v1.1.0'
-updatedAt: '2026-06-10'
+version: "v1.1.0"
+updatedAt: "2026-06-16"
 ---
 
 <p align="center">
 
+
+
 </p>
 
 # URI Builder
-
 <!-- BADGES_START -->
-
 [![Latest Version][badge-release]][packagist]
 [![PHP Version][badge-php]][php]
 
@@ -30,10 +30,10 @@ updatedAt: '2026-06-10'
 [badge-release]: https://img.shields.io/packagist/v/juststeveking/uri-builder.svg?style=flat-square&label=release
 [badge-php]: https://img.shields.io/packagist/php-v/juststeveking/uri-builder.svg?style=flat-square
 [badge-downloads]: https://img.shields.io/packagist/dt/juststeveking/uri-builder.svg?style=flat-square&colorB=mediumvioletred
+
 [packagist]: https://packagist.org/packages/juststeveking/uri-builder
 [php]: https://php.net
 [downloads]: https://packagist.org/packages/juststeveking/uri-builder
-
 <!-- BADGES_END -->
 
 A simple URI builder in PHP that is slightly opinionated
@@ -41,6 +41,7 @@ A simple URI builder in PHP that is slightly opinionated
 ## Purpose
 
 The purpose of this package is to provide a fluent interface to build JSON:API compliant URI strings.
+
 
 ## Usage
 
@@ -121,5 +122,5 @@ $url = Uri::fromString('https://www.domain.com/api/v1/resource');
 $url->addQueryParam('include', 'test,another,options')
     ->addQueryParam('published', true, true);
 ```
-
 The output will be: `https://www.domain.com/api/v1/resource?include=test,another,options&published=true`
+
