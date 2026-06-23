@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/companies-house-laravel"
 link: "https://github.com/JustSteveKing/companies-house-laravel"
 tech: ["PHP"]
 featured: false
-downloads: 4126
-monthlyDownloads: 1
+downloads: 4128
+monthlyDownloads: 3
 stars: 22
 version: "v1.2.0"
-updatedAt: "2026-06-16"
+updatedAt: "2026-06-23"
 ---
 
 # Laravel Companies House

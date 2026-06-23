@@ -1,0 +1,142 @@
+---
+title: 'A Proper Look at Tabstack'
+description: "A developer's review of Tabstack, the Mozilla-backed web API that gives AI agents clean extraction, browser automation, and cited research without a scraper."
+category: 'DevTools'
+tags: ['tabstack', 'ai-agents', 'web-automation', 'apis']
+pubDate: '2026-06-23'
+featured: false
+shouldCrossPost: true
+draft: false
+---
+
+I have spent a fair bit of time recently with Tabstack, including building a CLI around its API, and I think it is worth writing down what it actually is, what you would reach for it to do, and whether it earns its place in your stack. There is a lot of noise around anything with "AI" in the description at the moment, so I want to cut through that and talk about the thing on its own terms.
+
+Let me start with the problem it exists to solve, because the product makes far more sense once you have felt the pain it removes.
+
+### The problem nobody wants to own
+
+If you have ever tried to give a program reliable access to the web, you know how quickly it turns into a swamp. You begin with a simple fetch. Then a site renders its content client-side, so a raw fetch returns an empty shell and you reach for a headless browser. Then you are managing proxies because you keep getting rate limited. Then the markup changes and your carefully written selectors snap. Then you are writing bespoke parsing logic for every single site you touch, and every one of those is a small liability waiting to break at three in the morning.
+
+None of that is the interesting part of your product. It is plumbing. You are maintaining a rendering engine, a proxy layer, and a pile of brittle extraction code purely so your actual application can read a page. That is the work Tabstack is offering to take off your hands.
+
+### What Tabstack actually is
+
+Tabstack is a web execution and data transformation API built at Mozilla. The pitch is straightforward: you hand it a URL, a schema, a question, or a task, and the browser, the model, and the orchestration all run on their side. You get back clean data, cited answers, or completed browser tasks. There is no headless Chrome for you to provision, no LLM for you to wire in, and no parsing layer for you to babysit.
+
+It is a developer product, not a consumer one. There is no dashboard where you sit and browse the web by hand. It is a REST API with TypeScript and Python SDKs, an MCP server, and a CLI, and it is aimed squarely at people building agents, research tools, data pipelines, and automated workflows.
+
+At the time of writing it is in public early access, and every account starts with ten thousand free credits and no card required, which is generous enough to actually evaluate it properly rather than just kicking the tyres.
+
+### The four things it does
+
+The whole surface comes down to four capabilities, and once you see them laid out, the mental model clicks into place.
+
+**Extract** turns a page into something a model can actually use. The cheapest form is markdown. You give it a URL and you get clean markdown back, frontmatter and all, which is exactly what you want when you are feeding a context window and do not want to burn tokens on rendered HTML noise.
+
+```bash
+curl -X POST "https://api.tabstack.ai/v1/extract/markdown" \
+  -H "Authorization: Bearer $TABSTACK_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com"}'
+```
+
+The more interesting form of extract is JSON. You describe the shape you want with a schema, you pass a URL, and you get back data that matches that schema. No selectors, no parsing, no handling of unexpected shapes downstream.
+
+```typescript
+import Tabstack from '@tabstack/sdk';
+
+const client = new Tabstack();
+
+const { jobs } = await client.extract.json({
+ url: 'https://www.google.com/about/careers/applications/jobs/results',
+ json_schema: {
+  jobs: [{ title: 'string', location: 'string' }],
+ },
+});
+```
+
+That schema enforcement is the bit that matters. The contract is yours, not the website's. When the site reshuffles its layout next week, your pipeline does not care, because you are asking for a shape rather than scraping a structure.
+
+**Generate** is the sibling to extract, and the distinction is worth getting right. Extract pulls data that already exists on the page. Generate uses a model to create something new from that content: a summary, a categorisation, a rewritten output, a tailored message. If you want the price that is printed on a product page, that is extract. If you want a one-line sentiment-tagged summary of a review, that is generate.
+
+**Automate** is the ambitious one. You give it a task in plain language and it drives a real browser to completion: clicking, scrolling, filling forms, submitting, working through multi-step flows on sites you do not control.
+
+```python
+import os
+from tabstack import Tabstack
+
+tabs = Tabstack(api_key=os.getenv('TABSTACK_API_KEY'))
+
+result = await tabs.agent.automate(
+    url="https://news.ycombinator.com",
+    task="Go through 5 pages of the top posts. For each post, determine the "
+         "website it is from and group all posts by website. Return the 10 "
+         "websites with the most posts.",
+)
+```
+
+This is the capability that replaces the headless-browser-and-glue-code stack entirely. It also has guardrails you can set, a max-iterations cap, and an interactive mode where your own orchestrator can stay in the loop, which I will come back to.
+
+**Research** runs an autonomous multi-source pass and hands you back a synthesised answer with every claim cited to its source. The selection of sources, the reading, the synthesis, and the citation all happen inside one call.
+
+```typescript
+const stream = await client.agent.research({
+ query: 'Key risks in CRE lending right now?',
+ mode: 'fast',
+});
+
+for await (const event of stream) {
+ if (event.event === 'complete') {
+  console.log(event.data.report);
+  console.log(event.data.metadata.citedPages);
+ }
+}
+```
+
+The citations are the selling point here. If you are shipping a research feature to real users, an answer they can trust because every claim points at a source is worth a great deal more than a confident paragraph with no provenance.
+
+### What you would actually build with it
+
+The four capabilities are abstract until you map them onto real work, so here is where they land.
+
+Price and competitor monitoring is the obvious one. A scheduled extract call against a set of product pages, returning schema-matched JSON, keeps a dashboard current without anyone copy-pasting from a browser. Lead enrichment is another clean fit: take a raw domain, extract headcount, tech stack, and funding signals, and push it into your pipeline instead of stitching together a row of data vendors. Job aggregation, market research, and competitive intelligence all sit in the same bucket, where the win is structured output from messy pages.
+
+Research mode opens up in-product features: a research assistant inside your application that answers from the live web with citations, rather than from a stale index. And automate covers the operations work that used to need a fragile RPA script, where an agent has to log into a dashboard, work through a flow, and pull something back out.
+
+The common thread is that all of these need live web context, and none of the teams building them wants to own a scraping stack to get it.
+
+### Why you would reach for it over rolling your own
+
+The honest answer is the abstraction. You are buying back the time you would otherwise spend on rendering, proxies, parsing, and the maintenance tail that follows all three. For most teams that maintenance tail is the real cost, because it never shows up in the estimate and never stops.
+
+There is a second reason that is specific to Tabstack, and it is the Mozilla backing. The privacy posture is not an afterthought bolted on for the marketing page. Requests carry a dedicated Tabstack user-agent so site owners can identify the traffic, robots.txt opt-outs aimed at that agent are honoured, and retrieved content is treated as ephemeral and is never used to train models. If you care about being a responsible actor on the web, and increasingly you have to, that matters. It is web access that is built to be observable and well-behaved rather than a mass harvester wearing a disguise.
+
+The third reason is just developer experience. Scoped API keys, a clean Bearer-token auth flow, two first-party SDKs, an MCP server, a CLI, and per-action cost shown in the console before you run anything. The "open in Claude, ChatGPT, or Cursor" buttons on every docs page tell you who they are building for. It feels like a product made by people who have actually had to integrate other people's APIs.
+
+### The pricing, plainly
+
+Tabstack is credit-based, and I appreciate that one currency covers the whole platform rather than a separate line item for extraction versus research. Every call spends credits, and the cost depends on the endpoint and how hard you make it work.
+
+The per-action rates are easy to hold in your head. Markdown extraction is ten credits, JSON extraction is fifty, generate is a hundred, automate is a hundred per action, fast research is two hundred and fifty, and balanced research is three hundred and fifty. The important wrinkle is that extract and generate are always a single action per call, so the cost is fixed and predictable, while automate and research chain as many actions as the task needs and bill for each one. A research call that touches more sources costs more than one that touches fewer. You pay for work done, not per request, which is fairer but does mean automate and research costs are variable by nature.
+
+The plans are Individual at zero a month on pay-as-you-go, Team at ninety-nine a month with five hundred thousand credits, and Pro at four hundred and ninety-nine a month with three million. Overages are on by default for Team and Pro and are cheaper per credit than pay-as-you-go, and you can set a spend threshold in the console to either notify or stop. The free tier of ten thousand credits is enough to build something real before you commit, which is exactly how a trial should work.
+
+### Where it is rough, and who it is not for
+
+I would be doing you a disservice if I only listed the good parts.
+
+It is not interactive-fast. Extraction sits in the low single-digit seconds and automate or research can run considerably longer, because they are doing real multi-step work. That is fine for background automation and scheduled jobs. It is the wrong tool if you need sub-second responses inside a live user-facing interaction.
+
+It is not built for true web-scale crawling. The credit model is comfortable for thousands to tens of thousands of calls. If your plan is to pull millions of pages a day, you are into custom infrastructure or a dedicated crawler, and the economics will tell you so quickly.
+
+It is not a no-code tool, and it is not a consumer assistant. There is no visual workflow builder and no chat window you talk to. You write API calls. If you want point-and-click automation, this is not it, and if you want a research assistant to use yourself rather than to embed, you want a different category of product entirely.
+
+The variable cost on automate and research is worth a flag too. Single-action endpoints are easy to budget. The agentic ones are not, by design, so you will want guardrails, sensible max-iteration caps, and an eye on the console while you learn the shape of your own workloads.
+
+### Where I land
+
+Tabstack is doing something I genuinely respect, which is treating browsing as a distinct infrastructure problem and solving it properly rather than bolting a scraper onto an LLM and calling it a day. The schema-first extraction is the standout feature, the citation-backed research is the one I would build a product feature on, and the Mozilla privacy stance is the kind of thing that should be table stakes and somehow rarely is.
+
+If you are building agents or AI features that need live web data and you do not want to own a scraping stack, it is straightforwardly worth your time. Start narrow. Pick one workflow, point it at the sites you actually care about, and see how the output holds up against your real targets rather than against a demo. The free credits make that an easy experiment to run, and the cost of finding out is close to nothing.
+
+_I will likely follow this with a walkthrough of building something small and real on top of the automate endpoint, because that is where the interesting edges live._

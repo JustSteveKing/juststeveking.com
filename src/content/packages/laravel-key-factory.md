@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/laravel-key-factory"
 link: "https://github.com/JustSteveKing/laravel-key-factory"
 tech: ["PHP"]
 featured: false
-downloads: 1937
-monthlyDownloads: 325
+downloads: 1979
+monthlyDownloads: 185
 stars: 6
 version: "dev-main"
-updatedAt: "2026-06-16"
+updatedAt: "2026-06-23"
 ---
 
 # A simple package to generate Eloquent Model Keys

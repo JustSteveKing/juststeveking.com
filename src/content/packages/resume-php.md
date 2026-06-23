@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/resume-php"
 link: "https://github.com/JustSteveKing/resume-php"
 tech: ["PHP"]
 featured: false
-downloads: 553
-monthlyDownloads: 194
+downloads: 635
+monthlyDownloads: 245
 stars: 106
 version: "dev-main"
-updatedAt: "2026-06-16"
+updatedAt: "2026-06-23"
 ---
 
 # Resume PHP

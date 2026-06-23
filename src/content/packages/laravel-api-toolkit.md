@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/laravel-api-toolkit"
 link: "https://github.com/JustSteveKing/laravel-api-toolkit"
 tech: ["PHP", "Laravel"]
 featured: false
-downloads: 486
-monthlyDownloads: 8
+downloads: 489
+monthlyDownloads: 11
 stars: 25
 version: "v1.0.0"
-updatedAt: "2026-06-16"
+updatedAt: "2026-06-23"
 ---
 
 # A toolkit for creating APIs in Laravel

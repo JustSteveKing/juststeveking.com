@@ -6,11 +6,11 @@ github: "https://github.com/JustSteveKing/ParameterBag"
 link: "https://github.com/JustSteveKing/ParameterBag"
 tech: ["PHP"]
 featured: false
-downloads: 306197
-monthlyDownloads: 3961
+downloads: 306943
+monthlyDownloads: 3665
 stars: 4
 version: "v1.2.0"
-updatedAt: "2026-06-16"
+updatedAt: "2026-06-23"
 ---
 
 # Parameter Bag
