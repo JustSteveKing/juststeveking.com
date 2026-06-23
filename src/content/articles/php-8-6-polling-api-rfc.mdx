@@ -1,0 +1,125 @@
+---
+title: 'The Polling API Is the Most Underrated RFC PHP Has Shipped in Years'
+description: "The Polling API gives PHP 8.6 native epoll and kqueue at last. Here's why the RFC nobody discussed is the most consequential in years."
+category: 'php'
+tags: ['php', 'php-86', 'async-php', 'rfc']
+pubDate: '2026-06-23'
+featured: false
+shouldCrossPost: true
+draft: false
+---
+
+While most of the community spent the spring arguing about generics, a different RFC slipped into PHP 8.6 with almost none of the attention it deserved. No long Twitter threads. No blog posts dissecting the implications. Just a quiet vote that closed on the third of June with 33 in favour, one against, and four abstaining, from a list of names that includes the Composer author, the FrankenPHP creator, and a healthy chunk of the people who actually maintain the async libraries you depend on.
+
+That RFC is the Polling API, authored by Jakub Zelenka as part of his ongoing stream evolution work. I want to make the case that it is the most consequential thing to land in PHP in years, and that the reason nobody is talking about it is exactly the reason it matters.
+
+## The problem you have been quietly working around
+
+If you have ever written anything that needs to watch more than one socket at a time, you have met `stream_select()`. It is the only I/O multiplexing primitive PHP has shipped for most of its life, and it is built on the `select()` system call from 1983. It works. It also carries a set of limitations that every async library author has had to engineer around.
+
+The first is the file descriptor ceiling. The current implementation caps out at around 1024 descriptors on most systems, which is fine until the moment it very much is not. The second is the complexity. `select()` is O(n): it scans every descriptor you hand it on every single call, so performance degrades as you add connections. The third is that it gives you no access to the mechanisms the rest of the world has been using for two decades. There is no epoll on Linux, no kqueue on BSD or macOS, no event ports on Solaris. There is no edge-triggered mode and no one-shot mode.
+
+This is why every serious async runtime reaches past `select()`. Node, Nginx, Go's net package, Rust's Tokio: they all sit on epoll or kqueue, because that is the foundation high-concurrency networking is built on. PHP was the last major runtime without native access to it, which is why libraries like AMPHP and ReactPHP have shipped multiple driver backends for years. You write your StreamSelect driver for the common case, then a separate libuv driver for the people who installed ext-uv, because a single native high-performance option simply did not exist. That "install ext-uv for performance" line in the README is a workaround for a hole in the language itself.
+
+The Polling API fills the hole.
+
+## What it actually is, and what it is not
+
+The proposal adds a small set of classes under a new `Io\Poll` namespace. It automatically selects the best polling backend for the platform you are running on, and exposes a consistent interface on top of it. On Linux you get epoll, on macOS and BSD you get kqueue, on Solaris and illumos you get event ports, on Windows you get WSAPoll, and everything else falls back to `poll()`. You do not have to think about any of that. You create a context and it picks the right backend.
+
+Here is the whole thing in one breath. You create a `Context`, you wrap a stream in a `StreamPollHandle`, you add it to the context with the events you care about, and you call `wait()`:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Io\Poll\{Context, Event};
+
+$poll = new Context();
+
+$server = stream_socket_server('tcp://0.0.0.0:8080', $errno, $errstr);
+stream_set_blocking($server, false);
+
+$poll->add(new StreamPollHandle($server), [Event::Read], ['type' => 'server']);
+
+while (true) {
+    foreach ($poll->wait(timeoutSeconds: 1) as $watcher) {
+        // a watcher only comes back if it has events ready
+        $handle = $watcher->getHandle();
+
+        if ($watcher->hasTriggered(Event::Read)) {
+            // accept, read, write, whatever this descriptor needs
+        }
+    }
+}
+```
+
+That is the shape of it. `wait()` blocks until something is ready or the timeout expires, then hands you back only the watchers that actually triggered. No scanning the full set yourself, no guessing which descriptor woke you up.
+
+The important thing to understand is what the RFC deliberately leaves out. This is not an event loop. There are no timers in the first cut, no signal handling, no child process management. It is one primitive: a way to watch file descriptors efficiently using whatever the operating system does best. If you want a full event loop with all the trimmings, you still reach for AMPHP or ReactPHP. The difference is that those libraries can now sit on a single native backend instead of maintaining their own.
+
+## The part nobody is talking about
+
+Here is where I think the coverage has missed the real story. Every article I have seen frames this as a userspace feature, a faster `stream_select()` for people building WebSocket servers. That is a genuine benefit, and it is also explicitly the secondary one.
+
+Read the RFC carefully and the primary motivation is the internal API. Jakub is building a unified polling interface that PHP core and extensions can share, and the userspace classes are a gift that falls out of having done that work properly. The internal `php_poll.h` header is the actual point.
+
+Why does that matter to you, someone writing application code who will probably never type `new Context()`? Because of what it unlocks underneath. Safe, efficient signal handling in ZTS, which is exactly what FrankenPHP needs for its goroutine-based threading mode. More flexible event handling in PHP-FPM workers, replacing the ad-hoc implementations that exist today. A cross-platform timer foundation, which has been a genuine pain on macOS. A standard interface that the sockets and curl extensions can build on rather than each rolling their own.
+
+The future scope section reads like a roadmap for the next few years of PHP's networking internals: `SocketPollHandle`, `CurlPollHandle`, `TimerHandle`, `SignalHandle`, FPM migrating onto the internal loop, and the consolidation of all the scattered polling code across the codebase into one place. None of that is glamorous. All of it is the kind of foundational plumbing that quietly raises the ceiling for everything built on top.
+
+The best infrastructure changes are invisible. You do not notice epoll. You notice that Nginx handles ten thousand connections without sweating, and you never think about why.
+
+## The design choices worth admiring
+
+A couple of decisions in the API are worth slowing down on, because they tell you something about how carefully this was put together.
+
+The first is the `Handle` interface. It is a marker interface with no methods, and you cannot implement it from userland. Try, and you get a fatal error at class declaration time:
+
+```
+Fatal error: Io\Poll\Handle cannot be implemented by user classes
+```
+
+That looks restrictive until you understand why. Every concrete handle type has to register a C-level operations table (`php_poll_handle_ops`) that tells the backend how to extract the underlying file descriptor and check whether the handle is still valid. A userland class cannot provide that, so allowing it to implement the interface would only produce handles that do not work. By locking the interface to internal classes, the contract stays enforceable: any `Handle` that reaches the polling backend is guaranteed to have a working ops table. If you need to poll a custom resource, you wrap a stream in `StreamPollHandle` and let the existing machinery do its job. Clean userspace surface, all the messy file descriptor logic kept on the C side where it belongs.
+
+The second is the `Watcher`. You never construct one directly; `Context::add()` returns it to you, and it carries everything about that registration. You can ask it which events it is watching, which ones just triggered, and the arbitrary user data you attached. You can modify it in place or remove it:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Io\Poll\{Context, Event};
+
+$poll = new Context();
+$stream = fopen('php://temp', 'r+');
+
+$watcher = $poll->add(new StreamPollHandle($stream), [Event::Read], 'some data');
+
+// switch what you are watching for without rebuilding the registration
+$watcher->modifyEvents([Event::Write]);
+
+// or change both events and the attached data at once
+$watcher->modify([Event::Read, Event::Write], 'updated data');
+
+if ($watcher->isActive()) {
+    $watcher->remove();
+}
+```
+
+The `Event` enum is where the modern mechanisms surface. Alongside the obvious `Read` and `Write`, you get `Event::OneShot` to have a watcher remove itself automatically after it fires once, and `Event::EdgeTriggered` for the high-performance mode that only reports state changes rather than state. Edge triggering is the technique that lets epoll and kqueue scale to tens of thousands of connections, and it is available here through a single enum case. You can even ask the backend whether it supports it before you rely on it, via `$poll->getBackend()->supportsEdgeTriggering()`.
+
+## The narrative this quietly kills
+
+There is a line you have heard a thousand times, usually from someone who last touched PHP in 2014. "PHP can't scale." For a long time there was a kernel of technical truth buried under the reputation, because the language genuinely did not give you native access to the polling primitives that high-concurrency servers are built on. You could get there with userland libraries and an optional extension, but the foundation was not in the language.
+
+With 8.6 it is. AMPHP, ReactPHP, and Revolt can move their event loop backends onto it. The ext-uv footnote can start disappearing from async READMEs. Benchmarks handling the C10K problem on a stock PHP build will follow, because epoll and kqueue hold steady at ten thousand connections and beyond where `select()` falls apart after a few hundred. The last technical leg under "PHP can't scale" gets kicked away, and what remains is a perception problem rather than a language one.
+
+I want to be honest about the limits of the excitement, because the accurate version is more persuasive than the hype. This passed with one dissenting vote and four abstentions, not the unanimous landslide some of the early write-ups claimed. Most application developers will genuinely never write `new Io\Poll\Context()` in anger. You will feel this through your framework, through a faster FPM, through an async library that finally ships one backend instead of three, through FrankenPHP handling signals correctly under threads. The value is real and it is almost entirely indirect.
+
+That is precisely why it is underrated. A loud feature you use every day gets attention by default. A quiet foundation that raises the floor for the entire ecosystem has to be pointed at, because the people it helps most are the ones who will never see it directly. Jakub did the unglamorous work of building the primitive that was missing for twenty years, and the people who understood what it does voted it through without much noise.
+
+Sometimes the most important thing in a release is the line nobody is arguing about.
+
+*Next time you read a README that tells you to install ext-uv for performance, remember that the footnote has an expiry date now, and go and read what `Io\Poll` is doing underneath.*
