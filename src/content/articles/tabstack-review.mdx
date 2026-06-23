@@ -5,11 +5,11 @@ category: 'DevTools'
 tags: ['tabstack', 'ai-agents', 'web-automation', 'apis']
 pubDate: '2026-06-23'
 featured: false
-shouldCrossPost: true
+devTo: "https://dev.to/juststevemcd/a-proper-look-at-tabstack-45f7"
 draft: false
 ---
 
-I have spent a fair bit of time recently with Tabstack, including building a CLI around its API, and I think it is worth writing down what it actually is, what you would reach for it to do, and whether it earns its place in your stack. There is a lot of noise around anything with "AI" in the description at the moment, so I want to cut through that and talk about the thing on its own terms.
+I have spent a fair bit of time recently with [Tabstack](https://tabstack.ai/?utm_source=juststeveking.com&utm_medium=referral&utm_campaign=tabstack-review), including building a CLI around its API, and I think it is worth writing down what it actually is, what you would reach for it to do, and whether it earns its place in your stack. There is a lot of noise around anything with "AI" in the description at the moment, so I want to cut through that and talk about the thing on its own terms.
 
 Let me start with the problem it exists to solve, because the product makes far more sense once you have felt the pain it removes.
 
@@ -21,7 +21,7 @@ None of that is the interesting part of your product. It is plumbing. You are ma
 
 ### What Tabstack actually is
 
-Tabstack is a web execution and data transformation API built at Mozilla. The pitch is straightforward: you hand it a URL, a schema, a question, or a task, and the browser, the model, and the orchestration all run on their side. You get back clean data, cited answers, or completed browser tasks. There is no headless Chrome for you to provision, no LLM for you to wire in, and no parsing layer for you to babysit.
+[Tabstack](https://tabstack.ai/?utm_source=juststeveking.com&utm_medium=referral&utm_campaign=tabstack-review) is a web execution and data transformation API built at Mozilla. The pitch is straightforward: you hand it a URL, a schema, a question, or a task, and the browser, the model, and the orchestration all run on their side. You get back clean data, cited answers, or completed browser tasks. There is no headless Chrome for you to provision, no LLM for you to wire in, and no parsing layer for you to babysit.
 
 It is a developer product, not a consumer one. There is no dashboard where you sit and browse the web by hand. It is a REST API with TypeScript and Python SDKs, an MCP server, and a CLI, and it is aimed squarely at people building agents, research tools, data pipelines, and automated workflows.
 
